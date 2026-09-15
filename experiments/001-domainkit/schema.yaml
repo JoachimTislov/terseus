@@ -1,0 +1,54 @@
+domain: TaskManager
+
+targets:
+  python:
+    style: "plain functions, no external dependencies"
+  go:
+    style: "idiomatic Go, stdlib only, pointer receivers for mutation"
+
+types:
+  User:
+    fields:
+      id: str
+      name: str
+  Task:
+    fields:
+      id: str
+      title: str
+      done: bool
+      owner: User?      # '?' marks an optional relation
+
+keywords:
+  complete:
+    subject: Task
+    contract:
+      requires: "not subject.done"
+      ensures: "subject.done"
+    bindings:
+      python: {module: "providers.py_provider", function: "mark_task_done"}
+      go: {package: "provider", function: "MarkTaskDone"}
+
+  assign:
+    subject: Task
+    object: User
+    contract:
+      requires: "subject.owner is None"
+      ensures: "subject.owner == object"
+    bindings:
+      python: {module: "providers.py_provider", function: "set_task_owner"}
+      go: {package: "provider", function: "SetTaskOwner"}
+
+  reopen:
+    subject: Task
+    contract:
+      requires: "subject.done"
+      ensures: "not subject.done"
+    # No `bindings` here on purpose -- nobody has bootstrapped this yet.
+    # The Python target falls back to synthesis + verification.
+
+interface:
+  views:
+    - name: TaskBoard
+      entity: Task
+      fields: [title, done, owner]
+      actions: [complete, assign]
