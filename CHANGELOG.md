@@ -9,6 +9,10 @@ software package -- see `CONTRIBUTING.md` for what bumps each number.
 
 Future experiments and their evidence.
 
+### Audit follow-up
+- Registry validation, typed path relations, and proposed records for all
+  currently defined but untested approaches are now enforced in CI.
+
 ## [0.1.6] - 2026-09-15
 
 This is the first public release of the Terseus research foundation. It

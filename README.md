@@ -56,6 +56,10 @@ terseus/
   PRIOR_ART.md             categorized survey with links
   experiments/
     001-domainkit/         one earlier prototype, labeled, not prescriptive
+    002-aivcs-bootstrap/    pinned external project
+    003-refviz-bootstrap/   pinned external project
+  research/                 versioned path registry
+  site/                     GitHub Pages visualization
 ```
 
 ## How to use this
