@@ -26,10 +26,12 @@ the tensions around it, and reproducible experiments:
    contract every experiment should follow.
 2. **`PATHS.md`** -- three isolated initial paths for domain records,
    projections/traceability, and AI-assisted change proposals.
-3. **`PRIOR_ART.md`** -- a wide, categorized survey of existing systems
+3. **`APPROACHES.md`** -- additional independent approaches, their risks,
+   evaluation criteria, and external sources.
+4. **`PRIOR_ART.md`** -- a wide, categorized survey of existing systems
    that already occupy some corner of this problem, so any future design
    decision starts from what's been tried, not from a blank page.
-4. **`THEORY.md`** and **`OPEN_QUESTIONS.md`** -- the actual tensions and
+5. **`THEORY.md`** and **`OPEN_QUESTIONS.md`** -- the actual tensions and
    unresolved design axes this idea sits on, stated as neutrally as
    possible, several of which pull in opposite directions.
 

@@ -9,6 +9,14 @@ software package -- see `CONTRIBUTING.md` for what bumps each number.
 
 Future experiments and their evidence.
 
+## [0.1.5] - 2026-09-15
+
+### Added
+- `APPROACHES.md`, a web-researched map of eight independent approaches:
+  model-driven engineering, provenance, knowledge graphs, inductive library
+  learning, programming by example, formal synthesis, repository-scale
+  change impact, and structured AI workflow compilation.
+
 ## [0.1.4] - 2026-09-15
 
 ### Added
