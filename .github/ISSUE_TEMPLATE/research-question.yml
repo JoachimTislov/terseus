@@ -1,0 +1,32 @@
+name: Research question
+description: Propose a falsifiable question or experiment.
+title: "[Question]: "
+labels:
+  - research
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: State the question without prescribing the answer.
+    validations:
+      required: true
+  - type: textarea
+    id: path
+    attributes:
+      label: Isolated path
+      description: Identify the path in PATHS.md, or explain why this needs a new path.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: What observation would support or falsify the proposal?
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: External sources
+      description: Link relevant prior art or research.

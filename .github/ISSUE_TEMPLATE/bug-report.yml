@@ -1,0 +1,19 @@
+name: Repository issue
+description: Report a reproducibility, documentation, or repository problem.
+title: "[Issue]: "
+labels:
+  - maintenance
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include commands, paths, and relevant pinned commits.
+    validations:
+      required: true

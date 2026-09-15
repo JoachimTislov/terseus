@@ -1,0 +1,37 @@
+name: Validate repository
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  repository:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Check Git diff
+        run: git diff --check
+
+      - name: Check required files
+        run: |
+          test -f LICENSE
+          test -f FOUNDATION.md
+          test -f PATHS.md
+          test -f CONTRIBUTING.md
+          test -f CHANGELOG.md
+
+      - name: Check submodule registration
+        run: |
+          git submodule status --recursive
+          test "$(git config --file .gitmodules --get-regexp path | wc -l)" -ge 2
+
+      - name: Check no generated artifacts are tracked
+        run: |
+          ! git ls-files | grep -E '(^|/)(__pycache__|\.pytest_cache|\.cache|generated)/|\.py[cod]$'

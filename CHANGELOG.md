@@ -9,6 +9,14 @@ software package -- see `CONTRIBUTING.md` for what bumps each number.
 
 Future experiments and their evidence.
 
+## [0.1.4] - 2026-09-15
+
+### Added
+- Repository CI validating required research files, submodules, diff
+  cleanliness, and generated-artifact exclusions.
+- GitHub issue forms, pull request template, CODEOWNERS, Dependabot updates,
+  code of conduct, and security policy.
+
 ## [0.1.2] - 2026-09-15
 
 ### Added
