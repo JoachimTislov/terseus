@@ -1,4 +1,4 @@
-const files = ["../research/projects.json","../research/approaches.json","../research/iterations.json","../research/evidence.json"];
+const files = ["research/projects.json","research/approaches.json","research/iterations.json","research/evidence.json"];
 Promise.all(files.map(url => fetch(url).then(r => r.json()))).then(([projects, approaches, registry, evidence]) => render(projects, approaches, registry, evidence));
 
 function render(projects, approaches, registry, evidence) {

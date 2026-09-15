@@ -43,5 +43,6 @@ jobs:
           python -m json.tool research/iterations.json >/dev/null
           python -m json.tool research/intentions.json >/dev/null
           python -m json.tool research/progress.json >/dev/null
+          python -m json.tool research/evidence.json >/dev/null
           python scripts/validate_registry.py
           python scripts/report_progress.py
