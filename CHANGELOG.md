@@ -11,6 +11,10 @@ Future experiments and their evidence.
 
 ## [0.1.6] - 2026-09-15
 
+This is the first public release of the Terseus research foundation. It
+provides the initial theory, approach map, isolated project studies, pinned
+submodules, versioned research registry, and GitHub Pages visualization.
+
 ### Added
 - Versioned research registry for approach definitions, project-specific
   iterations, pinned repository commits, collisions, conclusions, and

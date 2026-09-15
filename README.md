@@ -67,11 +67,13 @@ this scaffold imposes.
 
 ## Status
 
-Current release: **v0.1.3** — see `CHANGELOG.md` for what's in it.
+Current release: **v0.1.6** — see `CHANGELOG.md` for what's in it.
 Progress is tracked through tagged releases rather than an open-ended
 commit history; `CONTRIBUTING.md` defines what bumps each version number
 and how to add a prior-art entry, an open question, or a new experiment.
 
 ## License
 
-MIT — see `LICENSE`.
+This project is released under the [MIT License](LICENSE).
+
+Copyright (c) 2026 Joachim Tislov.
