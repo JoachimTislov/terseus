@@ -9,5 +9,6 @@
     {"id":"formal-synthesis","name":"Formal synthesis","version":"1.0.0","status":"active","definition":"Candidate implementations are accepted only when independent checks satisfy explicit obligations.","source":"APPROACHES.md"},
     {"id":"change-impact","name":"Repository-scale change impact","version":"1.0.0","status":"active","definition":"Requirements, architecture, code, tests, and documentation are linked for semantic impact analysis.","source":"APPROACHES.md"},
     {"id":"workflow-compilation","name":"Structured AI workflow compilation","version":"1.0.0","status":"active","definition":"AI work is represented as typed declarative modules and repeatable workflows.","source":"APPROACHES.md"}
+    ,{"id":"high-level-system-definition","name":"High-level system definition","version":"1.0.0","status":"active","definition":"A system is described as a set of domain concepts, responsibilities, boundaries, relationships, constraints, and observable outcomes before implementation details are chosen.","source":"FOUNDATION.md"}
   ]
 }

@@ -2,6 +2,9 @@
   "schema_version": 1,
   "iterations": [
     {
+      "id":"terseus-001","project":"terseus","number":1,"date":"2026-09-15","approach":"high-level-system-definition","approach_version":"1.0.0","state":"testing","scope":"domain concepts -> boundaries -> responsibilities -> relationships -> constraints -> observable outcomes","commit":"ad66f93a3f660e244e1685f909142bba1d35dcd8","result":"Research hypothesis: a system can be made easier to understand and evolve when its essential structure is defined independently of implementation language. Evidence is not yet collected.","relations":[{"type":"shares_evidence","target":"ai-vcs-001"},{"type":"shares_evidence","target":"refviz-001"},{"type":"converges_with","target":"refviz-002"}]
+    },
+    {
       "id":"ai-vcs-001","project":"ai-vcs","number":1,"date":"2026-09-15","approach":"provenance-first","approach_version":"1.0.0","state":"testing","scope":"spec -> session -> review -> test oracle","commit":"5314996520a533356fe3be9141cbf3f9acc54b5a","result":"Baseline study defined; evidence not yet collected.","relations":[{"type":"shares_evidence","target":"ai-vcs-002"}]
     },
     {

@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "projects": [
+    {"id":"terseus","name":"Terseus research","repository":"https://github.com/JoachimTislov/terseus","path":".","study":"FOUNDATION.md"},
     {"id":"ai-vcs","name":"AI-native VCS","repository":"https://github.com/JoachimTislov/ai-native-vcs","path":"experiments/002-aivcs-bootstrap","study":"experiments/002-aivcs-bootstrap-study"},
     {"id":"refviz","name":"RefViz","repository":"https://github.com/JoachimTislov/RefViz","path":"experiments/003-refviz-bootstrap","study":"experiments/003-refviz-bootstrap-study"}
   ]

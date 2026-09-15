@@ -25,9 +25,10 @@ function render(projects, approaches, registry) {
 function drawGraph(items, projects) {
   const svg = document.querySelector("#graph"); const ns = "http://www.w3.org/2000/svg"; svg.replaceChildren();
   const positions = new Map(items.map((item, index) => [item.id, {x: 90 + (index % 4) * 245, y: 90 + Math.floor(index / 4) * 150}]));
-  items.forEach(item => (item.collides_with || []).filter(id => positions.has(id) && item.id < id).forEach(id => {
-    const a = positions.get(item.id), b = positions.get(id), line = document.createElementNS(ns,"line");
-    line.setAttribute("x1",a.x); line.setAttribute("y1",a.y); line.setAttribute("x2",b.x); line.setAttribute("y2",b.y); line.setAttribute("class","edge"); svg.append(line);
+  items.forEach(item => (item.relations || []).filter(relation => positions.has(relation.target) && item.id < relation.target).forEach(relation => {
+  const id = relation.target;
+  const a = positions.get(item.id), b = positions.get(id), line = document.createElementNS(ns,"line");
+  line.setAttribute("x1",a.x); line.setAttribute("y1",a.y); line.setAttribute("x2",b.x); line.setAttribute("y2",b.y); line.setAttribute("class","edge"); svg.append(line);
   }));
   items.forEach(item => { const p=positions.get(item.id), c=document.createElementNS(ns,"circle"); c.setAttribute("cx",p.x); c.setAttribute("cy",p.y); c.setAttribute("r",24); c.setAttribute("class","node"); c.setAttribute("fill", item.state==="archived" ? "#94a3b8" : item.state==="collided" ? "#f59e0b" : "#60a5fa"); svg.append(c); const t=document.createElementNS(ns,"text"); t.setAttribute("x",p.x); t.setAttribute("y",p.y+45); t.setAttribute("text-anchor","middle"); t.setAttribute("class","node-label"); t.textContent=item.id; svg.append(t); });
 }

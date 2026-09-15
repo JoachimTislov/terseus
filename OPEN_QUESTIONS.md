@@ -119,3 +119,7 @@ resolve it. The approach labels refer to `research/approaches.json`.
   approaches._
 - [ ] **Q-26 — Strongest objection.** What is the strongest argument that
   Terseus should not be built? _Approaches: all active approaches._
+- [ ] **Q-27 — System definition.** Can a high-level definition of a system
+  remain precise enough to guide implementation and evaluation without
+  becoming a new programming language? _Approaches:
+  `high-level-system-definition`, `model-driven-views`, `change-impact`._
