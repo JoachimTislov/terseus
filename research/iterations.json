@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "iterations": [
+    {
+      "id":"ai-vcs-001","project":"ai-vcs","number":1,"date":"2026-09-15","approach":"provenance-first","approach_version":"1.0.0","state":"testing","scope":"spec -> session -> review -> test oracle","commit":"5314996520a533356fe3be9141cbf3f9acc54b5a","result":"Baseline study defined; evidence not yet collected.","score":null,"collides_with":["ai-vcs-002"]
+    },
+    {
+      "id":"ai-vcs-002","project":"ai-vcs","number":1,"date":"2026-09-15","approach":"change-impact","approach_version":"1.0.0","state":"testing","scope":"spec -> session -> review -> test oracle","commit":"5314996520a533356fe3be9141cbf3f9acc54b5a","result":"Baseline study defined; evidence not yet collected.","score":null,"collides_with":["ai-vcs-001"]
+    },
+    {
+      "id":"refviz-001","project":"refviz","number":1,"date":"2026-09-15","approach":"knowledge-graph","approach_version":"1.0.0","state":"testing","scope":"Go references and feature impact","commit":"32b22ff331ce716b6a024f48d81e93d0b76f2e58","result":"Benchmark defined; evidence not yet collected.","score":null,"collides_with":["refviz-002"]
+    },
+    {
+      "id":"refviz-002","project":"refviz","number":1,"date":"2026-09-15","approach":"model-driven-views","approach_version":"1.0.0","state":"testing","scope":"Go references and feature impact","commit":"32b22ff331ce716b6a024f48d81e93d0b76f2e58","result":"Benchmark defined; evidence not yet collected.","score":null,"collides_with":["refviz-001"]
+    }
+  ]
+}

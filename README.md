@@ -34,6 +34,8 @@ the tensions around it, and reproducible experiments:
 5. **`THEORY.md`** and **`OPEN_QUESTIONS.md`** -- the actual tensions and
    unresolved design axes this idea sits on, stated as neutrally as
    possible, several of which pull in opposite directions.
+6. **`research/` and `site/`** -- versioned approach definitions and
+   project-specific iterations rendered as a filterable GitHub Pages graph.
 
 `experiments/001-domainkit/` holds an earlier, unrelated exploratory
 prototype (schema -> contract-verified synthesis -> multi-target wiring)

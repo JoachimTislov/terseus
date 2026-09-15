@@ -9,6 +9,15 @@ software package -- see `CONTRIBUTING.md` for what bumps each number.
 
 Future experiments and their evidence.
 
+## [0.1.6] - 2026-09-15
+
+### Added
+- Versioned research registry for approach definitions, project-specific
+  iterations, pinned repository commits, collisions, conclusions, and
+  archival state.
+- Dependency-free static visualization under `site/`, with project/state
+  filters and a GitHub Pages deployment workflow.
+
 ## [0.1.5] - 2026-09-15
 
 ### Added

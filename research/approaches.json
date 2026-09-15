@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "approaches": [
+    {"id":"model-driven-views","name":"Model-driven multi-view engineering","version":"1.0.0","status":"active","definition":"Platform-independent models transformed into platform-specific models and artifacts.","source":"APPROACHES.md"},
+    {"id":"provenance-first","name":"Provenance-first representation","version":"1.0.0","status":"active","definition":"Claims, artifacts, agents, activities, and derivations are first-class records.","source":"APPROACHES.md"},
+    {"id":"knowledge-graph","name":"Ontology and knowledge graph","version":"1.0.0","status":"active","definition":"Concepts and relations are extracted and maintained across code, documents, and operations.","source":"APPROACHES.md"},
+    {"id":"inductive-library","name":"Inductive library learning","version":"1.0.0","status":"active","definition":"Reusable abstractions are discovered from solved examples and held-out tasks.","source":"APPROACHES.md"},
+    {"id":"programming-by-example","name":"Programming by example","version":"1.0.0","status":"active","definition":"Examples and constraints specify behavior from which implementations are inferred.","source":"APPROACHES.md"},
+    {"id":"formal-synthesis","name":"Formal synthesis","version":"1.0.0","status":"active","definition":"Candidate implementations are accepted only when independent checks satisfy explicit obligations.","source":"APPROACHES.md"},
+    {"id":"change-impact","name":"Repository-scale change impact","version":"1.0.0","status":"active","definition":"Requirements, architecture, code, tests, and documentation are linked for semantic impact analysis.","source":"APPROACHES.md"},
+    {"id":"workflow-compilation","name":"Structured AI workflow compilation","version":"1.0.0","status":"active","definition":"AI work is represented as typed declarative modules and repeatable workflows.","source":"APPROACHES.md"}
+  ]
+}

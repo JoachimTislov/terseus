@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terseus research paths</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><p class="eyebrow">TERSEUS / RESEARCH REGISTRY</p><h1>How abstractions change over time</h1><p>Versioned paths tested against real projects, with collisions, conclusions, and archives kept visible.</p></header>
+  <main>
+    <section class="controls"><label>Project <select id="project"><option value="all">All projects</option></select></label><label>State <select id="state"><option value="all">All states</option><option>testing</option><option>concluded</option><option>collided</option><option>archived</option><option>blocked</option></select></label></section>
+    <section class="stats" id="stats"></section>
+    <section class="panel"><h2>Path graph</h2><p class="muted">Edges show paths that collide or converge within a project. Nodes are iterations pinned to repository commits.</p><svg id="graph" role="img" aria-label="Research path graph"></svg></section>
+    <section class="panel"><h2>Iterations</h2><div id="iterations"></div></section>
+    <section class="panel"><h2>Approach versions</h2><div id="approaches"></div></section>
+  </main>
+  <footer>Definitions and evidence are versioned in the <a href="https://github.com/JoachimTislov/terseus">Terseus repository</a>.</footer>
+  <script src="app.js"></script>
+</body>
+</html>

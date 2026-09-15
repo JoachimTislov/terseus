@@ -35,3 +35,9 @@ jobs:
       - name: Check no generated artifacts are tracked
         run: |
           ! git ls-files | grep -E '(^|/)(__pycache__|\.pytest_cache|\.cache|generated)/|\.py[cod]$'
+
+      - name: Validate research registry JSON
+        run: |
+          python -m json.tool research/approaches.json >/dev/null
+          python -m json.tool research/projects.json >/dev/null
+          python -m json.tool research/iterations.json >/dev/null
