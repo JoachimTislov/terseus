@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "method": {
+    "description": "Progress is coverage of required evidence, not a claim of scientific completion.",
+    "formula": "sum(completed intention weights) / sum(all intention weights) * 100",
+    "statuses": {"open": 0, "partial": 0.5, "addressed": 1}
+  },
+  "snapshots": [
+    {
+      "release": "v0.1.1",
+      "date": "2026-09-15",
+      "intention_status": {"I-01": "open", "I-02": "partial", "I-03": "open", "I-04": "partial", "I-05": "partial"},
+      "note": "The registry and evaluation structure exist, but no comparative project evidence has been collected."
+    }
+  ]
+}

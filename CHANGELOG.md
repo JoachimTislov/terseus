@@ -12,6 +12,8 @@ Future experiments and their evidence.
 ### Audit follow-up
 - Registry validation, typed path relations, and proposed records for all
   currently defined but untested approaches are now enforced in CI.
+- Versioned intentions and recalculable progress snapshots identify the
+  evidence needed to move the research forward.
 
 ## [0.1.1] - 2026-09-15
 

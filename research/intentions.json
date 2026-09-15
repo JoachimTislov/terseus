@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "intentions": [
+    {
+      "id": "I-01",
+      "title": "Establish an evidence baseline",
+      "status": "active",
+      "description": "Run the same maintenance task with ordinary maintenance, AI without a research representation, and at least two tracked approaches.",
+      "answers": ["Q-09", "Q-12", "Q-18"],
+      "required_evidence": ["task specification", "baseline artifacts", "scores", "review decision"],
+      "weight": 3
+    },
+    {
+      "id": "I-02",
+      "title": "Define semantic fidelity",
+      "status": "active",
+      "description": "Make semantic fidelity observable enough that independent reviewers can agree or record disagreement.",
+      "answers": ["Q-10", "Q-15", "Q-17"],
+      "required_evidence": ["claim inventory", "review rubric", "independent evaluations"],
+      "weight": 3
+    },
+    {
+      "id": "I-03",
+      "title": "Measure change value",
+      "status": "active",
+      "description": "Test whether an abstraction improves a subsequent change rather than only explaining an existing system.",
+      "answers": ["Q-19", "Q-24"],
+      "required_evidence": ["before/after task", "impact record", "regression results", "human effort"],
+      "weight": 3
+    },
+    {
+      "id": "I-04",
+      "title": "Control abstraction risk",
+      "status": "active",
+      "description": "Define when an approach is useful, too costly, contradicted, or ready to archive.",
+      "answers": ["Q-14", "Q-20", "Q-21", "Q-26"],
+      "required_evidence": ["failure criteria", "repeated evaluations", "archival decision"],
+      "weight": 2
+    },
+    {
+      "id": "I-05",
+      "title": "Separate representation from AI",
+      "status": "active",
+      "description": "Determine whether observed gains come from the representation, the AI workflow, or ordinary engineering discipline.",
+      "answers": ["Q-13", "Q-16", "Q-25"],
+      "required_evidence": ["controlled variants", "provider/model record", "unsupported-claim analysis"],
+      "weight": 2
+    }
+  ]
+}

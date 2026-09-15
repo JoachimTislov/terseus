@@ -21,11 +21,24 @@ def main():
     approaches = load("approaches.json")["approaches"]
     projects = load("projects.json")["projects"]
     iterations = load("iterations.json")["iterations"]
+    intentions = load("intentions.json")["intentions"]
+    progress = load("progress.json")
     approach_keys = {(item["id"], item["version"]) for item in approaches}
     approach_ids = {item["id"] for item in approaches}
     project_ids = {item["id"] for item in projects}
     iteration_ids = {item["id"] for item in iterations}
     errors = []
+    intention_ids = {item["id"] for item in intentions}
+    if len(intention_ids) != len(intentions):
+        errors.append("intention IDs must be unique")
+    for item in intentions:
+        for question in item.get("answers", []):
+            if not re.fullmatch(r"Q-\d+", question):
+                errors.append(f"intention {item.get('id')}: invalid question ID")
+    for snapshot in progress.get("snapshots", []):
+        unknown = set(snapshot.get("intention_status", {})) - intention_ids
+        if unknown:
+            errors.append(f"progress snapshot {snapshot.get('release')}: unknown intentions")
 
     if len(iteration_ids) != len(iterations):
         errors.append("iteration IDs must be unique")
@@ -52,7 +65,7 @@ def main():
     if errors:
         print("\n".join(f"ERROR: {error}" for error in errors), file=sys.stderr)
         return 1
-    print(f"valid: {len(approaches)} approaches, {len(projects)} projects, {len(iterations)} iterations")
+    print(f"valid: {len(approaches)} approaches, {len(projects)} projects, {len(iterations)} iterations, {len(intentions)} intentions")
     return 0
 
 

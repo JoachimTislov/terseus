@@ -29,3 +29,15 @@ Each record needs `project`, `approach`, `approach_version`, `scope`, `commit`,
 Use typed `relations` (`converges_with`, `contradicts`, `shares_evidence`, or
 `supersedes`) to make path interactions explicit. Research questions and
 their approach relationships are maintained in `OPEN_QUESTIONS.md`.
+
+## Intentions and progress
+
+`intentions.json` records what must be learned before the research can move
+from setup to evidence. Each intention links to the questions it is meant to
+answer and lists the evidence required to mark it addressed.
+
+`progress.json` stores release snapshots. The score is deliberately an
+arbitrary coverage indicator: weighted intention status (`open` = 0,
+`partial` = 0.5, `addressed` = 1), recalculated by
+`scripts/report_progress.py`. It measures how much of the research plan has
+evidence, not the truth or quality of the conclusions.
