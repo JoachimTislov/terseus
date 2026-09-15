@@ -26,4 +26,6 @@ evidence and can be revived as a new version for a different scope.
 
 Each record needs `project`, `approach`, `approach_version`, `scope`, `commit`,
 `state`, and `result`. Add benchmark scores only after evidence is collected.
-Use `collides_with` to make convergence or contradiction explicit.
+Use typed `relations` (`converges_with`, `contradicts`, `shares_evidence`, or
+`supersedes`) to make path interactions explicit. Research questions and
+their approach relationships are maintained in `OPEN_QUESTIONS.md`.

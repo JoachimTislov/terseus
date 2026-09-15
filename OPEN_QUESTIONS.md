@@ -57,3 +57,65 @@ able to point back to which prior-art entry informed it.
    (SBVR in particular) ran into organizational versions of this before
    they ran into technical ones -- worth reading their retrospectives for
    the failure mode, not just the technical spec.
+
+## Research challenge backlog
+
+These questions are intentionally maintained as checkboxes. A checked item
+requires a linked experiment or external result; discussion alone does not
+resolve it. The approach labels refer to `research/approaches.json`.
+
+- [ ] **Q-09 — Evidence of insufficiency.** What failure in a real system
+  proves that code, documentation, and tests are insufficient rather than
+  merely inconvenient? _Approaches: `change-impact`, `provenance-first`._
+- [ ] **Q-10 — Representation advantage.** What can the proposed
+  representation express that source code, schemas, ADRs, tests, and search
+  cannot? _Approaches: `model-driven-views`, `knowledge-graph`,
+  `provenance-first`._
+- [ ] **Q-11 — Execution boundary.** How can a representation more expressive
+  than a programming language be executed, validated, and constrained without
+  becoming another language? _Approaches: `model-driven-views`,
+  `formal-synthesis`._
+- [ ] **Q-12 — Smallest falsifiable claim.** What is the smallest domain claim
+  that can test the approach, and what observation would falsify it?
+  _Approaches: all active approaches._
+- [ ] **Q-13 — AI's distinct role.** Why should AI discover abstractions
+  instead of retrieving, connecting, or explaining existing ones?
+  _Approaches: `inductive-library`, `workflow-compilation`._
+- [ ] **Q-14 — Hidden complexity.** How do we distinguish a useful abstraction
+  from a compressed description that hides complexity? _Approaches:
+  `inductive-library`, `programming-by-example`, `model-driven-views`._
+- [ ] **Q-15 — Semantic authority.** Who decides equivalence when engineers,
+  documents, and AI disagree? _Approaches: `knowledge-graph`,
+  `provenance-first`._
+- [ ] **Q-16 — AI assumption control.** What prevents AI assumptions from
+  becoming authoritative domain knowledge? _Approaches: `provenance-first`,
+  `workflow-compilation`._
+- [ ] **Q-17 — Ambiguous domains.** How is semantic fidelity measured when the
+  domain itself is contested? _Approaches: `knowledge-graph`,
+  `programming-by-example`._
+- [ ] **Q-18 — Baselines.** Should each experiment compare ordinary
+  maintenance, expert modeling, AI without the representation, and the
+  experimental approach? _Approaches: all active approaches._
+- [ ] **Q-19 — Future-change value.** How do we test whether an abstraction
+  improves the next change rather than only explaining the previous one?
+  _Approaches: `change-impact`, `model-driven-views`._
+- [ ] **Q-20 — Archival threshold.** What repeated evidence is sufficient to
+  archive an approach, and are we willing to archive a preferred one?
+  _Approaches: all active approaches._
+- [ ] **Q-21 — Research overhead.** How do we prevent registry, provenance,
+  scoring, and review costs from exceeding the maintenance problem?
+  _Approaches: `provenance-first`, `workflow-compilation`._
+- [ ] **Q-22 — Valid divergence.** What happens when two projections
+  intentionally disagree because they serve different operational needs?
+  _Approaches: `model-driven-views`, `formal-synthesis`._
+- [ ] **Q-23 — New-contributor usability.** Can someone use the abstraction
+  without understanding its full research history? _Approaches:
+  `knowledge-graph`, `workflow-compilation`._
+- [ ] **Q-24 — One-year success.** Which measurable outcomes define success:
+  fewer regressions, faster change, lower cognitive load, or better domain
+  continuity? _Approaches: all active approaches._
+- [ ] **Q-25 — Novel contribution.** Is the novelty in representation,
+  evaluation, provenance, or model capability? _Approaches: all active
+  approaches._
+- [ ] **Q-26 — Strongest objection.** What is the strongest argument that
+  Terseus should not be built? _Approaches: all active approaches._
