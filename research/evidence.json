@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "records": [
+    {
+      "id": "E-001",
+      "iteration": "terseus-001",
+      "kind": "research-hypothesis",
+      "status": "unverified",
+      "claim": "A language-independent system definition may preserve essential structure across implementation choices.",
+      "source": "FOUNDATION.md",
+      "confidence": "low"
+    },
+    {
+      "id": "E-002",
+      "iteration": "ai-vcs-001",
+      "kind": "baseline-test",
+      "status": "observed",
+      "claim": "The pinned AI-VCS baseline exposes specifications, sessions, review, and test-oracle concepts that can support provenance tracking.",
+      "source": "experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md",
+      "confidence": "medium"
+    },
+    {
+      "id": "E-003",
+      "iteration": "refviz-001",
+      "kind": "baseline-test",
+      "status": "blocked",
+      "claim": "Reference analysis is a useful candidate source of system relationships, but the pinned baseline has unresolved upstream fixture and tooling failures.",
+      "source": "experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md",
+      "confidence": "medium"
+    }
+  ]
+}

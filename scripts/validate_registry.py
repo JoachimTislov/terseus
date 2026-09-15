@@ -22,11 +22,13 @@ def main():
     projects = load("projects.json")["projects"]
     iterations = load("iterations.json")["iterations"]
     intentions = load("intentions.json")["intentions"]
+    evidence = load("evidence.json")["records"]
     progress = load("progress.json")
     approach_keys = {(item["id"], item["version"]) for item in approaches}
     approach_ids = {item["id"] for item in approaches}
     project_ids = {item["id"] for item in projects}
     iteration_ids = {item["id"] for item in iterations}
+    evidence_ids = {item["id"] for item in evidence}
     errors = []
     intention_ids = {item["id"] for item in intentions}
     if len(intention_ids) != len(intentions):
@@ -44,6 +46,16 @@ def main():
         errors.append("iteration IDs must be unique")
     if len(approach_ids) != len(approaches):
         errors.append("approach IDs must be unique")
+    if len(evidence_ids) != len(evidence):
+        errors.append("evidence IDs must be unique")
+    for item in evidence:
+        prefix = f"evidence {item.get('id', '<missing>')}"
+        if item.get("iteration") not in iteration_ids:
+            errors.append(f"{prefix}: unknown iteration")
+        if item.get("status") not in {"observed", "unverified", "blocked"}:
+            errors.append(f"{prefix}: invalid status")
+        if item.get("confidence") not in {"low", "medium", "high"}:
+            errors.append(f"{prefix}: invalid confidence")
     for item in iterations:
         prefix = f"iteration {item.get('id', '<missing>')}"
         if item.get("project") not in project_ids:
