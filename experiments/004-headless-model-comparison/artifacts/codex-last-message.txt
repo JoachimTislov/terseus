@@ -1,0 +1,125 @@
+# 1. Executive summary
+
+Terseus currently has a mature research scaffold but little comparative evidence. Its registry says that baseline studies are defined while “evidence [is] not yet collected,” and the latest progress snapshot says no comparative project evidence exists. The strongest established result remains narrow: verification strength differed between Python and Go in Experiment 001.
+
+The next experiment should test whether explicit repository citations help humans detect unsupported claims in a recorded AI proposal. It can use the existing headless-model artifact as a frozen input, requires no API key, and directly addresses assumption control and provenance. AI output remains only a proposal; humans must approve the corpus, adjudicate claims, and accept or reject the conclusion.
+
+# 2. Evidence reviewed
+
+- [`FOUNDATION.md`](FOUNDATION.md) requires traceable proposals, human authority, rejected decisions, and—where possible—operation “without an API key.”
+- [`THEORY.md`](THEORY.md) identifies verification as target-dependent and leaves the relationship between concision and maintainability unresolved.
+- [`OPEN_QUESTIONS.md`](OPEN_QUESTIONS.md) leaves Q-12 (smallest falsifiable claim), Q-15 (semantic authority), Q-16 (AI assumption control), Q-18 (baselines), and Q-21 (research overhead) open.
+- [`PATHS.md`](PATHS.md) defines Path C evidence as proposal usefulness, unsupported-claim rate, review time, and understandable rejection.
+- [`research/progress.json`](research/progress.json) reports “no comparative project evidence.”
+- [`research/iterations.json`](research/iterations.json) records all iterations as `testing` or `proposed`; none contains benchmark scores.
+- [`research/evidence.json`](research/evidence.json) contains one unverified hypothesis, one observed baseline property, and one blocked baseline.
+- [`research/intentions.json`](research/intentions.json) calls for independent evaluations, controlled variants, review decisions, and unsupported-claim analysis.
+- [`experiments/001-domainkit/EXPERIMENT_NOTES.md`](experiments/001-domainkit/EXPERIMENT_NOTES.md) supports only a narrow typed-contract result and warns against generalization.
+- [`experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md`](experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md) supplies a 0–4 review rubric and treats zero correctness or semantic fidelity as blocking.
+- [`experiments/004-headless-model-comparison/artifacts/vibe-output.json`](experiments/004-headless-model-comparison/artifacts/vibe-output.json) contains a completed, fixed AI proposal suitable for offline audit.
+- [`experiments/004-headless-model-comparison/artifacts/codex-exit-status`](experiments/004-headless-model-comparison/artifacts/codex-exit-status) records a failed runner invocation, so Experiment 004 does not yet provide a valid two-model comparison.
+
+# 3. Proposed benchmark
+
+**Hypothesis:** Preserving explicit repository-path citations in a fixed AI proposal will let human reviewers identify unsupported factual claims more accurately and faster than reviewing the same proposal with those citations removed.
+
+**Independent variable:** Proposal presentation:
+
+- Condition A: original proposal with repository citations.
+- Condition B: identical proposal with citation strings removed, without changing claim wording.
+
+**Dependent variables:** Unsupported-claim recall, false-positive rate, review time, citation correctness, and reviewer agreement.
+
+**Controls:** Use one frozen proposal and repository commit; preserve identical wording and claim order; apply the same instructions and time limit; allow both groups read-only repository access; exclude inventory adjudicators from reviewing; balance reviewer repository familiarity between conditions.
+
+**Procedure:**
+
+1. A human accepts or rejects `vibe-output.json` as the benchmark corpus.
+2. Two auditors independently divide its final report into atomic, repository-checkable factual claims.
+3. Each auditor labels every claim `supported`, `contradicted`, or `not decidable from repository`, citing evidence. A third human adjudicates disagreements.
+4. Freeze the claim inventory and generate the two presentation conditions.
+5. Randomly assign at least three independent reviewers per condition. Reviewers label each claim using the same three categories.
+6. Score responses against the adjudicated inventory.
+7. Humans inspect the scores and accept, edit, or reject the proposed conclusion.
+
+**Stopping rule:** Stop after every eligible claim has three reviews per condition. Abort and report an inconclusive benchmark if fewer than 20 checkable claims exist, or if the auditors’ initial Cohen’s kappa is below 0.40 after clarification of category definitions. Do not add proposals after review begins.
+
+# 4. Measurement plan
+
+For each condition, calculate:
+
+- **Unsupported-claim recall:** contradicted claims correctly identified ÷ all adjudicated contradicted claims.
+- **False-positive rate:** supported claims labeled contradicted ÷ all adjudicated supported claims.
+- **Undecidable accuracy:** correctly recognized undecidable claims ÷ all adjudicated undecidable claims.
+- **Citation correctness:** cited paths that actually support the reviewer’s label ÷ all submitted citations.
+- **Review time:** median seconds per claim and total minutes per reviewer.
+- **Agreement:** Fleiss’ kappa among reviewers within each condition.
+
+Primary score: `unsupported-claim recall − false-positive rate`, reported alongside both components rather than alone. Compare condition medians and ranges; the small sample does not justify a broad significance claim.
+
+Treat citation correctness below 0.50 or zero unsupported-claim recall as a blocking failure. Also report preparation and adjudication minutes: provenance that improves accuracy but costs more effort than it saves bears directly on Q-21.
+
+# 5. Risks and unsupported claims
+
+- The adjudicated inventory is human consensus, not formal truth.
+- Removing citations may affect readability as well as provenance.
+- A single proposal about Terseus cannot establish cross-domain generality.
+- Reviewers familiar with the repository may rely on memory.
+- Claims that depend on missing runtime context may be genuinely undecidable.
+- The failed Codex runner prevents interpreting Experiment 004 as a model-quality comparison.
+- This design does not test whether AI discovers useful abstractions, whether Terseus’s representation is advantageous, or whether cited proposals lead to correct code.
+- No benchmark described here has been run. Expected effects and thresholds are design choices requiring human acceptance.
+
+# 6. Reproducibility checklist
+
+- Record the repository commit and SHA-256 digest of the proposal.
+- Preserve the accepted source proposal unchanged.
+- Publish deterministic citation-redaction rules.
+- Freeze atomic claim IDs before reviewer assignment.
+- Preserve both auditors’ labels and adjudication decisions.
+- Record reviewer eligibility, familiarity, condition, labels, citations, and timings.
+- Use identical instructions and time limits.
+- Retain withdrawals and rejected conclusions.
+- Report every metric, including blocking failures.
+- Require a recorded human `accept`, `edit`, or `reject` decision.
+- Require no network access or API key.
+
+# 7. Machine-readable appendix
+
+```json
+{
+  "hypothesis": "Explicit repository-path citations improve human detection of unsupported factual claims in a fixed AI proposal without increasing false-positive findings.",
+  "open_questions": ["Q-12", "Q-15", "Q-16", "Q-21"],
+  "inputs": [
+    "experiments/004-headless-model-comparison/artifacts/vibe-output.json",
+    "repository at a recorded commit",
+    "human-adjudicated atomic claim inventory"
+  ],
+  "controls": [
+    "same proposal wording and claim order",
+    "same repository snapshot",
+    "same reviewer instructions and time limit",
+    "read-only repository access in both conditions",
+    "inventory auditors excluded from review",
+    "balanced repository familiarity"
+  ],
+  "metrics": [
+    "unsupported_claim_recall",
+    "false_positive_rate",
+    "undecidable_accuracy",
+    "citation_correctness",
+    "review_seconds_per_claim",
+    "fleiss_kappa",
+    "preparation_and_adjudication_minutes"
+  ],
+  "risks": [
+    "subjective adjudication",
+    "single-proposal external-validity limit",
+    "citation removal may alter readability",
+    "reviewer familiarity leakage",
+    "insufficient checkable claims",
+    "failed runner prevents model comparison"
+  ],
+  "confidence": "medium-low: repository evidence supports the need and feasibility of the benchmark, but no benchmark results exist"
+}
+```

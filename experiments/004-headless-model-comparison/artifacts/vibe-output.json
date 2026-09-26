@@ -1,0 +1,1096 @@
+[
+  {
+    "id": "user-turn-6732b92c339841471e6c369fb9e10fef-2",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434045441,
+    "updatedAt": 1790434045441,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "user",
+    "content": [
+      {
+        "type": "text",
+        "text": "# Headless model comparison prompt\n\nRead this repository without modifying any files. Treat the task as a\nPath C experiment: AI output is a proposal, not proof, and human acceptance\nis mandatory.\n\nAnalyze the repository's current research position and propose one narrowly\nscoped next experiment that tests an unresolved question. Return a structured\nreport with exactly these headings:\n\n1. `Executive summary`\n2. `Evidence reviewed` — cite repository paths and quote no more than short\n   phrases\n3. `Proposed benchmark` — hypothesis, independent/dependent variables,\n   controls, procedure, and stopping rule\n4. `Measurement plan` — define observable metrics and scoring\n5. `Risks and unsupported claims`\n6. `Reproducibility checklist`\n7. `Machine-readable appendix` — a fenced JSON object with keys\n   `hypothesis`, `open_questions`, `inputs`, `controls`, `metrics`,\n   `risks`, and `confidence`\n\nStay within 1,500 words. Do not suggest changing source files, do not use\nnetwork access, and do not claim that an experiment was run. Prefer a design\nthat can be repeated without an API key."
+      }
+    ],
+    "source": "turn_start",
+    "userDisplayContent": null
+  },
+  {
+    "id": "reasoning-0b7aa508-13c8-5777-a47b-432333ae71ac-0",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434046303,
+    "updatedAt": 1790434046303,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "The user wants me to read the repository without modifying files, and produce a structured report proposing a next experiment. First, I need to explore the repository. Let me look at what's in the current directory.\n\nLet me start by exploring the repo structure.",
+    "summary": []
+  },
+  {
+    "id": "assistant-0b7aa508-13c8-5777-a47b-432333ae71ac",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434046303,
+    "updatedAt": 1790434046303,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "I'll start by exploring the repository to understand its research position, then produce the report."
+      }
+    ],
+    "source": "harness",
+    "userDisplayContent": null
+  },
+  {
+    "id": "effect-f90bd043-7aba-581c-b022-2c719debe4da",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434046364,
+    "updatedAt": 1790434046406,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.bash",
+    "detail": {
+      "toolName": "file_system.bash",
+      "display": {
+        "summary": "bash: pwd && ls -la && find . -maxdepth 2 -type f \\( -name \"*.md\" -o -name \"*.json\" -o -name \"*.toml\" -o -name \"*.yaml\" -o -name \"*.cfg\" \\) | head -50",
+        "content": null,
+        "suffix": "",
+        "verb": "Running",
+        "message": "pwd && ls -la && find . -maxdepth 2 -type f \\( -name \"*.md\" -o -name \"*.json\" -o -name \"*.toml\" -o -name \"*.yaml\" -o -name \"*.cfg\" \\) | head -50",
+        "settledVerb": "Ran",
+        "settledMessage": "pwd && ls -la && find . -maxdepth 2 -type f \\( -name \"*.md\" -o -name \"*.json\" -o -name \"*.toml\" -o -name \"*.yaml\" -o -name \"*.cfg\" \\) | head -50",
+        "statusText": "Running command"
+      },
+      "kind": "shell",
+      "input": {
+        "command": "pwd && ls -la && find . -maxdepth 2 -type f \\( -name \"*.md\" -o -name \"*.json\" -o -name \"*.toml\" -o -name \"*.yaml\" -o -name \"*.cfg\" \\) | head -50"
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "stdout": "/home/joachim/projects/terseus\ntotal 112\ndrwxr-xr-x  9 joachim joachim  4096 Sep 15 23:40 .\ndrwxr-xr-x 36 joachim joachim  4096 Sep 15 22:18 ..\n-rw-r--r--  1 joachim joachim  7164 Sep 15 23:23 APPROACHES.md\n-rw-r--r--  1 joachim joachim  1486 Sep 15 23:51 CHANGELOG.md\n-rw-r--r--  1 joachim joachim   425 Sep 15 23:23 CODE_OF_CONDUCT.md\n-rw-r--r--  1 joachim joachim  2328 Sep 15 23:22 CONTRIBUTING.md\ndrwxr-xr-x  8 joachim joachim  4096 Sep 26 16:46 experiments\n-rw-r--r--  1 joachim joachim  2141 Sep 15 23:22 FOUNDATION.md\ndrwxr-xr-x  8 joachim joachim  4096 Sep 16 00:08 .git\ndrwxr-xr-x  4 joachim joachim  4096 Sep 15 23:23 .github\n-rw-r--r--  1 joachim joachim   253 Sep 15 23:22 .gitignore\n-rw-r--r--  1 joachim joachim   283 Sep 15 23:22 .gitmodules\ndrwxr-xr-x  4 joachim joachim  4096 Sep 15 22:21 .jj\n-rw-r--r--  1 joachim joachim  1071 Sep 15 23:23 LICENSE\n-rw-r--r--  1 joachim joachim  7298 Sep 15 23:55 OPEN_QUESTIONS.md\n-rw-r--r--  1 joachim joachim  3915 Sep 15 23:22 PATHS.md\n-rw-r--r--  1 joachim joachim 11272 Sep 15 23:22 PRIOR_ART.md\n-rw-r--r--  1 joachim joachim  3842 Sep 15 23:45 README.md\ndrwxr-xr-x  2 joachim joachim  4096 Sep 16 00:06 research\ndrwxr-xr-x  2 joachim joachim  4096 Sep 15 23:51 scripts\n-rw-r--r--  1 joachim joachim   598 Sep 15 23:23 SECURITY.md\ndrwxr-xr-x  2 joachim joachim  4096 Sep 15 23:23 site\n-rw-r--r--  1 joachim joachim  5307 Sep 15 23:22 THEORY.md\n./PRIOR_ART.md\n./PATHS.md\n./CONTRIBUTING.md\n./README.md\n./.github/pull_request_template.md\n./OPEN_QUESTIONS.md\n./SECURITY.md\n./CODE_OF_CONDUCT.md\n./FOUNDATION.md\n./APPROACHES.md\n./THEORY.md\n./research/intentions.json\n./research/README.md\n./research/iterations.json\n./research/approaches.json\n./research/progress.json\n./research/evidence.json\n./research/projects.json\n./CHANGELOG.md\n",
+        "stderr": "",
+        "output": "",
+        "truncated": false
+      },
+      "outputText": "/home/joachim/projects/terseus\ntotal 112\ndrwxr-xr-x  9 joachim joachim  4096 Sep 15 23:40 .\ndrwxr-xr-x 36 joachim joachim  4096 Sep 15 22:18 ..\n-rw-r--r--  1 joachim joachim  7164 Sep 15 23:23 APPROACHES.md\n-rw-r--r--  1 joachim joachim  1486 Sep 15 23:51 CHANGELOG.md\n-rw-r--r--  1 joachim joachim   425 Sep 15 23:23 CODE_OF_CONDUCT.md\n-rw-r--r--  1 joachim joachim  2328 Sep 15 23:22 CONTRIBUTING.md\ndrwxr-xr-x  8 joachim joachim  4096 Sep 26 16:46 experiments\n-rw-r--r--  1 joachim joachim  2141 Sep 15 23:22 FOUNDATION.md\ndrwxr-xr-x  8 joachim joachim  4096 Sep 16 00:08 .git\ndrwxr-xr-x  4 joachim joachim  4096 Sep 15 23:23 .github\n-rw-r--r--  1 joachim joachim   253 Sep 15 23:22 .gitignore\n-rw-r--r--  1 joachim joachim   283 Sep 15 23:22 .gitmodules\ndrwxr-xr-x  4 joachim joachim  4096 Sep 15 22:21 .jj\n-rw-r--r--  1 joachim joachim  1071 Sep 15 23:23 LICENSE\n-rw-r--r--  1 joachim joachim  7298 Sep 15 23:55 OPEN_QUESTIONS.md\n-rw-r--r--  1 joachim joachim  3915 Sep 15 23:22 PATHS.md\n-rw-r--r--  1 joachim joachim 11272 Sep 15 23:22 PRIOR_ART.md\n-rw-r--r--  1 joachim joachim  3842 Sep 15 23:45 README.md\ndrwxr-xr-x  2 joachim joachim  4096 Sep 16 00:06 research\ndrwxr-xr-x  2 joachim joachim  4096 Sep 15 23:51 scripts\n-rw-r--r--  1 joachim joachim   598 Sep 15 23:23 SECURITY.md\ndrwxr-xr-x  2 joachim joachim  4096 Sep 15 23:23 site\n-rw-r--r--  1 joachim joachim  5307 Sep 15 23:22 THEORY.md\n./PRIOR_ART.md\n./PATHS.md\n./CONTRIBUTING.md\n./README.md\n./.github/pull_request_template.md\n./OPEN_QUESTIONS.md\n./SECURITY.md\n./CODE_OF_CONDUCT.md\n./FOUNDATION.md\n./APPROACHES.md\n./THEORY.md\n./research/intentions.json\n./research/README.md\n./research/iterations.json\n./research/approaches.json\n./research/progress.json\n./research/evidence.json\n./research/projects.json\n./CHANGELOG.md\n",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Ran",
+        "message": "pwd && ls -la && find . -maxdepth 2 -type f \\( -name \"*.md\" -o -name \"*.json\" -o -name \"*.toml\" -o -name \"*.yaml\" -o -name \"*.cfg\" \\) | head -50",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-3ac58fb5-ea14-5b06-ae2d-736f68b7d532",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434047042,
+    "updatedAt": 1790434047065,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/README.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/README.md",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/README.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/README.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/README.md",
+        "content": "# Terseus\n\nAn open-source experiment repository for discovering how AI can help people\nbuild and evolve abstractions in large systems.\n\nThe project is not about enclosing possibilities in a new programming\nlanguage. Domain knowledge is often distributed across source code,\ndocumentation, tests, operations, and people. Terseus investigates whether an\nopen representation layer can keep that knowledge connected while producing\ninspectable, replaceable projections for different implementations.\n\nA reference scaffold for an open research direction, not a proposed final\nanswer:\n\n> Can an AI system be used to progressively identify, verify, and reuse\n> abstractions across languages and frameworks -- so that the total\n> words/tokens/syntax needed to express a system shrinks over time --\n> without collapsing into either an unverifiable black box, or a\n> lowest-common-denominator DSL that can't say anything interesting?\n\nThis repo does not pick an architecture, a target language, a metric for\n\"concise,\" or a synthesis strategy. It exists to hold the research position,\nthe tensions around it, and reproducible experiments:\n\n1. **`FOUNDATION.md`** -- the open representation position and the artifact\n   contract every experiment should follow.\n2. **`PATHS.md`** -- three isolated initial paths for domain records,\n   projections/traceability, and AI-assisted change proposals.\n3. **`APPROACHES.md`** -- additional independent approaches, their risks,\n   evaluation criteria, and external sources.\n4. **`PRIOR_ART.md`** -- a wide, categorized survey of existing systems\n   that already occupy some corner of this problem, so any future design\n   decision starts from what's been tried, not from a blank page.\n5. **`THEORY.md`** and **`OPEN_QUESTIONS.md`** -- the actual tensions and\n   unresolved design axes this idea sits on, stated as neutrally as\n   possible, several of which pull in opposite directions.\n6. **`research/` and `site/`** -- versioned approach definitions and\n   project-specific iterations rendered as a filterable GitHub Pages graph.\n\n`experiments/001-domainkit/` holds an earlier, unrelated exploratory\nprototype (schema -> contract-verified synthesis -> multi-target wiring)\nthat came out of a different conversation thread. It's included as one\nlabeled data point -- what it tried, what it found, what it didn't\nresolve -- not as the template the rest of this project should follow.\nNothing here commits to repeating its choices (bindings + fallback\nsynthesis + hash-cached rebuilds was one specific answer to a much\nnarrower question than the one this repo is scoped around).\n\n## Layout\n\n```\nterseus/\n  README.md              <- you are here\n  THEORY.md               core proposition + the design axes it forces\n  OPEN_QUESTIONS.md        unresolved tensions, kept as a live list\n  PRIOR_ART.md             categorized survey with links\n  experiments/\n    001-domainkit/         one earlier prototype, labeled, not prescriptive\n    002-aivcs-bootstrap/    pinned external project\n    003-refviz-bootstrap/   pinned external project\n  research/                 versioned path registry\n  site/                     GitHub Pages visualization\n```\n\n## How to use this\n\nIf a next step gets decided later, it should cite which prior-art entry\nit's extending, borrowing from, or deliberately diverging from, and which\nopen question it's taking a position on. That's the only structural rule\nthis scaffold imposes.\n\n## Status\n\nCurrent release: **v0.1.1** — see `CHANGELOG.md` for what's in it.\nProgress is tracked through tagged releases rather than an open-ended\ncommit history; `CONTRIBUTING.md` defines what bumps each version number\nand how to add a prior-art entry, an open question, or a new experiment.\n\n## License\n\nThis project is released under the [MIT License](LICENSE).\n\nCopyright (c) 2026 Joachim Tislov.\n",
+        "numLines": 83,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "83 lines from /home/joachim/projects/terseus/README.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-b6e50fbe-52d4-5fc7-bce2-5b6cc0d2ab65",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434047049,
+    "updatedAt": 1790434047077,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/FOUNDATION.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/FOUNDATION.md",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/FOUNDATION.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/FOUNDATION.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/FOUNDATION.md",
+        "content": "# Foundation\n\nTerseus explores how AI can help people construct and evolve abstractions in\nlarge systems. It is not an attempt to enclose the design space in a new\nprogramming language or to make one generated implementation authoritative.\n\n## Research position\n\nImportant domain knowledge is usually split between source code, documents,\ntickets, tests, operational practice, and people. A standard programming\nlanguage can implement part of that knowledge, but it is not a sufficient\nplace to preserve concepts, constraints, alternatives, rationale, and\nrelationships across a changing system.\n\nThis project therefore investigates an open representation layer:\n\n- domain concepts, relationships, constraints, examples, decisions, and\n  unresolved alternatives remain expressible independently of one target\n  language;\n- implementations, APIs, tests, documentation, and operational artifacts are\n  projections that can be generated, inspected, replaced, and compared;\n- AI proposes connections, transformations, and abstractions, while people\n  retain authority over important decisions;\n- every useful proposal must remain traceable to its evidence and claims.\n\nThe goal is not merely fewer tokens. A successful abstraction makes a large\nsystem easier to understand, verify, change, and coordinate without losing\nmeaning.\n\n## Experiment contract\n\nEvery experiment should preserve:\n\n1. the domain inputs and available knowledge;\n2. the intermediate representation being tested;\n3. generated and hand-written projections;\n4. links between domain claims and projections;\n5. human decisions, including rejected or unresolved proposals;\n6. evidence about correctness, clarity, adaptability, and change effort.\n\nExperiments must state what they do not establish. AI output is a proposal,\nnot proof. Whenever possible, the core path must run without an API key and\nthe experiment must include at least one meaningful change after initial\nconstruction.\n\n`experiments/001-domainkit` is retained as a narrow calibration point for\ntyped contracts and multi-target synthesis. It is not the prescribed\narchitecture for the broader research direction.\n",
+        "numLines": 48,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "48 lines from /home/joachim/projects/terseus/FOUNDATION.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-3effbce0-5bf8-5cf4-acde-8ef7fd4c9739",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434047055,
+    "updatedAt": 1790434047088,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/PATHS.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/PATHS.md",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/PATHS.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/PATHS.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/PATHS.md",
+        "content": "# Initial paths\n\nThese paths are deliberately isolated. Each asks a different question and\nmay produce a different representation. A result in one path must not be\ntreated as evidence for the others.\n\n## Path A — domain knowledge as an open record\n\n**Question:** Can concepts, relationships, constraints, examples, decisions,\nand unresolved alternatives be represented without making a programming\nlanguage the source of truth?\n\n**Smallest useful study:** Take one modest domain and write its knowledge as\nan inspectable record containing typed claims, prose context, examples,\nreferences, and alternatives. Ask independent reviewers to reconstruct the\ndomain and identify missing meaning.\n\n**Evidence:** reconstruction accuracy, disagreement visibility, ease of\nediting, and whether the record remains useful when implementation choices\nchange.\n\n**Not testing:** code generation, AI quality, or whether the representation\nshould become a standard language.\n\n**External references:** OMG's [Decision Model and\nNotation](https://www.omg.org/spec/DMN/) demonstrates a portable decision\nmodel with notation and an executable expression layer. W3C's\n[PROV-O overview](https://www.w3.org/TR/prov-overview/) provides a model for\ndescribing entities, activities, and agents involved in producing artifacts.\nBoth are precedents, not dependencies or proposed formats for Terseus.\n\n## Path B — projections and traceability\n\n**Question:** Can several implementation artifacts be projections of domain\nclaims while remaining inspectable, replaceable, and traceable?\n\n**Smallest useful study:** From the same fixed domain record, create two\ndifferent projections (for example an API contract and a test/documentation\nset). Link each meaningful output to the claims it implements, then make one\ndomain change and inspect the impact.\n\n**Evidence:** coverage of claims, stale-link detection, impact precision,\nreviewer ability to explain changes, and effort to replace one projection.\n\n**Not testing:** whether one target language is better, or whether generated\ncode is more concise.\n\n**External references:** Martin Fowler's\n[Language Workbench](https://martinfowler.com/articles/languageWorkbench.html)\ndescribes domain-specific languages and tooling as a family of projection\ntechniques. The [Protocol Buffers overview](https://protobuf.dev/overview/)\nis a production precedent for one schema producing artifacts in multiple\nlanguages with explicit evolution rules.\n\n## Path C — AI as a bounded change proposer\n\n**Question:** Can AI propose useful abstractions and changes while keeping\nhuman authority, provenance, and failure visible?\n\n**Smallest useful study:** Give an AI the domain record, existing projections,\nand one requested change. Require a structured proposal containing affected\nclaims, proposed edits, projected artifacts, uncertainty, and evidence. A\nhuman accepts, edits, or rejects it.\n\n**Evidence:** useful proposal rate, unsupported-claim rate, review time,\nchange-resilience, and whether rejected proposals remain understandable.\n\n**Not testing:** autonomous system ownership, model capability in general, or\nformal correctness without an independent verifier.\n\n**External references:** [DSPy](https://arxiv.org/abs/2310.03714) is a\nprecedent for declarative language-model modules compiled into pipelines.\n[Sketch](https://people.csail.mit.edu/asolar/SynthesisCourse/Sketch.pdf)\nand [Rosette](https://plt.cs.northwestern.edu/pkg-build/doc/rosette-guide/)\nare precedents for bounded synthesis and verification. Terseus uses these\nreferences to separate proposal generation from acceptance, not to prescribe\ntheir implementations.\n\n## Isolation rule\n\nEach path gets its own inputs, artifacts, evaluation, and conclusion. Do not\nmerge a format from Path A into Path B, or an AI result from Path C into a\nclaim about representation quality, without a new experiment that tests the\ncombination directly.\n",
+        "numLines": 84,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "84 lines from /home/joachim/projects/terseus/PATHS.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-dbffe787-8b8b-510e-b65a-28100944038d",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434048200,
+    "updatedAt": 1790434048240,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/OPEN_QUESTIONS.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/OPEN_QUESTIONS.md",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/OPEN_QUESTIONS.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/OPEN_QUESTIONS.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/OPEN_QUESTIONS.md",
+        "content": "# Open Questions\n\nA running list. Nothing here is answered by this repo -- each is a\ndecision some future design will have to make explicitly, and should be\nable to point back to which prior-art entry informed it.\n\n1. **Hole-filling vs. interpretation.** Where exactly is the line between\n   \"the model fills a bounded, pre-typed gap\" and \"the model interprets\n   under-specified intent\"? Every controlled-natural-language project\n   claims to do the former and arguably drifts into the latter as soon as\n   its vocabulary gets expressive enough to be useful (see THEORY.md,\n   Axis 1).\n\n2. **Unit of abstraction.** Is the right granularity a single keyword\n   (a verb bound to a contract), a whole module, or a vertical slice\n   spanning multiple layers (schema + logic + interface)? Prior art picks\n   very different points on this: Robot Framework keywords are small and\n   composable; JHipster's JDL entities are closer to whole modules.\n\n3. **Top-down vs. bottom-up abstraction discovery.** Should a human\n   declare \"this deserves a keyword\" ahead of time, or should the system\n   mine recurring patterns from an existing corpus (possibly across many\n   unrelated projects) and propose candidates? No surveyed system does\n   the latter well at the level of verified, reusable abstractions --\n   worth confirming this is still true before assuming it's solved.\n\n4. **Is token count the right metric at all?** See THEORY.md's \"open\n   measurement question.\" A metric that rewards density over\n   traceability could optimize for the wrong thing entirely.\n\n5. **Ossification and versioning.** Once a keyword is standardized and\n   consumed by multiple projects, how does its contract change without\n   breaking everyone downstream? Every standard (SQL, HTTP, protobuf's\n   field-number discipline) has had to solve this explicitly -- protobuf's\n   answer (numbered fields, additive-only evolution) is one concrete\n   precedent worth studying directly rather than re-deriving from\n   scratch.\n\n6. **Contract-language expressiveness ceiling.** How expressive does a\n   contract language need to be before it's useful for real domains with\n   real invariants (balances, multi-field constraints, state machines\n   with more than two states) -- and at what point does the contract\n   language itself become a second thing to learn, undermining the\n   \"fewer words\" goal it was meant to serve?\n\n7. **Should verification deliberately span multiple type disciplines?**\n   Given the empirical finding in THEORY.md (a statically-typed target\n   caught a defect a dynamically-typed one missed), is it worth treating\n   \"verify against at least one statically-typed target\" as a design\n   principle regardless of what's actually being shipped, purely as a\n   contract sanity check? Or was this incidental to one narrow example\n   and not worth generalizing?\n\n8. **Who owns a keyword's meaning once it exists?** Standardizing\n   `complete` or `checkout` within a domain schema is a form of\n   governance, not just engineering. Business-rules and CNL projects\n   (SBVR in particular) ran into organizational versions of this before\n   they ran into technical ones -- worth reading their retrospectives for\n   the failure mode, not just the technical spec.\n\n## Research challenge backlog\n\nThese questions are intentionally maintained as checkboxes. A checked item\nrequires a linked experiment or external result; discussion alone does not\nresolve it. The approach labels refer to `research/approaches.json`.\n\n- [ ] **Q-09 — Evidence of insufficiency.** What failure in a real system\n  proves that code, documentation, and tests are insufficient rather than\n  merely inconvenient? _Approaches: `change-impact`, `provenance-first`._\n- [ ] **Q-10 — Representation advantage.** What can the proposed\n  representation express that source code, schemas, ADRs, tests, and search\n  cannot? _Approaches: `model-driven-views`, `knowledge-graph`,\n  `provenance-first`._\n- [ ] **Q-11 — Execution boundary.** How can a representation more expressive\n  than a programming language be executed, validated, and constrained without\n  becoming another language? _Approaches: `model-driven-views`,\n  `formal-synthesis`._\n- [ ] **Q-12 — Smallest falsifiable claim.** What is the smallest domain claim\n  that can test the approach, and what observation would falsify it?\n  _Approaches: all active approaches._\n- [ ] **Q-13 — AI's distinct role.** Why should AI discover abstractions\n  instead of retrieving, connecting, or explaining existing ones?\n  _Approaches: `inductive-library`, `workflow-compilation`._\n- [ ] **Q-14 — Hidden complexity.** How do we distinguish a useful abstraction\n  from a compressed description that hides complexity? _Approaches:\n  `inductive-library`, `programming-by-example`, `model-driven-views`._\n- [ ] **Q-15 — Semantic authority.** Who decides equivalence when engineers,\n  documents, and AI disagree? _Approaches: `knowledge-graph`,\n  `provenance-first`._\n- [ ] **Q-16 — AI assumption control.** What prevents AI assumptions from\n  becoming authoritative domain knowledge? _Approaches: `provenance-first`,\n  `workflow-compilation`._\n- [ ] **Q-17 — Ambiguous domains.** How is semantic fidelity measured when the\n  domain itself is contested? _Approaches: `knowledge-graph`,\n  `programming-by-example`._\n- [ ] **Q-18 — Baselines.** Should each experiment compare ordinary\n  maintenance, expert modeling, AI without the representation, and the\n  experimental approach? _Approaches: all active approaches._\n- [ ] **Q-19 — Future-change value.** How do we test whether an abstraction\n  improves the next change rather than only explaining the previous one?\n  _Approaches: `change-impact`, `model-driven-views`._\n- [ ] **Q-20 — Archival threshold.** What repeated evidence is sufficient to\n  archive an approach, and are we willing to archive a preferred one?\n  _Approaches: all active approaches._\n- [ ] **Q-21 — Research overhead.** How do we prevent registry, provenance,\n  scoring, and review costs from exceeding the maintenance problem?\n  _Approaches: `provenance-first`, `workflow-compilation`._\n- [ ] **Q-22 — Valid divergence.** What happens when two projections\n  intentionally disagree because they serve different operational needs?\n  _Approaches: `model-driven-views`, `formal-synthesis`._\n- [ ] **Q-23 — New-contributor usability.** Can someone use the abstraction\n  without understanding its full research history? _Approaches:\n  `knowledge-graph`, `workflow-compilation`._\n- [ ] **Q-24 — One-year success.** Which measurable outcomes define success:\n  fewer regressions, faster change, lower cognitive load, or better domain\n  continuity? _Approaches: all active approaches._\n- [ ] **Q-25 — Novel contribution.** Is the novelty in representation,\n  evaluation, provenance, or model capability? _Approaches: all active\n  approaches._\n- [ ] **Q-26 — Strongest objection.** What is the strongest argument that\n  Terseus should not be built? _Approaches: all active approaches._\n- [ ] **Q-27 — System definition.** Can a high-level definition of a system\n  remain precise enough to guide implementation and evaluation without\n  becoming a new programming language? _Approaches:\n  `high-level-system-definition`, `model-driven-views`, `change-impact`._\n",
+        "numLines": 125,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "125 lines from /home/joachim/projects/terseus/OPEN_QUESTIONS.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-dd397553-32df-543f-a3c1-daabf01a4b1d",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434048211,
+    "updatedAt": 1790434048267,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/APPROACHES.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/APPROACHES.md",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/APPROACHES.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/APPROACHES.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/APPROACHES.md",
+        "content": "# Approach map\n\nThis map expands the research space without selecting a single architecture.\nEach approach changes what is considered the primary representation, what AI\ndoes, and how results should be evaluated. The approaches are candidates for\nseparate experiments; none is evidence for another.\n\n## 1. Model-driven multi-view engineering\n\n**Core idea:** maintain platform-independent models and derive\nplatform-specific models, code, schemas, and tests through explicit\ntransformations.\n\n**Useful question:** Does an explicit transformation chain make changes more\nunderstandable and controllable than direct code generation?\n\n**Risks:** model maintenance cost, transformation drift, and forcing domains\ninto a rigid modeling notation.\n\n**Evaluation emphasis:** semantic fidelity, view consistency, transformation\nreversibility, change impact precision, and maintenance effort.\n\n**Sources:** [OMG Model Driven\nArchitecture](https://www.omg.org/mda/), [Martin Fowler's Language\nWorkbench](https://martinfowler.com/articles/languageWorkbench.html).\n\n## 2. Provenance-first representations\n\n**Core idea:** treat claims, artifacts, agents, activities, and derivations as\nfirst-class data so every projection and AI proposal has an evidence trail.\n\n**Useful question:** Does provenance improve review and recovery when an\nabstraction or generated artifact becomes questionable?\n\n**Risks:** metadata overhead, false confidence in complete-looking graphs,\nand difficulty representing informal human knowledge.\n\n**Evaluation emphasis:** trace completeness, provenance accuracy, audit time,\nrecovery from rejected changes, and ability to identify unsupported claims.\n\n**Source:** [W3C PROV overview](https://www.w3.org/TR/prov-overview/).\n\n## 3. Ontology and knowledge-graph engineering\n\n**Core idea:** extract and maintain concepts and relations from code,\ndocumentation, issues, and operational records in a graph constrained by an\nontology or vocabulary.\n\n**Useful question:** Does a graph expose cross-cutting domain knowledge that\nis invisible in language-bound modules and documents?\n\n**Risks:** hallucinated relations, ontology ossification, incomplete\nextraction, and expensive expert validation.\n\n**Evaluation emphasis:** precision and recall of claims, consistency,\ncoverage across artifact types, update latency, and expert correction effort.\n\n**Sources:** [Accelerating Knowledge Graph and Ontology Engineering with\nLLMs](https://arxiv.org/abs/2411.09601), [Ontology-guided Knowledge Graph\nConstruction from Maintenance Short Texts](https://aclanthology.org/2024.kallm-1.8/),\nand [Knowledge Graph Construction: Current State and\nChallenges](https://doi.org/10.3390/info15080509).\n\n## 4. Inductive library and abstraction learning\n\n**Core idea:** discover reusable functions, concepts, or a small domain\nlibrary from solved examples rather than requiring every abstraction to be\ndeclared first.\n\n**Useful question:** Can discovered abstractions reduce repeated work while\nremaining interpretable, testable, and easy to reject?\n\n**Risks:** overfitting, opaque or trivial abstractions, benchmark leakage,\nand optimizing compression instead of usefulness.\n\n**Evaluation emphasis:** reuse on held-out tasks, compression adjusted for\ncomprehension, abstraction stability, editability, and regression rate.\n\n**Sources:** [DreamCoder](https://github.com/ellisk42/dreamcoder),\n[LILO](https://arxiv.org/abs/2310.19791), and [Metagol](https://github.com/metagol/metagol).\n\n## 5. Programming by example and inductive synthesis\n\n**Core idea:** specify behavior through examples and constraints; infer an\nimplementation or transformation from those examples.\n\n**Useful question:** Are examples a more accessible and less language-bound\nway to communicate domain behavior than prose or signatures alone?\n\n**Risks:** examples under-specify edge cases, inferred behavior can be\nsurprising, and examples may encode accidental rather than intended rules.\n\n**Evaluation emphasis:** generalization to hidden cases, counterexample\nquality, example authoring effort, semantic coverage, and ability to revise\nthe inferred rule.\n\n**Sources:** [Programming by Examples](https://www.microsoft.com/en-us/research/wp-content/uploads/2016/12/pbe16.pdf)\nand the [PROSE research overview](https://www.microsoft.com/en-us/research/project/prose/).\n\n## 6. Formal synthesis and proof-carrying change\n\n**Core idea:** combine a bounded implementation space with executable\nspecifications, solvers, or proof obligations; AI may propose candidates but\nan independent checker decides acceptance.\n\n**Useful question:** Which parts of an abstraction can be made mechanically\nsafe without making domain expression too costly?\n\n**Risks:** specification burden, solver limits, weak specifications that\nprove the wrong thing, and poor support for informal domain knowledge.\n\n**Evaluation emphasis:** invariant coverage, proof or counterexample quality,\nfalse acceptance rate, specification effort, and change locality.\n\n**Sources:** [Sketch](https://people.csail.mit.edu/asolar/SynthesisCourse/Sketch.pdf),\n[Rosette](https://plt.cs.northwestern.edu/pkg-build/doc/rosette-guide/),\nand [Neurosymbolic Programming](https://doi.org/10.1561/2500000049).\n\n## 7. Repository-scale requirements and change-impact analysis\n\n**Core idea:** connect requirements, architecture, code, tests, and\ndocumentation to identify affected artifacts and propose coordinated\nchanges.\n\n**Useful question:** Can AI reduce the cost of changing a large system by\nfinding semantic impact rather than only textual references?\n\n**Risks:** plausible but unsupported links, stale context, missed runtime\ncoupling, and difficulty evaluating impact completeness.\n\n**Evaluation emphasis:** impact precision/recall, missed dependency severity,\nreview time, stale-link detection, and regression outcomes.\n\n**Sources:** [LLMs for Requirements Engineering: A Systematic Literature\nReview](https://arxiv.org/abs/2509.11446), [Challenges in applying LLMs to\nrequirements engineering tasks](https://doi.org/10.1017/S2053470124000088),\nand [Awesome LLM for Software Engineering](https://github.com/iSEngLab/AwesomeLLM4SE).\n\n## 8. Structured AI workflow compilation\n\n**Core idea:** represent AI work as typed, declarative modules and compile or\noptimize the workflow while keeping the surrounding system explicit.\n\n**Useful question:** Does a declarative AI workflow produce more repeatable\nand reviewable abstraction work than free-form agent sessions?\n\n**Risks:** optimizing prompts instead of domain meaning, hidden runtime model\ndependence, and benchmarks that reward local task success over system quality.\n\n**Evaluation emphasis:** repeatability, calibration, unsupported-claim rate,\nhuman review effort, provider portability, and long-term drift.\n\n**Source:** [DSPy: Compiling Declarative Language Model Calls into\nSelf-Improving Pipelines](https://arxiv.org/abs/2310.03714).\n\n## Selection rule\n\nDo not rank approaches by literature popularity or token reduction. Select a\npath for a concrete system slice, hold the task and evaluation constant, and\nreport both the aggregate score and blocking failures in semantic fidelity or\ncorrectness.\n",
+        "numLines": 161,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "161 lines from /home/joachim/projects/terseus/APPROACHES.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-de639210-10c0-5e01-99ce-fc939eeb5983",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434048222,
+    "updatedAt": 1790434048295,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/THEORY.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/THEORY.md",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/THEORY.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/THEORY.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/THEORY.md",
+        "content": "# Theory\n\n## The proposition, stated as neutrally as possible\n\nSoftware expression has repeatedly moved toward higher abstraction --\nassembly to 3GL, 3GL to 4GL/DSL -- each step trading generality for\nconcision in some bounded domain. The proposition this repo is scoped\naround: an AI system might let that process happen *continuously and\nper-project*, rather than only through hand-designed, centrally-maintained\nlanguages (SQL, Terraform's HCL, etc.). Instead of a language designer\ndeciding in advance what a domain's vocabulary should be, the AI observes\nor is given a domain's recurring patterns and helps bootstrap a smaller,\nverified vocabulary for expressing them -- gradually replacing verbose,\nrepeated 3GL syntax with concise, reusable keywords, the way Theseus's\nship is replaced plank by plank while remaining seaworthy throughout.\n\nThat's the ambition. It is not obviously achievable, and prior art in\nevery adjacent field suggests specific ways it fails. This document\ndoesn't resolve those; it names them.\n\n## Two axes that keep recurring, independent of each other\n\n**Axis 1 -- where does the model operate?**\n- *At the vocabulary/syntax layer*: the model interprets looser,\n  natural-language-adjacent input and decides what it means. This is the\n  Controlled Natural Language lineage (Basic English -> COBOL -> SBVR/ACE)\n  -- see PRIOR_ART.md. Ambiguity resolution happens *inside* the model's\n  interpretation of the request.\n- *At a bounded, pre-typed hole inside an already-formal structure*: the\n  vocabulary, types, and contracts are fixed by a human-authored schema;\n  the model only fills a narrow, verifiable gap. This is the Sketch /\n  DSPy / LMQL lineage. Ambiguity is supposed to be structurally\n  impossible by the time the model is invoked, because the hole's\n  contract is unambiguous.\n\nThese are not points on a spectrum so much as different bets about where\ncorrectness risk should live. Any concrete design has to pick, per\nlayer of the system, which one it's doing -- and stay honest about which\none it's actually doing, since it's easy to describe axis 1 systems using\naxis 2 language.\n\n**Axis 2 -- what triggers a new abstraction?**\n- *Manual curation*: a person decides \"this repeated pattern deserves a\n  keyword\" and defines it.\n- *Statistical/automatic discovery*: the system notices recurring\n  patterns across a corpus (one codebase, or many) and proposes an\n  abstraction.\n- *Reactive-only*: abstractions exist because someone already declared\n  them; the system's only job is re-verifying/re-synthesizing when the\n  declaration changes, never inventing new vocabulary on its own.\n\nNothing in prior art (surveyed below) does automatic discovery well at\nthe level of whole reusable abstractions with verified contracts --\nmost systems that generate code from a compact spec require the compact\nspec to already exist, hand-authored.\n\n## Known historical tension: compressing vocabulary has a track record, and it's mixed\n\nBasic English (1930s), COBOL's original \"English-like\" pitch, SBVR, and\nAttempto Controlled English all attempted some version of \"let a\nrestricted vocabulary carry formal meaning.\" None fully displaced formal\nsyntax for serious systems despite decades of dedicated effort -- see\nPRIOR_ART.md for specifics. Dijkstra's structural argument (EWD667) is\nworth carrying forward as a live objection rather than a historical\nfootnote: formal strictness is not friction on top of the \"real\" content\nof a program, it's what makes it possible to rule out nonsense. A\nvocabulary compressed enough to be genuinely concise risks either (a)\nsmuggling back in exactly the ambiguity formalism exists to remove, or\n(b) becoming a formal grammar wearing a human-language costume, which\ndoesn't actually reduce anything except surface appearance.\n\n## Known empirical finding (not hypothetical): verification strength is target-dependent\n\nA single, verified empirical result from `experiments/001-domainkit`:\na synthesized implementation that satisfied a Python `eval`-based\nproperty test (dynamically typed, so a boolean field could silently\nreceive a value of the wrong type and still \"pass\") was *rejected\noutright* by a Go compiler checking the identical contract, because Go's\nstatic types don't allow it. This means the strength of \"verification\"\nin any version of this idea is not fixed -- it depends on what target's\ntype discipline is checking the contract, and a system that only ever\nverifies against one, loosely-typed target may be silently accepting\nthings a second target would catch for free. This is stated here as a\nfinding to design around, not a solved problem.\n\n## The open measurement question\n\n\"Minimize total words/tokens/syntax\" is stated as the goal but has not\nbeen shown to be the right proxy for what actually matters (lower cost\nto build, understand, and maintain a system correctly). It's possible to\nreduce token count by increasing semantic density per token, which could\njust as easily *increase* the cognitive distance between an engineer and\nwhat their system does -- the opposite of a stated goal from earlier\ndiscussion of this idea (engineers should stay close to what's produced).\nThis tension is not resolved anywhere in prior art surveyed here, and is\nlisted explicitly in OPEN_QUESTIONS.md rather than assumed away.\n",
+        "numLines": 96,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "96 lines from /home/joachim/projects/terseus/THEORY.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "reasoning-184fa219-6431-5679-b772-9fbc7cb3bb4e-0",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434049532,
+    "updatedAt": 1790434049532,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "Now let me look at the experiments and research dirs to understand the current research position — what's been done, what's pending.",
+    "summary": []
+  },
+  {
+    "id": "effect-b9e46a8d-2017-5242-b062-9693d32ab081",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434049548,
+    "updatedAt": 1790434049589,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.bash",
+    "detail": {
+      "toolName": "file_system.bash",
+      "display": {
+        "summary": "bash: ls -R /home/joachim/projects/terseus/experiments /home/joachim/projects/terseus/research /home/joachim/projects/terseus/scripts | head -60; echo ---; cat /home/joachim/projects/terseus/research/README.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Running",
+        "message": "ls -R /home/joachim/projects/terseus/experiments /home/joachim/projects/terseus/research /home/joachim/projects/terseus/scripts | head -60; echo ---; cat /home/joachim/projects/terseus/research/README.md",
+        "settledVerb": "Ran",
+        "settledMessage": "ls -R /home/joachim/projects/terseus/experiments /home/joachim/projects/terseus/research /home/joachim/projects/terseus/scripts | head -60; echo ---; cat /home/joachim/projects/terseus/research/README.md",
+        "statusText": "Running command"
+      },
+      "kind": "shell",
+      "input": {
+        "command": "ls -R /home/joachim/projects/terseus/experiments /home/joachim/projects/terseus/research /home/joachim/projects/terseus/scripts | head -60; echo ---; cat /home/joachim/projects/terseus/research/README.md"
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "stdout": "/home/joachim/projects/terseus/experiments:\n001-domainkit\n002-aivcs-bootstrap\n002-aivcs-bootstrap-study\n003-refviz-bootstrap\n003-refviz-bootstrap-study\n004-headless-model-comparison\n\n/home/joachim/projects/terseus/experiments/001-domainkit:\napp.py\nBUILD_NOTES.md\ncompile_targets.py\ndomainkit\nEXPERIMENT_NOTES.md\ngo.mod\nmain.py\nproviders\nrequirements.txt\nschema.yaml\n\n/home/joachim/projects/terseus/experiments/001-domainkit/domainkit:\ncontracts.py\n__init__.py\n__pycache__\nschema.py\nsynth.py\ntargetlang.py\nverify_go_gen.py\nverify.py\n\n/home/joachim/projects/terseus/experiments/001-domainkit/domainkit/__pycache__:\ncontracts.cpython-314.pyc\n__init__.cpython-314.pyc\nschema.cpython-314.pyc\nsynth.cpython-314.pyc\ntargetlang.cpython-314.pyc\nverify.cpython-314.pyc\n\n/home/joachim/projects/terseus/experiments/001-domainkit/providers:\ngo\n__init__.py\npy_provider.py\n\n/home/joachim/projects/terseus/experiments/001-domainkit/providers/go:\nprovider.go\n\n/home/joachim/projects/terseus/experiments/002-aivcs-bootstrap:\nAGENTS.md\naivcs\naivcs.egg-info\nCLAUDE.md\nCODE_OF_CONDUCT.md\nCONTRIBUTING.md\ndocs\nLICENSE\npyproject.toml\nREADME.md\nrun_cli.py\nSECURITY.md\nSPEC_LIST.md\n---\n# Research registry\n\nThis directory is the machine-readable registry behind the static research\nsite. It is intentionally versioned in Git.\n\n## Versioning and lifecycle\n\nApproach definitions are immutable snapshots. A semantic change creates a new\n`version` record; an iteration always records the exact approach version it\ntested. Project iterations also pin the target repository commit, so results\ncan be reproduced against the same system.\n\nIteration states are:\n\n- `proposed` — scoped but not started;\n- `testing` — evidence is being collected;\n- `concluded` — reviewed evidence supports a local conclusion;\n- `collided` — this path reached a materially shared or contradictory finding;\n- `archived` — repeated evidence makes the approach unsuitable for this scope;\n- `blocked` — a concrete dependency prevents evaluation.\n\nAn approach is never deleted. Archived versions remain visible with their\nevidence and can be revived as a new version for a different scope.\n\n## Required iteration record\n\nEach record needs `project`, `approach`, `approach_version`, `scope`, `commit`,\n`state`, and `result`. Add benchmark scores only after evidence is collected.\nUse typed `relations` (`converges_with`, `contradicts`, `shares_evidence`, or\n`supersedes`) to make path interactions explicit. Research questions and\ntheir approach relationships are maintained in `OPEN_QUESTIONS.md`.\n\n## Intentions and progress\n\n`intentions.json` records what must be learned before the research can move\nfrom setup to evidence. Each intention links to the questions it is meant to\nanswer and lists the evidence required to mark it addressed.\n\n`progress.json` stores release snapshots. The score is deliberately an\narbitrary coverage indicator: weighted intention status (`open` = 0,\n`partial` = 0.5, `addressed` = 1), recalculated by\n`scripts/report_progress.py`. It measures how much of the research plan has\nevidence, not the truth or quality of the conclusions.\n",
+        "stderr": "",
+        "output": "",
+        "truncated": false
+      },
+      "outputText": "/home/joachim/projects/terseus/experiments:\n001-domainkit\n002-aivcs-bootstrap\n002-aivcs-bootstrap-study\n003-refviz-bootstrap\n003-refviz-bootstrap-study\n004-headless-model-comparison\n\n/home/joachim/projects/terseus/experiments/001-domainkit:\napp.py\nBUILD_NOTES.md\ncompile_targets.py\ndomainkit\nEXPERIMENT_NOTES.md\ngo.mod\nmain.py\nproviders\nrequirements.txt\nschema.yaml\n\n/home/joachim/projects/terseus/experiments/001-domainkit/domainkit:\ncontracts.py\n__init__.py\n__pycache__\nschema.py\nsynth.py\ntargetlang.py\nverify_go_gen.py\nverify.py\n\n/home/joachim/projects/terseus/experiments/001-domainkit/domainkit/__pycache__:\ncontracts.cpython-314.pyc\n__init__.cpython-314.pyc\nschema.cpython-314.pyc\nsynth.cpython-314.pyc\ntargetlang.cpython-314.pyc\nverify.cpython-314.pyc\n\n/home/joachim/projects/terseus/experiments/001-domainkit/providers:\ngo\n__init__.py\npy_provider.py\n\n/home/joachim/projects/terseus/experiments/001-domainkit/providers/go:\nprovider.go\n\n/home/joachim/projects/terseus/experiments/002-aivcs-bootstrap:\nAGENTS.md\naivcs\naivcs.egg-info\nCLAUDE.md\nCODE_OF_CONDUCT.md\nCONTRIBUTING.md\ndocs\nLICENSE\npyproject.toml\nREADME.md\nrun_cli.py\nSECURITY.md\nSPEC_LIST.md\n---\n# Research registry\n\nThis directory is the machine-readable registry behind the static research\nsite. It is intentionally versioned in Git.\n\n## Versioning and lifecycle\n\nApproach definitions are immutable snapshots. A semantic change creates a new\n`version` record; an iteration always records the exact approach version it\ntested. Project iterations also pin the target repository commit, so results\ncan be reproduced against the same system.\n\nIteration states are:\n\n- `proposed` — scoped but not started;\n- `testing` — evidence is being collected;\n- `concluded` — reviewed evidence supports a local conclusion;\n- `collided` — this path reached a materially shared or contradictory finding;\n- `archived` — repeated evidence makes the approach unsuitable for this scope;\n- `blocked` — a concrete dependency prevents evaluation.\n\nAn approach is never deleted. Archived versions remain visible with their\nevidence and can be revived as a new version for a different scope.\n\n## Required iteration record\n\nEach record needs `project`, `approach`, `approach_version`, `scope`, `commit`,\n`state`, and `result`. Add benchmark scores only after evidence is collected.\nUse typed `relations` (`converges_with`, `contradicts`, `shares_evidence`, or\n`supersedes`) to make path interactions explicit. Research questions and\ntheir approach relationships are maintained in `OPEN_QUESTIONS.md`.\n\n## Intentions and progress\n\n`intentions.json` records what must be learned before the research can move\nfrom setup to evidence. Each intention links to the questions it is meant to\nanswer and lists the evidence required to mark it addressed.\n\n`progress.json` stores release snapshots. The score is deliberately an\narbitrary coverage indicator: weighted intention status (`open` = 0,\n`partial` = 0.5, `addressed` = 1), recalculated by\n`scripts/report_progress.py`. It measures how much of the research plan has\nevidence, not the truth or quality of the conclusions.\n",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Ran",
+        "message": "ls -R /home/joachim/projects/terseus/experiments /home/joachim/projects/terseus/research /home/joachim/projects/terseus/scripts | head -60; echo ---; cat /home/joachim/projects/terseus/research/README.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-6e7c9859-bd59-5cce-87e4-c7ea43fbaa2b",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434049556,
+    "updatedAt": 1790434049602,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/research/progress.json",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/research/progress.json",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/research/progress.json",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/research/progress.json",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/research/progress.json",
+        "content": "{\n  \"schema_version\": 1,\n  \"method\": {\n    \"description\": \"Progress is coverage of required evidence, not a claim of scientific completion.\",\n    \"formula\": \"sum(completed intention weights) / sum(all intention weights) * 100\",\n    \"statuses\": {\"open\": 0, \"partial\": 0.5, \"addressed\": 1}\n  },\n  \"snapshots\": [\n    {\n      \"release\": \"v0.1.1\",\n      \"date\": \"2026-09-15\",\n      \"intention_status\": {\"I-01\": \"open\", \"I-02\": \"partial\", \"I-03\": \"open\", \"I-04\": \"partial\", \"I-05\": \"partial\"},\n      \"note\": \"The registry and evaluation structure exist, but no comparative project evidence has been collected.\"\n    }\n  ]\n}\n",
+        "numLines": 16,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "16 lines from /home/joachim/projects/terseus/research/progress.json",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-e71a2522-b352-5b7b-82d8-3d61b7665059",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434049563,
+    "updatedAt": 1790434049615,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/research/evidence.json",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/research/evidence.json",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/research/evidence.json",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/research/evidence.json",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/research/evidence.json",
+        "content": "{\n  \"schema_version\": 1,\n  \"records\": [\n    {\n      \"id\": \"E-001\",\n      \"iteration\": \"terseus-001\",\n      \"kind\": \"research-hypothesis\",\n      \"status\": \"unverified\",\n      \"claim\": \"A language-independent system definition may preserve essential structure across implementation choices.\",\n      \"source\": \"FOUNDATION.md\",\n      \"confidence\": \"low\"\n    },\n    {\n      \"id\": \"E-002\",\n      \"iteration\": \"ai-vcs-001\",\n      \"kind\": \"baseline-test\",\n      \"status\": \"observed\",\n      \"claim\": \"The pinned AI-VCS baseline exposes specifications, sessions, review, and test-oracle concepts that can support provenance tracking.\",\n      \"source\": \"experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md\",\n      \"confidence\": \"medium\"\n    },\n    {\n      \"id\": \"E-003\",\n      \"iteration\": \"refviz-001\",\n      \"kind\": \"baseline-test\",\n      \"status\": \"blocked\",\n      \"claim\": \"Reference analysis is a useful candidate source of system relationships, but the pinned baseline has unresolved upstream fixture and tooling failures.\",\n      \"source\": \"experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md\",\n      \"confidence\": \"medium\"\n    }\n  ]\n}\n",
+        "numLines": 32,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "32 lines from /home/joachim/projects/terseus/research/evidence.json",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "reasoning-38fb2c6a-acae-508c-9c58-e9c28c9a477f-0",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434051021,
+    "updatedAt": 1790434051021,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "There's an `004-headless-model-comparison` experiment — this prompt itself is the \"headless model comparison\" task. Let me look at that directory, plus intentions.json and iterations.json.",
+    "summary": []
+  },
+  {
+    "id": "effect-33e746ce-398f-5498-9cac-832c8abced30",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434051058,
+    "updatedAt": 1790434051104,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.bash",
+    "detail": {
+      "toolName": "file_system.bash",
+      "display": {
+        "summary": "bash: ls -R /home/joachim/projects/terseus/experiments/004-headless-model-comparison; echo ---; find /home/joachim/projects/terseus/experiments/004-headless-model-comparison -type f | head -30",
+        "content": null,
+        "suffix": "",
+        "verb": "Running",
+        "message": "ls -R /home/joachim/projects/terseus/experiments/004-headless-model-comparison; echo ---; find /home/joachim/projects/terseus/experiments/004-headless-model-comparison -type f | head -30",
+        "settledVerb": "Ran",
+        "settledMessage": "ls -R /home/joachim/projects/terseus/experiments/004-headless-model-comparison; echo ---; find /home/joachim/projects/terseus/experiments/004-headless-model-comparison -type f | head -30",
+        "statusText": "Running command"
+      },
+      "kind": "shell",
+      "input": {
+        "command": "ls -R /home/joachim/projects/terseus/experiments/004-headless-model-comparison; echo ---; find /home/joachim/projects/terseus/experiments/004-headless-model-comparison -type f | head -30"
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "stdout": "/home/joachim/projects/terseus/experiments/004-headless-model-comparison:\nartifacts\nPROMPT.md\n\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts:\ncodex-events.jsonl\ncodex-exit-status\ncodex-run-metadata.json\ncodex-stderr.log\ncodex-time.json\nvibe-exit-status\nvibe-output.json\nvibe-run-metadata.json\nvibe-stderr.log\nvibe-time.json\n---\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-exit-status\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-events.jsonl\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-run-metadata.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-exit-status\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-stderr.log\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-stderr.log\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-time.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-time.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/PROMPT.md\n",
+        "stderr": "",
+        "output": "",
+        "truncated": false
+      },
+      "outputText": "/home/joachim/projects/terseus/experiments/004-headless-model-comparison:\nartifacts\nPROMPT.md\n\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts:\ncodex-events.jsonl\ncodex-exit-status\ncodex-run-metadata.json\ncodex-stderr.log\ncodex-time.json\nvibe-exit-status\nvibe-output.json\nvibe-run-metadata.json\nvibe-stderr.log\nvibe-time.json\n---\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-exit-status\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-events.jsonl\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-run-metadata.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-exit-status\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-stderr.log\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-stderr.log\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-time.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-time.json\n/home/joachim/projects/terseus/experiments/004-headless-model-comparison/PROMPT.md\n",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Ran",
+        "message": "ls -R /home/joachim/projects/terseus/experiments/004-headless-model-comparison; echo ---; find /home/joachim/projects/terseus/experiments/004-headless-model-comparison -type f | head -30",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-ad3abe94-1924-58f8-8589-29120ff17cf0",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434051071,
+    "updatedAt": 1790434051129,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/research/intentions.json",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/research/intentions.json",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/research/intentions.json",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/research/intentions.json",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/research/intentions.json",
+        "content": "{\n  \"schema_version\": 1,\n  \"intentions\": [\n    {\n      \"id\": \"I-01\",\n      \"title\": \"Establish an evidence baseline\",\n      \"status\": \"active\",\n      \"description\": \"Run the same maintenance task with ordinary maintenance, AI without a research representation, and at least two tracked approaches.\",\n      \"answers\": [\"Q-09\", \"Q-12\", \"Q-18\"],\n      \"required_evidence\": [\"task specification\", \"baseline artifacts\", \"scores\", \"review decision\"],\n      \"weight\": 3\n    },\n    {\n      \"id\": \"I-02\",\n      \"title\": \"Define semantic fidelity\",\n      \"status\": \"active\",\n      \"description\": \"Make semantic fidelity observable enough that independent reviewers can agree or record disagreement.\",\n      \"answers\": [\"Q-10\", \"Q-15\", \"Q-17\"],\n      \"required_evidence\": [\"claim inventory\", \"review rubric\", \"independent evaluations\"],\n      \"weight\": 3\n    },\n    {\n      \"id\": \"I-03\",\n      \"title\": \"Measure change value\",\n      \"status\": \"active\",\n      \"description\": \"Test whether an abstraction improves a subsequent change rather than only explaining an existing system.\",\n      \"answers\": [\"Q-19\", \"Q-24\"],\n      \"required_evidence\": [\"before/after task\", \"impact record\", \"regression results\", \"human effort\"],\n      \"weight\": 3\n    },\n    {\n      \"id\": \"I-04\",\n      \"title\": \"Control abstraction risk\",\n      \"status\": \"active\",\n      \"description\": \"Define when an approach is useful, too costly, contradicted, or ready to archive.\",\n      \"answers\": [\"Q-14\", \"Q-20\", \"Q-21\", \"Q-26\"],\n      \"required_evidence\": [\"failure criteria\", \"repeated evaluations\", \"archival decision\"],\n      \"weight\": 2\n    },\n    {\n      \"id\": \"I-05\",\n      \"title\": \"Separate representation from AI\",\n      \"status\": \"active\",\n      \"description\": \"Determine whether observed gains come from the representation, the AI workflow, or ordinary engineering discipline.\",\n      \"answers\": [\"Q-13\", \"Q-16\", \"Q-25\"],\n      \"required_evidence\": [\"controlled variants\", \"provider/model record\", \"unsupported-claim analysis\"],\n      \"weight\": 2\n    }\n  ]\n}\n",
+        "numLines": 50,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "50 lines from /home/joachim/projects/terseus/research/intentions.json",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-afbcc695-429b-53fb-9c97-b85ab9b7d4b9",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434051085,
+    "updatedAt": 1790434051151,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/research/iterations.json",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/research/iterations.json",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/research/iterations.json",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/research/iterations.json",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/research/iterations.json",
+        "content": "{\n  \"schema_version\": 1,\n  \"iterations\": [\n    {\n      \"id\":\"terseus-001\",\"project\":\"terseus\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"high-level-system-definition\",\"approach_version\":\"1.0.0\",\"state\":\"testing\",\"scope\":\"domain concepts -> boundaries -> responsibilities -> relationships -> constraints -> observable outcomes\",\"commit\":\"ad66f93a3f660e244e1685f909142bba1d35dcd8\",\"result\":\"Research hypothesis: a system can be made easier to understand and evolve when its essential structure is defined independently of implementation language. Evidence is not yet collected.\",\"relations\":[{\"type\":\"shares_evidence\",\"target\":\"ai-vcs-001\"},{\"type\":\"shares_evidence\",\"target\":\"refviz-001\"},{\"type\":\"converges_with\",\"target\":\"refviz-002\"}]\n    },\n    {\n      \"id\":\"ai-vcs-001\",\"project\":\"ai-vcs\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"provenance-first\",\"approach_version\":\"1.0.0\",\"state\":\"testing\",\"scope\":\"spec -> session -> review -> test oracle\",\"commit\":\"5314996520a533356fe3be9141cbf3f9acc54b5a\",\"result\":\"Baseline study defined; evidence not yet collected.\",\"relations\":[{\"type\":\"shares_evidence\",\"target\":\"ai-vcs-002\"}]\n    },\n    {\n      \"id\":\"ai-vcs-002\",\"project\":\"ai-vcs\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"change-impact\",\"approach_version\":\"1.0.0\",\"state\":\"testing\",\"scope\":\"spec -> session -> review -> test oracle\",\"commit\":\"5314996520a533356fe3be9141cbf3f9acc54b5a\",\"result\":\"Baseline study defined; evidence not yet collected.\",\"relations\":[{\"type\":\"shares_evidence\",\"target\":\"ai-vcs-001\"}]\n    },\n    {\n      \"id\":\"refviz-001\",\"project\":\"refviz\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"knowledge-graph\",\"approach_version\":\"1.0.0\",\"state\":\"testing\",\"scope\":\"Go references and feature impact\",\"commit\":\"32b22ff331ce716b6a024f48d81e93d0b76f2e58\",\"result\":\"Benchmark defined; evidence not yet collected.\",\"relations\":[{\"type\":\"shares_evidence\",\"target\":\"refviz-002\"}]\n    },\n    {\n      \"id\":\"refviz-002\",\"project\":\"refviz\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"model-driven-views\",\"approach_version\":\"1.0.0\",\"state\":\"testing\",\"scope\":\"Go references and feature impact\",\"commit\":\"32b22ff331ce716b6a024f48d81e93d0b76f2e58\",\"result\":\"Benchmark defined; evidence not yet collected.\",\"relations\":[{\"type\":\"shares_evidence\",\"target\":\"refviz-001\"}]\n    },\n    {\n      \"id\":\"refviz-003\",\"project\":\"refviz\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"formal-synthesis\",\"approach_version\":\"1.0.0\",\"state\":\"proposed\",\"scope\":\"Go references and feature impact\",\"commit\":\"32b22ff331ce716b6a024f48d81e93d0b76f2e58\",\"result\":\"Candidate path; evidence not yet collected.\",\"relations\":[]\n    },\n    {\n      \"id\":\"refviz-004\",\"project\":\"refviz\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"inductive-library\",\"approach_version\":\"1.0.0\",\"state\":\"proposed\",\"scope\":\"Go references and feature impact\",\"commit\":\"32b22ff331ce716b6a024f48d81e93d0b76f2e58\",\"result\":\"Candidate path; evidence not yet collected.\",\"relations\":[]\n    },\n    {\n      \"id\":\"ai-vcs-003\",\"project\":\"ai-vcs\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"programming-by-example\",\"approach_version\":\"1.0.0\",\"state\":\"proposed\",\"scope\":\"spec -> session -> review -> test oracle\",\"commit\":\"5314996520a533356fe3be9141cbf3f9acc54b5a\",\"result\":\"Candidate path; evidence not yet collected.\",\"relations\":[]\n    },\n    {\n      \"id\":\"ai-vcs-004\",\"project\":\"ai-vcs\",\"number\":1,\"date\":\"2026-09-15\",\"approach\":\"workflow-compilation\",\"approach_version\":\"1.0.0\",\"state\":\"proposed\",\"scope\":\"spec -> session -> review -> test oracle\",\"commit\":\"5314996520a533356fe3be9141cbf3f9acc54b5a\",\"result\":\"Candidate path; evidence not yet collected.\",\"relations\":[]\n    }\n  ]\n}\n",
+        "numLines": 32,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "32 lines from /home/joachim/projects/terseus/research/iterations.json",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-6b301083-eec7-51a2-83a5-767285e40e28",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434052194,
+    "updatedAt": 1790434052217,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/experiments/004-headless-model-comparison/PROMPT.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/experiments/004-headless-model-comparison/PROMPT.md",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/experiments/004-headless-model-comparison/PROMPT.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/experiments/004-headless-model-comparison/PROMPT.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/experiments/004-headless-model-comparison/PROMPT.md",
+        "content": "# Headless model comparison prompt\n\nRead this repository without modifying any files. Treat the task as a\nPath C experiment: AI output is a proposal, not proof, and human acceptance\nis mandatory.\n\nAnalyze the repository's current research position and propose one narrowly\nscoped next experiment that tests an unresolved question. Return a structured\nreport with exactly these headings:\n\n1. `Executive summary`\n2. `Evidence reviewed` — cite repository paths and quote no more than short\n   phrases\n3. `Proposed benchmark` — hypothesis, independent/dependent variables,\n   controls, procedure, and stopping rule\n4. `Measurement plan` — define observable metrics and scoring\n5. `Risks and unsupported claims`\n6. `Reproducibility checklist`\n7. `Machine-readable appendix` — a fenced JSON object with keys\n   `hypothesis`, `open_questions`, `inputs`, `controls`, `metrics`,\n   `risks`, and `confidence`\n\nStay within 1,500 words. Do not suggest changing source files, do not use\nnetwork access, and do not claim that an experiment was run. Prefer a design\nthat can be repeated without an API key.\n",
+        "numLines": 25,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "25 lines from /home/joachim/projects/terseus/experiments/004-headless-model-comparison/PROMPT.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-e645bdc4-7985-5db8-9e73-8874a800e805",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434052205,
+    "updatedAt": 1790434052231,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.read_file",
+    "detail": {
+      "toolName": "file_system.read_file",
+      "display": {
+        "summary": "Reading /home/joachim/projects/terseus/experiments/001-domainkit/EXPERIMENT_NOTES.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Reading",
+        "message": "/home/joachim/projects/terseus/experiments/001-domainkit/EXPERIMENT_NOTES.md",
+        "settledVerb": "Read",
+        "settledMessage": "/home/joachim/projects/terseus/experiments/001-domainkit/EXPERIMENT_NOTES.md",
+        "statusText": "Reading file"
+      },
+      "kind": "file_read",
+      "input": {
+        "filePath": "/home/joachim/projects/terseus/experiments/001-domainkit/EXPERIMENT_NOTES.md",
+        "offset": null,
+        "limit": 2000
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "filePath": "/home/joachim/projects/terseus/experiments/001-domainkit/EXPERIMENT_NOTES.md",
+        "content": "# Experiment 001: domainkit (folded in from an earlier, narrower thread)\n\n## What this was actually testing\n\nA much narrower question than this repo's scope: given a schema (types,\nkeywords, contracts, per-target bindings), can an LLM's contribution be\nconfined to a bounded, verified hole -- falling back to hand-written\nproviders where they exist -- and can that stay reactive (only\nre-synthesizing when the schema's content actually changes) across more\nthan one target language?\n\n## What it found (see BUILD_NOTES.md for the full account)\n\n- Yes, within a very small contract grammar (boolean flips, single\n  field-to-field equality): synthesis + verification worked\n  independently across two targets with zero shared source between them.\n- The verification mechanism's strength depends entirely on the target's\n  own type discipline -- a Python (dynamically typed) verifier accepted\n  a contract a Go (statically typed) compiler correctly rejected. This\n  is the empirical finding cited in THEORY.md.\n- The contract language (Python `eval` on a handful of string patterns)\n  was the load-bearing simplification the whole prototype depended on,\n  and was flagged from the start as the piece least likely to survive\n  contact with a real domain.\n\n## What it did not test, and shouldn't be assumed to generalize\n\n- Automatic discovery of new keywords (Open Question #3) -- every\n  keyword here was hand-declared, never mined or proposed.\n- Any measurement of whether the resulting schema was actually more\n  concise, in any meaningful sense, than writing the target code by hand\n  (Open Question #4) -- two toy domains with two or three keywords each\n  is not evidence either way.\n- Governance or versioning of a keyword once multiple consumers depend\n  on it (Open Question #5, #8) -- there was only ever one consumer.\n- Anything beyond a boolean-flip/equality contract grammar -- real\n  invariants (a bounded numeric field, a multi-step state machine) were\n  explicitly out of scope and are exactly where Open Question #6 lives.\n\nTreat this as one calibration point on the \"bounded hole-filling,\nreactive to a declarative source\" axis (THEORY.md, Axis 1/2), not as a\nrecommended starting architecture for whatever comes next.\n",
+        "numLines": 42,
+        "startLine": 1,
+        "requestedOffset": null,
+        "requestedLimit": 2000,
+        "totalLines": null,
+        "wasTruncated": false
+      },
+      "outputText": "",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Read",
+        "message": "42 lines from /home/joachim/projects/terseus/experiments/001-domainkit/EXPERIMENT_NOTES.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "reasoning-9d78116d-9aeb-50e3-9ca1-111ee2c437b2-0",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434053284,
+    "updatedAt": 1790434053284,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "Let me quickly check the bootstrap studies and CHANGELOG to complete the picture, then write the report. Also maybe check CHANGELOG and the 002/003 study notes briefly.",
+    "summary": []
+  },
+  {
+    "id": "effect-de0ae678-b42e-5b43-8936-de0eb5e2e98e",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434053322,
+    "updatedAt": 1790434053343,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.bash",
+    "detail": {
+      "toolName": "file_system.bash",
+      "display": {
+        "summary": "bash: cat /home/joachim/projects/terseus/CHANGELOG.md; echo ===; head -80 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null; echo ===; head -80 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null",
+        "content": null,
+        "suffix": "",
+        "verb": "Running",
+        "message": "cat /home/joachim/projects/terseus/CHANGELOG.md; echo ===; head -80 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null; echo ===; head -80 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null",
+        "settledVerb": "Ran",
+        "settledMessage": "cat /home/joachim/projects/terseus/CHANGELOG.md; echo ===; head -80 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null; echo ===; head -80 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null",
+        "statusText": "Running command"
+      },
+      "kind": "shell",
+      "input": {
+        "command": "cat /home/joachim/projects/terseus/CHANGELOG.md; echo ===; head -80 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null; echo ===; head -80 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null"
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "stdout": "# Changelog\n\nAll notable changes to this scaffold are tracked here, grouped by release.\nFormat follows [Keep a Changelog](https://keepachangelog.com/), with a\nversioning scheme adapted for a reference/theory repo rather than a\nsoftware package -- see `CONTRIBUTING.md` for what bumps each number.\n\n## [Unreleased]\n\nFuture experiments and their evidence.\n\n### Audit follow-up\n- Registry validation, typed path relations, and proposed records for all\n  currently defined but untested approaches are now enforced in CI.\n- Versioned intentions and recalculable progress snapshots identify the\n  evidence needed to move the research forward.\n\n## [0.1.1] - 2026-09-15\n\nThis release completes the initial Terseus research foundation, adding\nisolated project studies, repository governance, versioned research tracking,\nsemantic registry validation, and the GitHub Pages visualization.\n\n### Added\n- Versioned research registry for approach definitions, project-specific\n  iterations, pinned repository commits, collisions, conclusions, and\n  archival state.\n- Dependency-free static visualization under `site/`, with project/state\n  filters and a GitHub Pages deployment workflow.\n\n## [0.1.0] - 2026-09-15\n\n### Added\n- `APPROACHES.md`, a web-researched map of eight independent approaches:\n  model-driven engineering, provenance, knowledge graphs, inductive library\n  learning, programming by example, formal synthesis, repository-scale\n  change impact, and structured AI workflow compilation.\n",
+        "stderr": "zsh:1: == not found\n",
+        "output": "",
+        "truncated": false
+      },
+      "outputText": "# Changelog\n\nAll notable changes to this scaffold are tracked here, grouped by release.\nFormat follows [Keep a Changelog](https://keepachangelog.com/), with a\nversioning scheme adapted for a reference/theory repo rather than a\nsoftware package -- see `CONTRIBUTING.md` for what bumps each number.\n\n## [Unreleased]\n\nFuture experiments and their evidence.\n\n### Audit follow-up\n- Registry validation, typed path relations, and proposed records for all\n  currently defined but untested approaches are now enforced in CI.\n- Versioned intentions and recalculable progress snapshots identify the\n  evidence needed to move the research forward.\n\n## [0.1.1] - 2026-09-15\n\nThis release completes the initial Terseus research foundation, adding\nisolated project studies, repository governance, versioned research tracking,\nsemantic registry validation, and the GitHub Pages visualization.\n\n### Added\n- Versioned research registry for approach definitions, project-specific\n  iterations, pinned repository commits, collisions, conclusions, and\n  archival state.\n- Dependency-free static visualization under `site/`, with project/state\n  filters and a GitHub Pages deployment workflow.\n\n## [0.1.0] - 2026-09-15\n\n### Added\n- `APPROACHES.md`, a web-researched map of eight independent approaches:\n  model-driven engineering, provenance, knowledge graphs, inductive library\n  learning, programming by example, formal synthesis, repository-scale\n  change impact, and structured AI workflow compilation.\nzsh:1: == not found\n",
+      "durationMs": 0.0,
+      "display": {
+        "success": false,
+        "verb": "Ran",
+        "message": "cat /home/joachim/projects/terseus/CHANGELOG.md; echo ===; head -80 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null; echo ===; head -80 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md 2>/dev/null",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-a50959da-118b-5287-ba0c-c7afedcdc769",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434054227,
+    "updatedAt": 1790434054262,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.bash",
+    "detail": {
+      "toolName": "file_system.bash",
+      "display": {
+        "summary": "bash: head -100 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Running",
+        "message": "head -100 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md",
+        "settledVerb": "Ran",
+        "settledMessage": "head -100 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md",
+        "statusText": "Running command"
+      },
+      "kind": "shell",
+      "input": {
+        "command": "head -100 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md"
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "stdout": "# Experiment 002: bootstrapping AI VCS\n\n## Selected system\n\nThis study uses [`ai-native-vcs`](https://github.com/JoachimTislov/ai-native-vcs)\nas a submodule at `../002-aivcs-bootstrap`. It was selected because its\nexisting concepts—specifications, sessions, contracts, review, bisection, and\ndrift—already expose the boundary between domain intent and implementation in\na large-system workflow.\n\nThe submodule is pinned independently. This study does not edit or vendor its\nsource; changes to that project must happen in its own repository.\n\n## Bootstrap objective\n\nUse the same narrow AI-VCS slice to compare three isolated approaches:\n\n- **Path A:** represent a change domain as an open record of concepts,\n  constraints, examples, decisions, and unresolved alternatives.\n- **Path B:** trace two projections of that record (a specification and a\n  review/test artifact) and measure impact after one domain change.\n- **Path C:** ask AI to propose a structured change with affected claims,\n  projections, uncertainty, and evidence, then require a human decision.\n\nThe paths are sequentially comparable but not merged. A result in one path\ndoes not validate the assumptions of another.\n\n## Proposed system slice\n\nThe slice is the existing `spec -> session -> review -> test oracle` flow.\nThe initial domain question is:\n\n> How should a session record and expose the intent, scope, evidence, and\n> unresolved ambiguity of a change without making the provider or generated\n> code the source of truth?\n\n## Evidence to collect\n\nFor each path, preserve inputs, artifacts, links, decisions, and a short\nevaluation:\n\n- reconstruction accuracy and disagreement visibility;\n- claim-to-artifact coverage and stale-link detection;\n- proposal usefulness, unsupported claims, review time, and rejected-change\n  clarity;\n- effort and impact after one meaningful requirement change.\n\nThe study does not claim that AI-VCS is correct, that one representation is\nuniversal, or that generated code is safe without independent tests.\n\n## External references\n\n- [W3C PROV overview](https://www.w3.org/TR/prov-overview/) — provenance\n  concepts for entities, activities, and agents.\n- [OMG DMN](https://www.omg.org/spec/DMN/) — portable decision models with\n  notation and executable expressions.\n- [Language Workbench](https://martinfowler.com/articles/languageWorkbench.html)\n  — domain-specific language and projection practice.\n- [Protocol Buffers](https://protobuf.dev/overview/) — schema evolution and\n  multi-language projections.\n- [DSPy](https://arxiv.org/abs/2310.03714) — declarative LM modules and\n  pipelines.\n- [Sketch](https://people.csail.mit.edu/asolar/SynthesisCourse/Sketch.pdf)\n  and [Rosette](https://plt.cs.northwestern.edu/pkg-build/doc/rosette-guide/)\n  — bounded synthesis and verification precedents.\n\nThese references influence the questions and evidence vocabulary only. They\ndo not turn any one path into the architecture under test.\n\n## Baseline status\n\nThe pinned submodule was fetched successfully. Its test command currently\nrequires the package to be installed (`ModuleNotFoundError: aivcs` when\nrunning `pytest -q` directly from the checkout); this is recorded as a\nbaseline environment issue, not changed in the submodule.\n",
+        "stderr": "",
+        "output": "",
+        "truncated": false
+      },
+      "outputText": "# Experiment 002: bootstrapping AI VCS\n\n## Selected system\n\nThis study uses [`ai-native-vcs`](https://github.com/JoachimTislov/ai-native-vcs)\nas a submodule at `../002-aivcs-bootstrap`. It was selected because its\nexisting concepts—specifications, sessions, contracts, review, bisection, and\ndrift—already expose the boundary between domain intent and implementation in\na large-system workflow.\n\nThe submodule is pinned independently. This study does not edit or vendor its\nsource; changes to that project must happen in its own repository.\n\n## Bootstrap objective\n\nUse the same narrow AI-VCS slice to compare three isolated approaches:\n\n- **Path A:** represent a change domain as an open record of concepts,\n  constraints, examples, decisions, and unresolved alternatives.\n- **Path B:** trace two projections of that record (a specification and a\n  review/test artifact) and measure impact after one domain change.\n- **Path C:** ask AI to propose a structured change with affected claims,\n  projections, uncertainty, and evidence, then require a human decision.\n\nThe paths are sequentially comparable but not merged. A result in one path\ndoes not validate the assumptions of another.\n\n## Proposed system slice\n\nThe slice is the existing `spec -> session -> review -> test oracle` flow.\nThe initial domain question is:\n\n> How should a session record and expose the intent, scope, evidence, and\n> unresolved ambiguity of a change without making the provider or generated\n> code the source of truth?\n\n## Evidence to collect\n\nFor each path, preserve inputs, artifacts, links, decisions, and a short\nevaluation:\n\n- reconstruction accuracy and disagreement visibility;\n- claim-to-artifact coverage and stale-link detection;\n- proposal usefulness, unsupported claims, review time, and rejected-change\n  clarity;\n- effort and impact after one meaningful requirement change.\n\nThe study does not claim that AI-VCS is correct, that one representation is\nuniversal, or that generated code is safe without independent tests.\n\n## External references\n\n- [W3C PROV overview](https://www.w3.org/TR/prov-overview/) — provenance\n  concepts for entities, activities, and agents.\n- [OMG DMN](https://www.omg.org/spec/DMN/) — portable decision models with\n  notation and executable expressions.\n- [Language Workbench](https://martinfowler.com/articles/languageWorkbench.html)\n  — domain-specific language and projection practice.\n- [Protocol Buffers](https://protobuf.dev/overview/) — schema evolution and\n  multi-language projections.\n- [DSPy](https://arxiv.org/abs/2310.03714) — declarative LM modules and\n  pipelines.\n- [Sketch](https://people.csail.mit.edu/asolar/SynthesisCourse/Sketch.pdf)\n  and [Rosette](https://plt.cs.northwestern.edu/pkg-build/doc/rosette-guide/)\n  — bounded synthesis and verification precedents.\n\nThese references influence the questions and evidence vocabulary only. They\ndo not turn any one path into the architecture under test.\n\n## Baseline status\n\nThe pinned submodule was fetched successfully. Its test command currently\nrequires the package to be installed (`ModuleNotFoundError: aivcs` when\nrunning `pytest -q` directly from the checkout); this is recorded as a\nbaseline environment issue, not changed in the submodule.\n",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Ran",
+        "message": "head -100 /home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "effect-b12bb153-4bcf-5f46-96ed-5878e287af1e",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434054247,
+    "updatedAt": 1790434054281,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.bash",
+    "detail": {
+      "toolName": "file_system.bash",
+      "display": {
+        "summary": "bash: head -100 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md",
+        "content": null,
+        "suffix": "",
+        "verb": "Running",
+        "message": "head -100 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md",
+        "settledVerb": "Ran",
+        "settledMessage": "head -100 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md",
+        "statusText": "Running command"
+      },
+      "kind": "shell",
+      "input": {
+        "command": "head -100 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md"
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "stdout": "# Experiment 003: bootstrapping RefViz\n\n## Selected system\n\nThis study uses [`RefViz`](https://github.com/JoachimTislov/RefViz) as a\npinned submodule at `../003-refviz-bootstrap`. RefViz is complementary to\nAI-VCS: it exposes code structure and references, making it suitable for\ntesting whether domain representations improve understanding and change\nimpact in an existing Go system.\n\nThe submodule is independently versioned. This study does not edit its source.\n\n## Common benchmark\n\nApply the same maintenance task to each isolated path: identify the affected\nconcepts and references for one small RefViz feature, propose a change, and\napply one follow-up requirement change. Use the same repository snapshot,\ntask statement, time budget, and evaluator instructions.\n\nScore each criterion from 0 to 4:\n\n| Criterion | 0 | 2 | 4 |\n|---|---|---|---|\n| Semantic fidelity | misses core meaning | captures main intent with gaps | preserves intent, constraints, and alternatives |\n| Flexibility | hard-coded to one case | handles expected variation | supports novel requirements without redesign |\n| Change resilience | widespread unexplained breakage | impact is partly identified | precise impact and controlled update |\n| Correctness | invalid or unverified output | tests pass but gaps remain | independent checks cover stated invariants |\n| Maintainability | increases hidden coupling | understandable with effort | reduces cognitive and change burden |\n| Traceability | no claim/evidence links | partial links | every material output is explainable |\n| Reviewability | opaque or excessive review | review is feasible | decisions and uncertainty are immediately clear |\n| Reproducibility | cannot repeat result | repeatable with setup | deterministic artifacts and recorded inputs |\n\nReport the total out of 32, each dimension separately, elapsed human review\ntime, edits after the initial proposal, and unsupported claims. A high total\ndoes not override a zero in correctness or semantic fidelity; report those as\nblocking failures.\n\n## Isolated paths\n\n- **Path A:** an open domain record of RefViz concepts, references,\n  constraints, examples, and unresolved alternatives; no AI proposal and no\n  code generation.\n- **Path B:** two traceable projections from the fixed record: a change-impact\n  map and a maintenance specification; no AI proposal generation.\n- **Path C:** an AI-generated structured change proposal with affected claims,\n  expected references, uncertainty, and validation plan; human acceptance is\n  mandatory.\n\nStore each path's inputs, outputs, score sheet, rejected proposals, and\nconclusion in its own directory. Do not combine conclusions until all paths\nuse the same benchmark and independent review.\n\n## External references\n\n- [RefViz](https://github.com/JoachimTislov/RefViz) — selected system and\n  reference-graph context.\n- [W3C PROV](https://www.w3.org/TR/prov-overview/) — provenance vocabulary.\n- [OMG DMN](https://www.omg.org/spec/DMN/) — portable decision\n  representations.\n- [Language Workbench](https://martinfowler.com/articles/languageWorkbench.html)\n  — domain-language and projection practice.\n- [Protocol Buffers](https://protobuf.dev/overview/) — evolution and\n  multi-language projection precedent.\n- [DSPy](https://arxiv.org/abs/2310.03714) — declarative AI pipeline\n  precedent.\n- [Sketch](https://people.csail.mit.edu/asolar/SynthesisCourse/Sketch.pdf)\n  and [Rosette](https://plt.cs.northwestern.edu/pkg-build/doc/rosette-guide/)\n  — bounded synthesis and verification precedents.\n\nThese sources inform the benchmark vocabulary and separations; none defines\nthe result in advance.\n",
+        "stderr": "",
+        "output": "",
+        "truncated": false
+      },
+      "outputText": "# Experiment 003: bootstrapping RefViz\n\n## Selected system\n\nThis study uses [`RefViz`](https://github.com/JoachimTislov/RefViz) as a\npinned submodule at `../003-refviz-bootstrap`. RefViz is complementary to\nAI-VCS: it exposes code structure and references, making it suitable for\ntesting whether domain representations improve understanding and change\nimpact in an existing Go system.\n\nThe submodule is independently versioned. This study does not edit its source.\n\n## Common benchmark\n\nApply the same maintenance task to each isolated path: identify the affected\nconcepts and references for one small RefViz feature, propose a change, and\napply one follow-up requirement change. Use the same repository snapshot,\ntask statement, time budget, and evaluator instructions.\n\nScore each criterion from 0 to 4:\n\n| Criterion | 0 | 2 | 4 |\n|---|---|---|---|\n| Semantic fidelity | misses core meaning | captures main intent with gaps | preserves intent, constraints, and alternatives |\n| Flexibility | hard-coded to one case | handles expected variation | supports novel requirements without redesign |\n| Change resilience | widespread unexplained breakage | impact is partly identified | precise impact and controlled update |\n| Correctness | invalid or unverified output | tests pass but gaps remain | independent checks cover stated invariants |\n| Maintainability | increases hidden coupling | understandable with effort | reduces cognitive and change burden |\n| Traceability | no claim/evidence links | partial links | every material output is explainable |\n| Reviewability | opaque or excessive review | review is feasible | decisions and uncertainty are immediately clear |\n| Reproducibility | cannot repeat result | repeatable with setup | deterministic artifacts and recorded inputs |\n\nReport the total out of 32, each dimension separately, elapsed human review\ntime, edits after the initial proposal, and unsupported claims. A high total\ndoes not override a zero in correctness or semantic fidelity; report those as\nblocking failures.\n\n## Isolated paths\n\n- **Path A:** an open domain record of RefViz concepts, references,\n  constraints, examples, and unresolved alternatives; no AI proposal and no\n  code generation.\n- **Path B:** two traceable projections from the fixed record: a change-impact\n  map and a maintenance specification; no AI proposal generation.\n- **Path C:** an AI-generated structured change proposal with affected claims,\n  expected references, uncertainty, and validation plan; human acceptance is\n  mandatory.\n\nStore each path's inputs, outputs, score sheet, rejected proposals, and\nconclusion in its own directory. Do not combine conclusions until all paths\nuse the same benchmark and independent review.\n\n## External references\n\n- [RefViz](https://github.com/JoachimTislov/RefViz) — selected system and\n  reference-graph context.\n- [W3C PROV](https://www.w3.org/TR/prov-overview/) — provenance vocabulary.\n- [OMG DMN](https://www.omg.org/spec/DMN/) — portable decision\n  representations.\n- [Language Workbench](https://martinfowler.com/articles/languageWorkbench.html)\n  — domain-language and projection practice.\n- [Protocol Buffers](https://protobuf.dev/overview/) — evolution and\n  multi-language projection precedent.\n- [DSPy](https://arxiv.org/abs/2310.03714) — declarative AI pipeline\n  precedent.\n- [Sketch](https://people.csail.mit.edu/asolar/SynthesisCourse/Sketch.pdf)\n  and [Rosette](https://plt.cs.northwestern.edu/pkg-build/doc/rosette-guide/)\n  — bounded synthesis and verification precedents.\n\nThese sources inform the benchmark vocabulary and separations; none defines\nthe result in advance.\n",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Ran",
+        "message": "head -100 /home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "reasoning-dc791a52-ca71-574a-8be6-c4fc2b5cca63-0",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434060319,
+    "updatedAt": 1790434060319,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "I have a good picture now. Let me also quickly check the 001-domainkit BUILD_NOTES briefly? I've already read the key finding in THEORY.md and EXPERIMENT_NOTES.md. That's enough.\n\nCurrent research position:\n- v0.1.1 scaffold complete: foundation, paths, approaches, prior art, open questions, versioned research registry (intentions, iterations, evidence, progress), two pinned bootstrap studies, one old prototype (001-domainkit), and a headless model comparison (004) in flight.\n- progress.json: \"no comparative project evidence has been collected\" — all iterations are in \"testing\"/\"proposed\" with no evidence. Evidence records: E-001 unverified hypothesis, E-002 observed baseline (aivcs), E-003 blocked (refviz has unresolved upstream fixture/tooling failures).\n- Intentions: I-01 evidence baseline (open, weight 3), I-02 semantic fidelity (partial), I-03 change value (open), I-04 abstraction risk (partial), I-05 separate representation from AI (partial).\n\nPath C experiment: AI as bounded change proposer, smallest useful study defined in PATHS.md. Evidence metrics: useful proposal rate, unsupported-claim rate, review time, change-resilience, rejected proposal understandability.\n\nUnresolved question I should propose a narrowly scoped next experiment for. The prompt says \"Treat the task as a Path C experiment.\" Interesting — the task itself is framed as a Path C instance: AI proposes, human accepts. But the requested deliverable is a proposal for a next experiment.\n\nGood candidates:\n- Q-16 AI assumption control / unsupported-claim rate: What prevents AI assumptions from becoming authoritative? This is measurable without an API key if we seed an AI proposal with deliberately unsupported claims and measure human detection. But \"without an API key\" — the design should be repeatable without an API key. That suggests using pre-recorded AI proposals (the artifacts of 004 headless model comparison include vibe-output.json and codex events!) as fixed inputs, so the benchmark can measure human review, not AI generation.\n\nActually this is a nice design: The 004 experiment artifacts contain two AI-generated outputs (vibe and codex responses to this same prompt). These are recorded, so a follow-up benchmark can use them as static inputs — no API key needed.\n\nProposal: \"Unsupported-claim detection benchmark\" — take fixed AI proposals (from 004 artifacts and 001-domainkit outputs), build a ground-truth claim inventory by human audit of the repo, measure whether reviewers using a provenance/traceability rubric can detect unsupported claims, vs. reviewers without the rubric. That tests Q-16 (AI assumption control) and I-02 (semantic fidelity observability) and feeds I-01's unsupported-claim analysis.\n\nAlternative: I-01 evidence baseline — run the same maintenance task with ordinary maintenance vs AI without representation. But that needs the refviz/aivcs repos (submodules pinned, network off... submodule is already fetched? .gitmodules exist; 002-aivcs-bootstrap directory exists with files). Running experiments though — the prompt says propose, not run. The proposal must be repeatable without an API key.\n\nLet me design: \"Experiment 005: unsupported-claim audit of recorded AI proposals\" (a Path C study). \n\nHypothesis: With a claim-inventory + provenance rubric, human reviewers can reliably identify unsupported claims in recorded AI proposals, and detection rate differs from unguided review — i.e., traceability structure reduces unsupported-claim acceptance (Q-16, I-02, I-05).\n\nVariables:\n- Independent: review condition — (a) raw proposal text only; (b) proposal + claim inventory with evidence-linking rubric. Possibly (c) proposal + rubric without inventory, but keep narrow: two conditions.\n- Dependent: unsupported-claim detection rate (true positives per ground-truth unsupported claim), false accusation rate (flagging supported claims), review time, inter-rater agreement (Fleiss' kappa).\n\nControls:\n- Same fixed AI proposal artifacts (004's vibe-output.json, codex-events.jsonl, and the 001-domainkit build outputs) for all reviewers; same time budget; randomized claim order; ground truth built by two independent auditors before the review rounds, disagreements resolved by a third; reviewers blinded to condition... \n\nWait, but can the ground truth be established? An \"unsupported claim\" = a statement in the AI output that has no verifiable basis in repository files. Human auditors can enumerate claims and classify each as supported (with citation) or unsupported. That's doable without API.\n\nProcedure:\n1. Extract atomic factual claims from the recorded AI outputs (claim segmentation).\n2. Two auditors independently classify each claim as supported (cite path:line) or unsupported/unverifiable; adjudicate disagreements.\n3. Recruit N reviewers (or same reviewers in counterbalanced order), assign each claim set under one condition.\n4. Reviewers mark claims as supported/unsupported and give evidence citations where possible; measure review time.\n5. Score against ground truth.\n\nStopping rule: stop after the preregistered claim set is fully adjudicated and each condition has at least, say, 5 independent reviews of each claim; stop early if ground-truth adjudication cannot reach agreement (kappa < 0.4) — declare the benchmark not ready.\n\nMetrics: detection recall, false-flag rate, precision, review time, inter-rater reliability, and unsupported-claim rate of the proposals themselves (which is an input metric).\n\nThis is nicely no-API-key: inputs are the recorded 004 artifacts. It also gives the repo its first I-02 evidence (\"claim inventory, review rubric, independent evaluations\") — exactly required_evidence for I-02.\n\nRisks: small sample, single prompt/domain, ground truth subjectivity, reviewers may have context (the AI outputs describe this repo, so reviewers who know the repo might have advantages — actually that's fine, they audit against the repo). Circularity: this report itself is one of the artifacts to be audited. Also 004 artifacts contain model outputs whose quality is not established; the benchmark measures review, not the model.\n\nWord budget: 1500 words. Need headings exactly: Executive summary, Evidence reviewed, Proposed benchmark, Measurement plan, Risks and unsupported claims, Reproducibility checklist, Machine-readable appendix.\n\nCite paths, quote short phrases only.\n\nLet me check the 004 artifacts quickly to confirm content (vibe-output.json presumably contains a prior model's answer to this same prompt).",
+    "summary": []
+  },
+  {
+    "id": "effect-5478fe1b-1ba3-5920-9e2e-0375811d24a2",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434060346,
+    "updatedAt": 1790434060363,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "effect",
+    "title": "file_system.bash",
+    "detail": {
+      "toolName": "file_system.bash",
+      "display": {
+        "summary": "bash: wc -c /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/*; head -c 600 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json; echo; cat /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json",
+        "content": null,
+        "suffix": "",
+        "verb": "Running",
+        "message": "wc -c /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/*; head -c 600 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json; echo; cat /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json",
+        "settledVerb": "Ran",
+        "settledMessage": "wc -c /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/*; head -c 600 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json; echo; cat /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json",
+        "statusText": "Running command"
+      },
+      "kind": "shell",
+      "input": {
+        "command": "wc -c /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/*; head -c 600 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json; echo; cat /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json"
+      }
+    },
+    "state": {
+      "status": "completed",
+      "output": {
+        "stdout": "  0 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-events.jsonl\n  2 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-exit-status\n211 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-run-metadata.json\n203 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-stderr.log\n100 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-time.json\n  2 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-exit-status\n  0 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json\n235 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json\n  0 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-stderr.log\n100 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-time.json\n853 total\n\n{\"runner\":\"vibe\",\"started_at\":\"2026-09-26T16:46:53+02:00\",\"cli_version\":\"vibe 2.25.4\",\"configured_model\":\"not exposed by CLI metadata\",\"output\":\"json\",\"max_turns\":8,\"approval\":\"auto-approve\",\"workdir\":\"/home/joachim/projects/terseus\"}\n",
+        "stderr": "",
+        "output": "",
+        "truncated": false
+      },
+      "outputText": "  0 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-events.jsonl\n  2 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-exit-status\n211 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-run-metadata.json\n203 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-stderr.log\n100 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/codex-time.json\n  2 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-exit-status\n  0 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json\n235 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json\n  0 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-stderr.log\n100 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-time.json\n853 total\n\n{\"runner\":\"vibe\",\"started_at\":\"2026-09-26T16:46:53+02:00\",\"cli_version\":\"vibe 2.25.4\",\"configured_model\":\"not exposed by CLI metadata\",\"output\":\"json\",\"max_turns\":8,\"approval\":\"auto-approve\",\"workdir\":\"/home/joachim/projects/terseus\"}\n",
+      "durationMs": 0.0,
+      "display": {
+        "success": true,
+        "verb": "Ran",
+        "message": "wc -c /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/*; head -c 600 /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-output.json; echo; cat /home/joachim/projects/terseus/experiments/004-headless-model-comparison/artifacts/vibe-run-metadata.json",
+        "warnings": [],
+        "approvalNote": null,
+        "suffix": ""
+      }
+    }
+  },
+  {
+    "id": "reasoning-8b0f8c1e-90c2-57ed-8d56-bfc684d1d4c9-0",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434076197,
+    "updatedAt": 1790434076197,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "reasoning",
+    "text": "The artifacts are empty (this run is presumably being recorded into vibe-output.json). So I can't rely on the contents of those artifacts as existing inputs — they're the output slot for this run. I should still design the benchmark to use recorded AI proposal artifacts like these, but note that the corpus is currently empty/blocked and the design should treat whatever is recorded (this report included) as the fixed input corpus. Actually — this report itself will become an artifact. That's a nice self-referential angle: the benchmark audits recorded AI proposals about this repository, and this report is candidate input #1. But I must not claim any experiment was run.\n\nNote E-003: refviz blocked with upstream fixture failures. Codex exit status — check? Not important.\n\nI have enough. Now write the report, within 1500 words, with the exact headings. I'll produce it as the response. Count words carefully — target ~1100-1400.\n\nStructure:\n\n1. Executive summary (~120 words)\n2. Evidence reviewed (~250 words with citations)\n3. Proposed benchmark (~400 words: hypothesis, IV/DV, controls, procedure, stopping rule)\n4. Measurement plan (~250 words)\n5. Risks and unsupported claims (~150 words)\n6. Reproducibility checklist (~120 words)\n7. Machine-readable appendix (JSON)\n\nName: \"005-proposal-audit\" — \"unsupported-claim audit of recorded AI proposals.\"\n\nKey citations:\n- research/progress.json: \"no comparative project evidence has been collected\"\n- FOUNDATION.md: \"AI output is a proposal, not proof\"\n- PATHS.md Path C: \"useful proposal rate, unsupported-claim rate, review time\"\n- research/intentions.json I-02 required evidence: \"claim inventory, review rubric, independent evaluations\"\n- OPEN_QUESTIONS.md Q-16: \"What prevents AI assumptions from becoming authoritative domain knowledge?\"\n- THEORY.md: verification target-dependent finding\n- experiments/001-domainkit/EXPERIMENT_NOTES.md\n- research/evidence.json E-003 \"blocked\"\n\nDesign decision: the benchmark's input corpus = recorded model-comparison outputs in experiments/004-headless-model-comparison/artifacts/ (currently empty files — say they are the recording slot; treat this report as a candidate artifact once accepted). Since no API key: inputs are static recorded files, review is by humans, scoring is scripted (can run offline with scripts/report_progress-style tooling — but don't suggest changing source files; the scoring could be a scratchpad spreadsheet or existing scripts). Fine.\n\nLet me write it.",
+    "summary": []
+  },
+  {
+    "id": "assistant-8b0f8c1e-90c2-57ed-8d56-bfc684d1d4c9",
+    "sessionId": "bdf536f9-c6f1-e520-6324-9f33524025cb",
+    "turnId": "turn-6732b92c339841471e6c369fb9e10fef",
+    "createdAt": 1790434076197,
+    "updatedAt": 1790434076197,
+    "generationStatus": "completed",
+    "relatedEntryId": null,
+    "type": "message",
+    "role": "assistant",
+    "content": [
+      {
+        "type": "text",
+        "text": "I have a complete picture of the repository. Here is the report.\n\n---\n\n# 1. Executive summary\n\nTerseus is at v0.1.1: the scaffold, registry, and pinned baseline studies exist, but `research/progress.json` records that \"no comparative project evidence has been collected.\" Every iteration in `research/iterations.json` sits at `testing` or `proposed` with no scores. The highest-weight open intention is I-02 (semantic fidelity), whose required evidence is a \"claim inventory,\" a \"review rubric,\" and \"independent evaluations\" — none of which exist yet.\n\nI propose one narrowly scoped, API-key-free experiment: an **unsupported-claim audit of recorded AI proposals**. It treats the outputs of `experiments/004-headless-model-comparison` (static recorded files) as a fixed corpus, builds a ground-truth claim inventory against the repository itself, and measures whether human reviewers can reliably separate supported from unsupported claims with and without a provenance rubric. It tests Q-16 (AI assumption control), produces exactly the evidence I-02 requires, and depends on no model access at review time.\n\n# 2. Evidence reviewed\n\n- `FOUNDATION.md` — the experiment contract: \"AI output is a proposal, not proof,\" and the core path must \"run without an API key.\"\n- `PATHS.md`, Path C — the smallest useful study requires a \"structured proposal\" with \"affected claims, proposed edits, projected artifacts, uncertainty, and evidence,\" scored on \"useful proposal rate, unsupported-claim rate, review time.\"\n- `OPEN_QUESTIONS.md` — Q-16: \"What prevents AI assumptions from becoming authoritative domain knowledge?\" Q-12: the \"smallest domain claim that can test the approach.\"\n- `research/intentions.json` — I-02 requires \"claim inventory,\" \"review rubric,\" \"independent evaluations\"; I-05 requires \"unsupported-claim analysis.\"\n- `research/progress.json` — v0.1.1 snapshot: I-02 is `partial`; note states \"no comparative project evidence has been collected.\"\n- `research/evidence.json` — E-001 is an \"unverified\" hypothesis; E-003 is \"blocked\" on refviz tooling, so refviz-dependent benchmarks carry an unresolved dependency.\n- `research/iterations.json` — all nine iterations have result strings of the form \"evidence not yet collected.\"\n- `THEORY.md` — the one verified finding, that verification \"depends on what target's type discipline is checking the contract\" (from 001-domainkit).\n- `experiments/001-domainkit/EXPERIMENT_NOTES.md` — explicitly lists what must not be generalized, including \"Automatic discovery of new keywords.\"\n- `experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md` — defines the 0–4 scoring rubric and the rule that \"A high total does not override a zero in correctness.\"\n- `experiments/004-headless-model-comparison/PROMPT.md` and `artifacts/` — the recording slot for headless model outputs; the capture files are currently empty, so this run's output is the first candidate corpus item.\n\n# 3. Proposed benchmark\n\n**Name:** `005-proposal-audit` (Path C study; human acceptance mandatory).\n\n**Hypothesis:** Given a claim inventory and an evidence-citation rubric, independent human reviewers can identify unsupported claims in recorded AI proposals about this repository at a materially higher true-positive rate, with no increase in false accusations, than reviewers given the proposals alone. The companion hypothesis (weaker): reviewers will disagree measurably, and that disagreement is itself reportable evidence for I-02.\n\n**Independent variable:** Review condition — (A) raw proposal text only; (B) the same text plus a pre-built claim inventory sheet and a citation rubric. One binary factor.\n\n**Dependent variables:** unsupported-claim detection rate, false-flag rate, per-claim review time, inter-rater agreement.\n\n**Inputs (fixed, no API key):** the recorded model-comparison outputs under `experiments/004-headless-model-comparison/artifacts/` — including this report, once captured — plus, if more corpus mass is needed, the recorded 001-domainkit build outputs. All inputs are static files already produced by prior runs; the benchmark consumes them read-only.\n\n**Controls:**\n\n- Ground truth is built *before* any review round: two auditors independently segment each proposal into atomic claims and classify each as supported (citable to a repository path), unsupported, or unverifiable; a third auditor adjudicates disagreements.\n- Reviewers are randomized to conditions; claim order is shuffled; same time budget per claim; reviewers may consult the repository but not the auditors' inventory (condition B reviewers get the inventory, condition A reviewers do not — the inventory *is* the manipulation).\n- The same reviewer never audits the same claim in both conditions; a counterbalanced within-subject variant is a pre-registered optional extension, not the core design.\n- Scoring is against the frozen adjudicated inventory, not against reviewer opinion.\n\n**Procedure:**\n\n1. Freeze the corpus (accept the recorded artifacts via the mandatory human decision step).\n2. Claim segmentation and dual-audit against the repository; adjudicate; freeze the inventory with a per-claim ground-truth label and citation.\n3. Recruit reviewers (minimum 3 per condition; any person who did not build the inventory qualifies).\n4. Each reviewer labels every claim in their condition as supported/unsupported and provides a citation when asserting support; elapsed time is recorded per claim.\n5. Score against ground truth; compute the metrics in section 4.\n6. A human accepts, edits, or rejects the resulting conclusion before anything is added to `research/evidence.json`.\n\n**Stopping rule:** Stop when (a) every claim in the frozen corpus has been adjudicated and reviewed under both conditions by at least 3 independent reviewers each, or (b) the audit stage fails early: if the two auditors cannot reach adjudicated agreement with kappa ≥ 0.4 on a pilot of the first 20 claims, stop and report that semantic fidelity is not yet observable enough to benchmark — that negative result is itself a valid I-02 finding. Do not add corpus items after the first review round begins.\n\n# 4. Measurement plan\n\n**Metrics (all observable from files and timestamps, no network):**\n\n- `detection_recall` = adjudicated-unsupported claims correctly flagged / total adjudicated-unsupported claims, per condition.\n- `false_flag_rate` = supported claims flagged as unsupported / total adjudicated-supported claims.\n- `citation_validity` = flags of \"supported\" whose citation actually resolves to the claimed content / all \"supported\" flags (checked mechanically against the frozen commit).\n- `review_seconds_per_claim`, mean and per reviewer.\n- `fleiss_kappa` inter-rater agreement per condition.\n- `unsupported_claim_rate` of each audited proposal (corpus-level input metric, per PATHS.md's Path C evidence list).\n\n**Scoring:** Per condition, report recall, false-flag rate, and time with simple nonparametric comparisons (the design is deliberately small; report medians and ranges, not significance theater). The headline number is detection recall in condition B versus A. A blocking failure applies per the 003 rubric's rule: if citation_validity in condition B falls below 0.5, the rubric is failing and the headline number is not interpretable — report the blocking failure separately regardless of total score.\n\n**What a result would mean:** higher recall in B supports the claim that traceability structure helps humans catch AI assumptions (Q-16). It does *not* establish anything about representation quality, model capability, or Path A/B claims — `PATHS.md`'s isolation rule applies.\n\n# 5. Risks and unsupported claims\n\n- **Ground-truth subjectivity.** \"Supported\" depends on auditor judgment; kappa gating and a third adjudicator mitigate but do not remove this. The inventory is a human artifact, not ground truth in a formal sense.\n- **Tiny corpus.** One recorded prompt lineage about one repository; results are a calibration point, not generalization, exactly as 001-domainkit's notes warn.\n- **Circularity.** This report is itself a candidate corpus item, produced by an AI under audit. The auditors must treat it with the same skepticism as any other artifact; no self-assessment in this report counts as evidence.\n- **Reviewer leakage.** Reviewers familiar with Terseus may recognize claims from the source docs; randomization and per-claim citation checks reduce but do not eliminate this confound.\n- **Not tested:** model quality, whether the rubric generalizes to other domains, Path A/B claims, and anything about automatic abstraction discovery (OPEN_QUESTIONS Q-03, explicitly untested by 001-domainkit).\n- No experiment has been run for this proposal; all numbers above are design targets, not observations.\n\n# 6. Reproducibility checklist\n\n- Corpus: exact file list, byte counts, and the repository commit under audit recorded in the iteration entry.\n- Frozen inventory: per-claim ID, verbatim quote, label, citation, adjudicator identity, stored as a versioned JSON file (additive only, following the registry's immutability rule).\n- Rubric text: one page, included verbatim in the experiment directory.\n- Reviewer artifacts: raw per-claim labels, timestamps, and condition assignment, retained even for rejected reviewers.\n- Scoring: computed by a deterministic script with recorded inputs; any manual re-scoring documented.\n- Human decision: accept/edit/reject recorded per the experiment contract.\n- No API key required at any stage; re-running requires only the frozen files and new reviewers.\n\n# 7. Machine-readable appendix\n\n```json\n{\n  \"hypothesis\": \"A claim inventory plus citation rubric raises human detection of unsupported claims in recorded AI proposals, without raising false accusations, relative to reviewing the proposals alone.\",\n  \"open_questions\": [\"Q-16\", \"Q-12\", \"Q-15\"],\n  \"inputs\": [\n    \"experiments/004-headless-model-comparison/artifacts/ (frozen recorded outputs)\",\n    \"repository at pinned commit (claim-audit target)\",\n    \"experiments/001-domainkit build records (optional corpus extension)\"\n  ],\n  \"controls\": [\n    \"pre-review dual-audit ground truth with third-party adjudication\",\n    \"randomized condition assignment, shuffled claim order\",\n    \"same reviewer never audits one claim in both conditions\",\n    \"frozen corpus after first review round\",\n    \"no reviewer is also an inventory auditor\"\n  ],\n  \"metrics\": [\n    \"detection_recall\",\n    \"false_flag_rate\",\n    \"citation_validity\",\n    \"review_seconds_per_claim\",\n    \"fleiss_kappa\",\n    \"unsupported_claim_rate_per_proposal\"\n  ],\n  \"risks\": [\n    \"auditor subjectivity in ground truth\",\n    \"single-domain tiny corpus; calibration point only\",\n    \"reviewer familiarity leakage\",\n    \"circularity: this proposal is a candidate corpus item\",\n    \"blocking failure if citation_validity < 0.5\"\n  ],\n  \"confidence\": \"low — design only; no experiment has been run and no evidence has been collected\"\n}\n```\n\nNo files were modified and no network access was used."
+      }
+    ],
+    "source": "harness",
+    "userDisplayContent": null
+  }
+]

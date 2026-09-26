@@ -1,0 +1,126 @@
+I have a complete picture of the repository. Here is the report.
+
+---
+
+# 1. Executive summary
+
+Terseus is at v0.1.1: the scaffold, registry, and pinned baseline studies exist, but `research/progress.json` records that "no comparative project evidence has been collected." Every iteration in `research/iterations.json` sits at `testing` or `proposed` with no scores. The highest-weight open intention is I-02 (semantic fidelity), whose required evidence is a "claim inventory," a "review rubric," and "independent evaluations" — none of which exist yet.
+
+I propose one narrowly scoped, API-key-free experiment: an **unsupported-claim audit of recorded AI proposals**. It treats the outputs of `experiments/004-headless-model-comparison` (static recorded files) as a fixed corpus, builds a ground-truth claim inventory against the repository itself, and measures whether human reviewers can reliably separate supported from unsupported claims with and without a provenance rubric. It tests Q-16 (AI assumption control), produces exactly the evidence I-02 requires, and depends on no model access at review time.
+
+# 2. Evidence reviewed
+
+- `FOUNDATION.md` — the experiment contract: "AI output is a proposal, not proof," and the core path must "run without an API key."
+- `PATHS.md`, Path C — the smallest useful study requires a "structured proposal" with "affected claims, proposed edits, projected artifacts, uncertainty, and evidence," scored on "useful proposal rate, unsupported-claim rate, review time."
+- `OPEN_QUESTIONS.md` — Q-16: "What prevents AI assumptions from becoming authoritative domain knowledge?" Q-12: the "smallest domain claim that can test the approach."
+- `research/intentions.json` — I-02 requires "claim inventory," "review rubric," "independent evaluations"; I-05 requires "unsupported-claim analysis."
+- `research/progress.json` — v0.1.1 snapshot: I-02 is `partial`; note states "no comparative project evidence has been collected."
+- `research/evidence.json` — E-001 is an "unverified" hypothesis; E-003 is "blocked" on refviz tooling, so refviz-dependent benchmarks carry an unresolved dependency.
+- `research/iterations.json` — all nine iterations have result strings of the form "evidence not yet collected."
+- `THEORY.md` — the one verified finding, that verification "depends on what target's type discipline is checking the contract" (from 001-domainkit).
+- `experiments/001-domainkit/EXPERIMENT_NOTES.md` — explicitly lists what must not be generalized, including "Automatic discovery of new keywords."
+- `experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md` — defines the 0–4 scoring rubric and the rule that "A high total does not override a zero in correctness."
+- `experiments/004-headless-model-comparison/PROMPT.md` and `artifacts/` — the recording slot for headless model outputs; the capture files are currently empty, so this run's output is the first candidate corpus item.
+
+# 3. Proposed benchmark
+
+**Name:** `005-proposal-audit` (Path C study; human acceptance mandatory).
+
+**Hypothesis:** Given a claim inventory and an evidence-citation rubric, independent human reviewers can identify unsupported claims in recorded AI proposals about this repository at a materially higher true-positive rate, with no increase in false accusations, than reviewers given the proposals alone. The companion hypothesis (weaker): reviewers will disagree measurably, and that disagreement is itself reportable evidence for I-02.
+
+**Independent variable:** Review condition — (A) raw proposal text only; (B) the same text plus a pre-built claim inventory sheet and a citation rubric. One binary factor.
+
+**Dependent variables:** unsupported-claim detection rate, false-flag rate, per-claim review time, inter-rater agreement.
+
+**Inputs (fixed, no API key):** the recorded model-comparison outputs under `experiments/004-headless-model-comparison/artifacts/` — including this report, once captured — plus, if more corpus mass is needed, the recorded 001-domainkit build outputs. All inputs are static files already produced by prior runs; the benchmark consumes them read-only.
+
+**Controls:**
+
+- Ground truth is built *before* any review round: two auditors independently segment each proposal into atomic claims and classify each as supported (citable to a repository path), unsupported, or unverifiable; a third auditor adjudicates disagreements.
+- Reviewers are randomized to conditions; claim order is shuffled; same time budget per claim; reviewers may consult the repository but not the auditors' inventory (condition B reviewers get the inventory, condition A reviewers do not — the inventory *is* the manipulation).
+- The same reviewer never audits the same claim in both conditions; a counterbalanced within-subject variant is a pre-registered optional extension, not the core design.
+- Scoring is against the frozen adjudicated inventory, not against reviewer opinion.
+
+**Procedure:**
+
+1. Freeze the corpus (accept the recorded artifacts via the mandatory human decision step).
+2. Claim segmentation and dual-audit against the repository; adjudicate; freeze the inventory with a per-claim ground-truth label and citation.
+3. Recruit reviewers (minimum 3 per condition; any person who did not build the inventory qualifies).
+4. Each reviewer labels every claim in their condition as supported/unsupported and provides a citation when asserting support; elapsed time is recorded per claim.
+5. Score against ground truth; compute the metrics in section 4.
+6. A human accepts, edits, or rejects the resulting conclusion before anything is added to `research/evidence.json`.
+
+**Stopping rule:** Stop when (a) every claim in the frozen corpus has been adjudicated and reviewed under both conditions by at least 3 independent reviewers each, or (b) the audit stage fails early: if the two auditors cannot reach adjudicated agreement with kappa ≥ 0.4 on a pilot of the first 20 claims, stop and report that semantic fidelity is not yet observable enough to benchmark — that negative result is itself a valid I-02 finding. Do not add corpus items after the first review round begins.
+
+# 4. Measurement plan
+
+**Metrics (all observable from files and timestamps, no network):**
+
+- `detection_recall` = adjudicated-unsupported claims correctly flagged / total adjudicated-unsupported claims, per condition.
+- `false_flag_rate` = supported claims flagged as unsupported / total adjudicated-supported claims.
+- `citation_validity` = flags of "supported" whose citation actually resolves to the claimed content / all "supported" flags (checked mechanically against the frozen commit).
+- `review_seconds_per_claim`, mean and per reviewer.
+- `fleiss_kappa` inter-rater agreement per condition.
+- `unsupported_claim_rate` of each audited proposal (corpus-level input metric, per PATHS.md's Path C evidence list).
+
+**Scoring:** Per condition, report recall, false-flag rate, and time with simple nonparametric comparisons (the design is deliberately small; report medians and ranges, not significance theater). The headline number is detection recall in condition B versus A. A blocking failure applies per the 003 rubric's rule: if citation_validity in condition B falls below 0.5, the rubric is failing and the headline number is not interpretable — report the blocking failure separately regardless of total score.
+
+**What a result would mean:** higher recall in B supports the claim that traceability structure helps humans catch AI assumptions (Q-16). It does *not* establish anything about representation quality, model capability, or Path A/B claims — `PATHS.md`'s isolation rule applies.
+
+# 5. Risks and unsupported claims
+
+- **Ground-truth subjectivity.** "Supported" depends on auditor judgment; kappa gating and a third adjudicator mitigate but do not remove this. The inventory is a human artifact, not ground truth in a formal sense.
+- **Tiny corpus.** One recorded prompt lineage about one repository; results are a calibration point, not generalization, exactly as 001-domainkit's notes warn.
+- **Circularity.** This report is itself a candidate corpus item, produced by an AI under audit. The auditors must treat it with the same skepticism as any other artifact; no self-assessment in this report counts as evidence.
+- **Reviewer leakage.** Reviewers familiar with Terseus may recognize claims from the source docs; randomization and per-claim citation checks reduce but do not eliminate this confound.
+- **Not tested:** model quality, whether the rubric generalizes to other domains, Path A/B claims, and anything about automatic abstraction discovery (OPEN_QUESTIONS Q-03, explicitly untested by 001-domainkit).
+- No experiment has been run for this proposal; all numbers above are design targets, not observations.
+
+# 6. Reproducibility checklist
+
+- Corpus: exact file list, byte counts, and the repository commit under audit recorded in the iteration entry.
+- Frozen inventory: per-claim ID, verbatim quote, label, citation, adjudicator identity, stored as a versioned JSON file (additive only, following the registry's immutability rule).
+- Rubric text: one page, included verbatim in the experiment directory.
+- Reviewer artifacts: raw per-claim labels, timestamps, and condition assignment, retained even for rejected reviewers.
+- Scoring: computed by a deterministic script with recorded inputs; any manual re-scoring documented.
+- Human decision: accept/edit/reject recorded per the experiment contract.
+- No API key required at any stage; re-running requires only the frozen files and new reviewers.
+
+# 7. Machine-readable appendix
+
+```json
+{
+  "hypothesis": "A claim inventory plus citation rubric raises human detection of unsupported claims in recorded AI proposals, without raising false accusations, relative to reviewing the proposals alone.",
+  "open_questions": ["Q-16", "Q-12", "Q-15"],
+  "inputs": [
+    "experiments/004-headless-model-comparison/artifacts/ (frozen recorded outputs)",
+    "repository at pinned commit (claim-audit target)",
+    "experiments/001-domainkit build records (optional corpus extension)"
+  ],
+  "controls": [
+    "pre-review dual-audit ground truth with third-party adjudication",
+    "randomized condition assignment, shuffled claim order",
+    "same reviewer never audits one claim in both conditions",
+    "frozen corpus after first review round",
+    "no reviewer is also an inventory auditor"
+  ],
+  "metrics": [
+    "detection_recall",
+    "false_flag_rate",
+    "citation_validity",
+    "review_seconds_per_claim",
+    "fleiss_kappa",
+    "unsupported_claim_rate_per_proposal"
+  ],
+  "risks": [
+    "auditor subjectivity in ground truth",
+    "single-domain tiny corpus; calibration point only",
+    "reviewer familiarity leakage",
+    "circularity: this proposal is a candidate corpus item",
+    "blocking failure if citation_validity < 0.5"
+  ],
+  "confidence": "low — design only; no experiment has been run and no evidence has been collected"
+}
+```
+
+No files were modified and no network access was used.
