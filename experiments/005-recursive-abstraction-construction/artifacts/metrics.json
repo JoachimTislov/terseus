@@ -1,0 +1,58 @@
+{
+  "experiment": "005-recursive-abstraction-construction",
+  "prompt": "PROMPT.md",
+  "runs": [
+    {
+      "runner": "codex",
+      "cli_version": "codex-cli 0.156.1",
+      "model": "gpt-5.6-sol",
+      "exit_status": 0,
+      "wall_time_seconds": 85.472,
+      "final_report_words": 2287,
+      "required_word_limit": 3000,
+      "required_sections": 9,
+      "valid_final_json_appendix": true,
+      "input_tokens": 14493,
+      "cached_input_tokens": 11136,
+      "output_tokens": 4533,
+      "reasoning_output_tokens": 112,
+      "event_records": 16,
+      "stderr_bytes": 0,
+      "final_report_sha256": "989b59a5183a8f88f2c2d414c57eed1c54f611c06af6b22db4866a399a2232ec"
+    },
+    {
+      "runner": "vibe",
+      "cli_version": "vibe 2.25.4",
+      "model": "mistral-medium-3.5",
+      "provider": "mistral",
+      "exit_status": 0,
+      "wall_time_seconds": 45.005,
+      "final_report_words": 1495,
+      "required_word_limit": 3000,
+      "required_sections": 9,
+      "valid_final_json_appendix": true,
+      "input_tokens": null,
+      "cached_input_tokens": null,
+      "output_tokens": null,
+      "reasoning_output_tokens": null,
+      "event_records": 3,
+      "stderr_bytes": 0,
+      "final_report_sha256": "6fbb432460fc2c81e0fc7382d3c32c4455d842e18252dfab0630946dd026aed6"
+    }
+  ],
+  "convergent_design_requirements": [
+    "immutable versioned component references",
+    "explicit typed bindings",
+    "finite well-founded recursive termination",
+    "platform-owned idempotency",
+    "durable or in-band audit obligations",
+    "deterministic expansion as a projection"
+  ],
+  "next_implementation_slice": [
+    "component schema and immutable registry",
+    "deterministic recursive expander",
+    "pure type/isolation/idempotency/retry/audit/termination checkers",
+    "offline fake-provider vertical slice",
+    "mutation tests for unsafe abstractions"
+  ]
+}

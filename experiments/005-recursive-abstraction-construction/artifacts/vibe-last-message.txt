@@ -1,0 +1,216 @@
+This is a pure design artifact: no repository files touched, no network used, nothing executed. All syntax below is illustrative, marked as such; nothing has been implemented or verified by running code. Line/token counts are hand-counted from the listings as printed here.
+
+---
+
+## 1. System boundary and invariants
+
+The declared system is a multi-tenant notification platform. Its boundary: events enter at ingress; a policy produces a delivery plan; delivery executes via providers; escalation reacts to failure; an audit stream records every decision and outcome. Everything outside the boundary (provider APIs, the event bus, user preference UI) is represented only by declared ports.
+
+Invariants (each has a mechanical check in §5):
+
+- **I1 Tenant isolation.** Every wire between components carries a `tenantId`, and components are instantiated per-tenant; no wire crosses tenant subtrees.
+- **I2 Typed ports.** Wires connect ports with identical nominal types from a shared type registry; every required input has exactly one source.
+- **I3 Idempotent delivery.** Every delivery path passes an idempotency guard whose key derivation is declared in the component, not improvised by handlers.
+- **I4 Bounded retries.** `maxAttempts` and backoff schedule are declared parameters, statically bounded.
+- **I5 Recursive termination.** Every recursive edge increments an integer depth checked against a finite declared maximum.
+- **I6 Audit completeness.** Every node that makes a decision or produces an outcome has a wire to an audit sink; audit is in-band, not a fire-and-forget side-channel.
+- **I7 Determinism.** Expansion is a pure function of `(declaration, pinned library digests)`; canonical ordering makes output byte-stable.
+
+## 2. Recursive declaration model
+
+Illustrative TypeScript schema:
+
+```ts
+type Port     = { name: string; type: string; dir: "in" | "out"; required: boolean };
+type Input    = { port: Port; source?: string };   // source: "childId.outPort" | "param:NAME"
+type Output   = { port: Port; sinks?: string[] };   // sinks resolved at expansion
+type Wire     = { from: string; to: string };      // "childId.port"
+type Constraint = { id: string; check: string; scope: "node" | "subtree" | "global";
+                    static: boolean };
+type Evidence   = { claim: string; producedBy: string; static: boolean;
+                    invalidatedBy: string[] };     // lib version ranges that stale it
+
+type Component = {
+  id: string;
+  kind: "data" | "transform" | "connector" | "composite" | "workflow";
+  params?: Record<string, Value>;
+  ports: Port[];
+  children?: Component[];      // recursive composition: any child may nest children
+  wires?: Wire[];
+  constraints: Constraint[];
+  evidence: Evidence[];
+};
+```
+
+`Component` is recursive by construction: `children` are `Component`s, so composition nests arbitrarily. A component is a *declaration*; expanded node graphs and pseudocode are *projections*, never edited by hand.
+
+Canonical JSON grammar (illustrative, JSON-based so no new parser is needed):
+
+```json
+{ "$schema": "notif-decl/1",
+  "components": [ { "$ref": "lib://<name>@<major>", "id": "...", "params": {...} } ],
+  "wires": [ { "from": "<id>.<outPort>", "to": "<id>.<inPort>" } ],
+  "constraints": [], "evidence": [] }
+```
+
+Recursion rules (interpreted by the expander, not by an LLM):
+
+- **R1 Nesting.** A composite's children may be composites; expansion recurses structurally over the tree.
+- **R2 Re-entry.** A workflow may emit an output wired to an input upstream (a cycle). Every cycle must traverse a depth-incrementing edge (I5), or the checker rejects the declaration.
+- **R3 Tenant fan-out.** The platform composite is instantiated once per tenant subtree by a driver loop; this is data-level recursion, and cross-subtree wires are rejected.
+
+## 3. Reusable component library
+
+Six components (five plus audit); `delivery@1` and `escalation@1` are compositional, `escalation@1` is recursive.
+
+| Ref | Kind | Ports (in → out) | Contract / invariant |
+|---|---|---|---|
+| `lib://tenant@1` | data | out `prefs: Preferences`, `users: User[]` | All rows carry `params.tenantId`; reads are tenant-scoped (I1) |
+| `lib://ingress@1` | transform | in `raw: Envelope` → out `event: Event` | Rejects events failing the type registry schema; emits `rejected: AuditEntry` (I6) |
+| `lib://policy@1` | transform | in `event: Event`, `prefs: Preferences` → out `plan: DeliveryPlan`, `decision: AuditEntry` | Pure table: `event.type` → candidate channels ∩ user prefs → template. No arbitrary code (see §8 rejection 1) |
+| `lib://delivery@1` | composite | in `plan: DeliveryPlan` → out `outcome: DeliveryOutcome` | Children: `idempotency-guard` → `retry-supervisor` → `provider-set{email, sms}`. Key: declared `idemScope` fields (I3); `maxAttempts`, `backoffMs` are params (I4) |
+| `lib://escalation@1` | workflow (recursive) | in `outcome: DeliveryOutcome` → out `escalation: DeliveryPlan` | If `outcome.status == "failed"` and `outcome.depth < params.maxDepth`, emits an escalation plan with `depth+1` toward a fallback channel. This output is wired back into `delivery` (R2, I5) |
+| `lib://audit@1` | connector | in `entry: AuditEntry` → out `acked: Ack` | Append-only, in-band; delivery fails if audit write fails (explicit tradeoff, §8) |
+
+Each library component ships `evidence`: static claims (port types exist, constraints pass) produced by the checker, and dynamic claims (retry bounds honored at runtime) produced by test harnesses. `invalidatedBy` lists param/version changes that make evidence stale.
+
+## 4. Worked declaration
+
+The complete platform declaration (illustrative JSON, also serves as the compact form in §6):
+
+```json
+{ "$schema": "notif-decl/1",
+  "decl": {
+    "id": "notif-platform", "kind": "composite",
+    "params": { "maxEscalationDepth": 2,
+                "retry": { "maxAttempts": 3, "backoffMs": [100, 400, 1600] } },
+    "components": [
+      { "$ref": "lib://tenant@1",     "id": "tenant",   "params": { "tenantId": "acme" } },
+      { "$ref": "lib://ingress@1",    "id": "ingress" },
+      { "$ref": "lib://policy@1",     "id": "policy" },
+      { "$ref": "lib://delivery@1",   "id": "delivery",
+        "params": { "idemScope": ["tenantId","eventId","channel"] } },
+      { "$ref": "lib://escalation@1", "id": "esc", "params": { "maxDepth": 2 } },
+      { "$ref": "lib://audit@1",      "id": "audit" }
+    ],
+    "wires": [
+      { "from": "ingress.event",     "to": "policy.event" },
+      { "from": "tenant.prefs",      "to": "policy.prefs" },
+      { "from": "policy.plan",      "to": "delivery.plan" },
+      { "from": "policy.decision",  "to": "audit.entry" },
+      { "from": "delivery.outcome", "to": "esc.outcome" },
+      { "from": "esc.escalation",   "to": "delivery.plan" },
+      { "from": "esc.escalation",   "to": "audit.entry" },
+      { "from": "delivery.outcome", "to": "audit.entry" }
+    ]
+  }
+}
+```
+
+Behavior: `ingress` validates and types the event; `policy` intersects the event-type channel table with tenant user preferences and picks a template; `delivery` dedupes on `hash(tenantId, eventId, channel)`, retries within bounds, and executes via the provider set; a failed outcome triggers `esc`, which re-enters `delivery` at `depth+1` on a fallback channel until `maxDepth`; every decision and outcome lands in `audit` in-band.
+
+## 5. Expansion and verification
+
+`Expand(decl, library)` is a deterministic, total function:
+
+1. **Resolve** each `$ref` against digest-pinned library entries (same digest in, same graph out — I7).
+2. **Substitute** params top-down; every referenced param must exist (check fails otherwise).
+3. **Unroll recursion (R2)**: the `esc → delivery` cycle is unrolled to `maxDepth` copies with stable ids (`delivery[1]`, `esc[1]`, `delivery[2]`…), or projected as one bounded loop node with an explicit guard — the declaration author chooses; both are pure projections.
+4. **Flatten**: each library composite expands its children; wires rewrite to fully-qualified ids.
+5. **Emit** a sorted, canonical node/edge list plus pseudocode.
+
+Projected pseudocode (generated, illustrative):
+
+```
+plan0 := policy(event, prefs);  audit(policy.decision)
+outcome0 := delivery[0](plan0)   // idem guard, retry(<=3, backoff 100/400/1600), provider
+audit(outcome0)
+if outcome0.status == "failed":
+  plan1 := esc[1](outcome0)     // depth 0 -> 1, fallback channel
+  audit(plan1); outcome1 := delivery[1](plan1); audit(outcome1)
+  if outcome1.status == "failed" and 1 < 2:  // same shape, depth 2
+    ... else: audit(final-failure)
+```
+
+Independent checks (all mechanical; no model in the loop):
+
+| Check | Procedure | Pass criterion |
+|---|---|---|
+| Type compatibility | For each wire, look up both port types in the shared registry; verify required inputs have exactly one source | Nominal equality; no unbound required input |
+| Idempotency | Every path to a provider child passes `idempotency-guard`; guard's key expression references exactly the declared `idemScope` fields | No provider reachable without guard; key covers scope |
+| Retry bounds | Read `maxAttempts`, `backoffMs` params of each delivery node | `1 <= maxAttempts <= 5`; backoff finite, ascending |
+| Tenant isolation | Ports of types carrying `tenantId` must resolve to the same param origin on both wire ends; no wire between sibling tenant subtrees | Every cross-component wire tenant-invariant |
+| Audit completeness | Compute set S of nodes with kinds `transform|connector|workflow` emitting decisions/outcomes; each must have an edge to an audit sink | S = audited set; no orphan |
+| Recursive termination | Structural cycle detection on the expanded graph; every cycle must traverse a depth-increment edge compared to a finite literal | No unguarded cycle |
+
+## 6. Compression accounting
+
+- **Baseline (verbose):** the fully expanded graph for one tenant at `maxDepth = 2` — 17 concrete nodes (1 tenant, 1 ingress, 1 policy, 1 audit, plus per depth: idem-guard, retry-supervisor, provider, esc = 4×3) and 14 edges, written as explicit per-node JSON with inline ports, constraints, and evidence. Counted at ~12 lines per node plus edges and header: **≈ 224 lines, ≈ 2,980 tokens** (whitespace tokenizer, hand-counted).
+- **Compact:** the §4 listing as printed: **39 lines, ≈ 640 tokens**.
+- **Compression ratio: ≈ 5.7:1 by lines, ≈ 4.7:1 by tokens (~79% token reduction).**
+
+The ratio is real but bounded: compression comes from `delivery` and `esc` being written once instead of once per depth, so it grows linearly with `maxEscalationDepth` while the declaration stays constant. Counts are hand-measured from the listings above, not produced by a run of tooling that does not yet exist.
+
+## 7. Change test
+
+**Change A — new provider `webpush@1`:**
+- Affected: `delivery@1` (provider-set children +1), shared type registry (new port type `WebPushToken`, new param mapping in policy's channel table), `delivery` instance in the worked declaration.
+- Stale evidence: `delivery@1` static type-compat evidence (port set changed — `invalidatedBy` marks provider-set edits); worked-decl type-compatibility check must re-run.
+- Unaffected: `tenant`, `ingress`, `esc`, `audit` and their evidence (digests unchanged).
+
+**Change B — escalation policy change** (from "fixed fallback channel, depth 2" to "ladder: manager channel at depth 1, security channel at depth 2"):
+- Affected: `escalation@1` (params gain a `ladder` table), `esc` instance params in the worked declaration.
+- Stale evidence: termination check evidence for `esc` (must confirm the new ladder still compares depth to a literal); audit-completeness evidence (new `esc` output still wired to audit).
+- Demonstrates the intended property: two material changes touch two library components and zero call-site logic; all stale evidence is enumerable from `invalidatedBy` metadata, so re-verification is scoped, not global.
+
+## 8. Failure modes and unresolved decisions — and deliberately rejected abstractions
+
+**Rejected abstractions (unsafe):**
+
+1. **"Escalate until acknowledged" — unbounded recursion.** No termination witness exists; cost and audit volume are unbounded. Rejected in favor of a declared finite `maxDepth` (I5).
+2. **Providers as runtime plugin code (function references in the declaration).** Expansion becomes non-deterministic, static type checking is impossible, and arbitrary code would execute inside the tenant boundary. Providers must be registry entries with declared ports.
+3. **A single cross-tenant audit stream filtered by `tenantId`.** Isolation by runtime filtering is discipline, not structure; one missing filter leaks every tenant. Rejected: per-tenant audit sinks, merged only by an explicit connector outside the trust boundary.
+4. **Type-inference wiring (bind ports by type alone).** Ambiguous wherever two ports share a type; produces silent nondeterministic rewiring. Rejected: explicit wires only.
+
+**Failure modes:** fat-fingered large `maxDepth` causes expansion blowup (mitigation: expansion node budget plus the bounded-loop projection); evidence rot after library edits (mitigation: digest pinning plus `invalidatedBy`); unordered maps breaking determinism (mitigation: canonical sorted-key serialization); audit in-band coupling means an audit outage halts delivery — a deliberate availability tradeoff, not an accident.
+
+**Unresolved:** exactly-once delivery vs. at-least-once with idempotent dedupe at the provider (currently at-least-once + guard); template versioning semantics (pinned per tenant or per event?); per-tenant subtree duplication vs. a shared engine with structural isolation — a deployment decision the model deliberately does not fix.
+
+## 9. Build-ready next slice
+
+Files: `schema.ts` (zod schemas for `Component`/`Port`/`Wire`/`Constraint`/`Evidence`), `registry.ts` (digest-pinned library store), `expander.ts` (`Expand` with param substitution, bounded unrolling, canonical output), `checkers.ts` (the six checks as pure functions over expanded graphs), `lib/components.json` (the six components from §3), `workeds/notif-platform.json`, plus `tests/expander.test.ts` and `tests/checkers.test.ts`.
+
+Key interface: `Expand(decl: Decl, lib: Registry): { graph: FlatGraph; report: CheckReport }`.
+
+Tests: (a) expansion of the worked declaration is byte-identical across two runs (I7); (b) all six checks pass on the worked declaration; (c) seeded mutants — a wire with mismatched types, a delivery path bypassing the guard, `maxAttempts: 99`, a cross-tenant wire, an un-audited decision node, a depth-free cycle — each cause exactly the matching check to fail.
+
+Acceptance criteria: expansion of §4 yields the 17-node graph from §6; the §7 change test can be applied by editing only the named library/instance params; re-running checks produces a report enumerating stale evidence. Nothing here is implemented yet; this is the slice a human engineer could start on directly.
+
+```json
+{
+  "components": ["tenant@1", "ingress@1", "policy@1", "delivery@1 (composite)", "escalation@1 (recursive workflow)", "audit@1"],
+  "recursive_rules": {
+    "R1_nesting": "composite children may be composites; expansion recurses structurally",
+    "R2_re_entry": "workflow outputs may wire upstream; every cycle must increment a depth checked against a finite literal",
+    "R3_tenant_fan_out": "platform composite instantiated per tenant; cross-subtree wires rejected"
+  },
+  "invariants": {
+    "I1_tenant_isolation": "all cross-component wires tenant-invariant; per-tenant subtrees",
+    "I2_typed_ports": "nominal port types, required inputs bound exactly once",
+    "I3_idempotent_delivery": "declared idemScope key on every provider path",
+    "I4_bounded_retries": "maxAttempts and backoff are declared and statically capped",
+    "I5_recursive_termination": "no unguarded cycles in expanded graph",
+    "I6_audit_completeness": "every decision/outcome node wired to an audit sink, in-band",
+    "I7_determinism": "expansion pure over (decl, pinned digests), canonical ordering"
+  },
+  "baseline": {"representation": "fully expanded 17-node graph JSON", "lines": 224, "tokens": 2980, "counting": "hand-counted from printed listings"},
+  "compact": {"representation": "worked declaration with $ref library reuse", "lines": 39, "tokens": 640},
+  "compression": {"lines_ratio": "5.7:1", "tokens_ratio": "4.7:1", "token_reduction": "79%"},
+  "change_test": {
+    "add_provider_webpush": {"affected": ["delivery@1 provider-set", "type registry", "policy channel table"], "stale_evidence": ["delivery@1 type-compat static evidence"]},
+    "escalation_ladder_change": {"affected": ["escalation@1 params", "esc instance"], "stale_evidence": ["termination check evidence", "audit-completeness evidence"]}
+  },
+  "rejections": ["unbounded escalate-until-acknowledged recursion", "runtime plugin code as providers", "cross-tenant shared audit stream filtered by tenantId", "type-inference wiring"],
+  "next_slice": {"files": ["schema.ts", "registry.ts", "expander.ts", "checkers.ts", "lib/components.json", "workeds/notif-platform.json", "tests/expander.test.ts", "tests/checkers.test.ts"], "acceptance": ["byte-identical double expansion", "six checks pass on worked decl", "seeded mutants fail exactly the matching check"]}
+}
+```

@@ -1,0 +1,436 @@
+## 1. System boundary and invariants
+
+The declaration describes behavior; generated plans, pseudocode, infrastructure, and code are projections and are not authoritative.
+
+Boundary:
+
+- Inside: tenant/user/preference records, typed event intake, policy decisions, template selection, delivery scheduling, provider execution, retry/escalation workflows, and immutable audit emission.
+- Outside: identity authentication, provider internals, template authoring UI, billing, analytics, and provider-specific transport guarantees.
+- Trust boundary: application credentials determine `tenant_id`; payload-supplied tenant identity is never trusted independently.
+
+Global invariants:
+
+- **I1 Tenant isolation:** every stateful input, key, lookup, delivery, and audit record carries the authenticated `tenant_id`.
+- **I2 Typed events:** an event must match its registered `(type, version)` schema before policy evaluation.
+- **I3 Deterministic policy:** identical event, preferences, policy version, and template catalog yield identical decisions.
+- **I4 Idempotency:** one logical delivery has key  
+  `H(tenant_id,event_id,recipient_id,channel,policy_version,escalation_step)`.
+- **I5 Bounded retries:** attempts are finite, nonnegative, and capped by both component and platform limits.
+- **I6 Auditing:** every accepted/rejected event, policy decision, suppressed notification, delivery attempt/outcome, retry decision, and escalation decision emits an audit record.
+- **I7 Recursive termination:** composition must be acyclic after static references are resolved, or recursion must consume a declared well-founded measure.
+- **I8 Evidence scope:** evidence validates a named component version and invariant set; changed dependencies make it stale.
+- **I9 Secret separation:** declarations reference secret handles, never provider credentials.
+- **I10 Atomic intent:** durable delivery intent and its corresponding audit decision are committed atomically, normally through an outbox.
+
+## 2. Recursive declaration model
+
+Illustrative TypeScript schema:
+
+```ts
+type TypeRef = string; // registered schema name@version
+
+type Port = {
+  name: string;
+  type: TypeRef;
+  cardinality: "one" | "many";
+  tenantScoped: boolean;
+};
+
+type Input = Port & { required: boolean };
+type Output = Port;
+
+type Constraint = {
+  id: string;
+  kind: "type" | "predicate" | "bound" | "isolation" |
+        "idempotency" | "audit" | "termination";
+  expression: string;       // parsed DSL, never arbitrary code
+};
+
+type Evidence = {
+  id: string;
+  proves: string[];         // constraint IDs
+  method: "proof" | "test" | "model-check" | "review";
+  artifact: string;
+  subjectDigest: string;    // component plus dependency digests
+};
+
+type Binding = {
+  from: string;             // "$input.x" or "child.output"
+  to: string;               // "$output.x" or "child.input"
+};
+
+type Child = {
+  instance: string;
+  component: string;        // name@version
+  config: Record<string, unknown>;
+  measure?: { name: string; decreasesFrom: string };
+};
+
+type Component = {
+  apiVersion: "notify/v1";
+  kind: "atomic" | "composite";
+  name: string;
+  version: string;
+  contract: string;
+  inputs: Input[];
+  outputs: Output[];
+  constraints: Constraint[];
+  evidence: Evidence[];
+  implementation?: { adapter: string }; // atomic only
+  composition?: {
+    children: Child[];
+    bindings: Binding[];
+    termination?: {
+      measure: string;
+      domain: "natural";
+      baseCase: string;
+      decrease: string;
+    };
+  };
+};
+```
+
+Canonical illustrative YAML shape:
+
+```yaml
+apiVersion: notify/v1
+kind: atomic | composite
+metadata: { name: NAME, version: SEMVER }
+contract: TEXT
+ports:
+  inputs:  [{ name: NAME, type: TYPE@VERSION, cardinality: one, tenantScoped: true, required: true }]
+  outputs: [{ name: NAME, type: TYPE@VERSION, cardinality: many, tenantScoped: true }]
+constraints: [{ id: ID, kind: KIND, expression: DSL_EXPRESSION }]
+evidence: [{ id: ID, proves: [CONSTRAINT_ID], method: test, artifact: PATH, subjectDigest: SHA256 }]
+implementation: { adapter: SYMBOL }
+composition:
+  children: [{ instance: ID, component: NAME@VERSION, config: {}, measure: { name: remaining, decreasesFrom: "$input.remaining" } }]
+  bindings: [{ from: "$input.NAME", to: "INSTANCE.INPUT" }]
+  termination: { measure: remaining, domain: natural, baseCase: "remaining == 0", decrease: "child.remaining < remaining" }
+```
+
+`implementation` and `composition` are mutually exclusive. References resolve to immutable versions. Expansion sorts children by instance name and bindings lexicographically, making projections reproducible.
+
+## 3. Reusable component library
+
+| Component | Contract and ports | Invariants and evidence |
+|---|---|---|
+| `EventIngress@1` | Input `RawEvent`; outputs `TypedEvent` or `EventRejected`. Authenticates tenant and validates schema. | I1, I2, I6. Evidence: schema/property tests and cross-tenant rejection tests. |
+| `PolicyDecision@1` | Inputs `TypedEvent`, `Preferences`, `Policy`; output `Decision[]` containing channel, template, recipient, and suppression reason. | I1, I3, I6. Evidence: decision-table tests and determinism replay. |
+| `DeliveryAttempt@1` | Input `DeliveryIntent`; output `DeliveryOutcome`. Calls a provider adapter using the intent key. | I1, I4, I6, I9. Evidence: provider contract suite and duplicate-request test. |
+| `RetryWorkflow@1` | **Composite/recursive.** Input `RetryState{attemptsRemaining}`; outputs terminal success/failure. Contains `DeliveryAttempt` and optionally itself. | Natural-number measure decreases by one; attempts never exceed configured/platform caps. Evidence: bounded model check plus boundary tests. |
+| `EscalationWorkflow@1` | **Composite.** Failed terminal outcome becomes a new escalation event, passes through `PolicyDecision`, then invokes `RetryWorkflow`. | Escalation depth is incremented and capped; new idempotency step prevents collision. Evidence: depth-bound and end-to-end audit tests. |
+| `NotificationWorkflow@1` | **Composite.** Connects ingress, preference lookup, decision, per-decision retry, optional escalation, and audit. May contain nested workflows. | I1–I10. Evidence is the dependency digest plus integration and failure-injection suites. |
+| `AuditSink@1` | Input `AuditRecord`; output `AuditReceipt`. Append-only, tenant-partitioned storage. | Sequence IDs unique; required correlation fields present. Evidence: completeness oracle and immutability/storage tests. |
+
+Provider adapters implement:
+
+```ts
+interface ChannelProvider {
+  channel: string;
+  send(request: {
+    tenantId: string;
+    idempotencyKey: string;
+    recipient: string;
+    renderedBody: string;
+    secretRef: string;
+  }): Promise<{ providerMessageId?: string; status: "accepted"|"failed"; retryable: boolean }>;
+}
+```
+
+## 4. Worked declaration
+
+The following compact syntax is illustrative YAML:
+
+```yaml
+apiVersion: notify/v1
+kind: composite
+metadata: { name: AcmeNotificationPlatform, version: 1.0.0 }
+contract: "Process Acme events into isolated, audited, bounded deliveries."
+ports:
+  inputs:
+    - { name: event, type: AppEvent@1, cardinality: one, tenantScoped: true, required: true }
+  outputs:
+    - { name: result, type: WorkflowResult@1, cardinality: one, tenantScoped: true }
+constraints:
+  - { id: tenant, kind: isolation, expression: "allTenantIds == auth.tenantId" }
+  - { id: idem, kind: idempotency, expression: "deliveryKey == H(tenant,event,recipient,channel,policyVersion,step)" }
+  - { id: retry, kind: bound, expression: "0 <= attempts <= min(config.maxAttempts,5)" }
+  - { id: escalation, kind: termination, expression: "0 <= escalationDepth <= 1" }
+  - { id: audit, kind: audit, expression: "eachRequiredTransition has exactlyOne AuditRecord" }
+composition:
+  children:
+    - { instance: ingress, component: EventIngress@1.0.0, config: { schemas: [InvoiceOverdue@1] } }
+    - { instance: prefs, component: TenantPreferenceLookup@1.0.0, config: { tenant: acme } }
+    - { instance: decide, component: PolicyDecision@1.0.0,
+        config: { policy: overdue-v3, channels: [email, sms], template: overdue-v2 } }
+    - { instance: deliver, component: RetryWorkflow@1.0.0,
+        config: { maxAttempts: 3, backoffSeconds: [10, 60], providers: { email: ses-main, sms: twilio-main } },
+        measure: { name: attemptsRemaining, decreasesFrom: "3" } }
+    - { instance: escalate, component: EscalationWorkflow@1.0.0,
+        config: { on: terminal_failure, maxDepth: 1, channel: email,
+                  recipientRole: tenant_admin, template: delivery-failed-v1 } }
+    - { instance: audit, component: AuditSink@1.0.0, config: { stream: tenant-audit } }
+  bindings:
+    - { from: "$input.event", to: ingress.raw }
+    - { from: "ingress.typed", to: prefs.event }
+    - { from: "ingress.typed", to: decide.event }
+    - { from: "prefs.preferences", to: decide.preferences }
+    - { from: "decide.decisions", to: deliver.intents }
+    - { from: "deliver.terminalFailures", to: escalate.failures }
+    - { from: "escalate.intents", to: deliver.intents }
+    - { from: "deliver.result", to: "$output.result" }
+    - { from: "ingress.audit", to: audit.records }
+    - { from: "decide.audit", to: audit.records }
+    - { from: "deliver.audit", to: audit.records }
+    - { from: "escalate.audit", to: audit.records }
+  termination:
+    measure: "lexicographic(escalationDepthRemaining,attemptsRemaining)"
+    domain: natural
+    baseCase: "depthRemaining == 0 and attemptsRemaining == 0"
+    decrease: "retry decreases attempts; escalation decreases depth and resets attempts finitely"
+evidence:
+  - { id: integration, proves: [tenant, idem, retry, escalation, audit],
+      method: test, artifact: tests/acme_workflow.spec.ts, subjectDigest: pending-build }
+```
+
+A new tenant supplies another configuration instance; it does not fork component definitions.
+
+## 5. Expansion and verification
+
+Deterministic expansion algorithm:
+
+```text
+resolve(root):
+  load exact component versions; reject missing or mutable references
+  validate every component schema
+  construct instance graph using lexically sorted child instance names
+  connect bindings sorted by (from,to)
+  type-check each source/output against destination/input
+  require all required inputs and forbid multiply-bound cardinality-one inputs
+  inline composite children recursively
+  reject cycles lacking a valid decreasing natural measure
+  emit atomic steps in stable topological order
+  emit configuration, interfaces, audit obligations, tests, and evidence digests
+```
+
+Expanded execution pseudocode:
+
+```text
+authenticate -> validate InvoiceOverdue@1 -> audit accepted/rejected
+load preferences where tenant_id = authenticated tenant
+evaluate overdue-v3 -> audit each selected or suppressed channel
+for each decision ordered by recipient, channel:
+  persist(intent(idempotencyKey), decisionAudit) atomically
+  for attempt in 1..3:
+    deduplicate idempotencyKey; invoke selected provider; audit outcome
+    stop on accepted or non-retryable; otherwise apply [10,60] delay
+  if terminal failure and escalationDepth < 1:
+    emit DeliveryFailed event(step=1, depth=1); audit escalation decision
+    evaluate escalation policy and execute its bounded retry workflow
+return terminal results after required audit records are durable
+```
+
+Independent static/dynamic checks:
+
+- **Types:** registry assignability check for every binding; schema tests at ingress and provider boundaries.
+- **Idempotency:** symbolic key-field check plus concurrent duplicate integration test.
+- **Retry bounds:** prove natural measure decreases; test `0`, `1`, `3`, and platform-cap configurations.
+- **Isolation:** tenant-taint analysis plus adversarial cross-tenant database and provider tests.
+- **Audit completeness:** compare execution transition IDs with an independent required-transition oracle.
+- **Termination:** SCC graph analysis; each recursive SCC needs a well-founded measure and strict decrease on every back edge.
+
+Evidence comes from deterministic tools and human review, never an implicit language-model judgment.
+
+## 6. Compression accounting
+
+Counting convention: physical nonblank lines; tokens are whitespace-separated fields after removing indentation. Counts are reproducible under that deliberately simple tokenizer, not estimates of model-specific tokens.
+
+Baseline verbose representation of the same behavior repeats one step per attempt and escalation:
+
+```text
+validate tenant event
+load tenant preferences
+select email template
+send email attempt one
+audit email attempt one
+wait ten seconds
+send email attempt two
+audit email attempt two
+wait sixty seconds
+send email attempt three
+audit email attempt three
+on failure create escalation event
+select admin email template
+send escalation attempt one
+audit escalation attempt one
+send escalation attempt two
+audit escalation attempt two
+send escalation attempt three
+audit escalation attempt three
+return result
+```
+
+Compact equivalent:
+
+```text
+ingress(event,tenant)
+decide(preferences,overdue-v3)
+retry(delivery,max=3,backoff=[10,60],audit=each)
+escalate(on=terminal_failure,depth=1,recipient=admin)
+retry(escalation,max=3,audit=each)
+return(audited_result)
+```
+
+Counts: baseline **21 lines, 76 tokens**; compact **6 lines, 17 tokens**. Compression is **21/6 = 3.50× by lines** and **76/17 = 4.47× by tokens**, representing 71.4% and 77.6% reductions respectively. The canonical declaration is larger because it carries contracts and proofs; compression applies to repeated behavioral expression, not all governance metadata.
+
+## 7. Change test
+
+Change:
+
+1. Add `push` through `FcmProvider@1.0.0`.
+2. Change escalation to SMS the on-call role after two failed primary attempts, while retaining maximum depth one.
+
+Affected declarations:
+
+- Add provider adapter and register `push -> fcm-main`.
+- Update policy channel allowlist/template mapping if push is selectable.
+- Change `RetryWorkflow` primary `maxAttempts` from 3 to 2.
+- Change `EscalationWorkflow` channel, recipient role, and template.
+- Root component digest and generated projections change.
+
+Unaffected: event schema, tenant isolation rule, audit schema, preference model, and other provider implementations.
+
+Stale evidence:
+
+- Provider contract evidence is absent for FCM.
+- Retry boundary/model evidence depends on the changed bound.
+- Escalation routing and end-to-end audit evidence depends on changed configuration.
+- Root integration evidence is stale because its dependency digest changes.
+- Existing SES/Twilio unit evidence remains valid if its subject digest excludes root configuration.
+
+Required new checks: FCM duplicate-send behavior, push address validation, two-attempt boundary, on-call resolution, SMS escalation template, and complete audit sequence.
+
+## 8. Failure modes and unresolved decisions
+
+Deliberately rejected abstractions:
+
+- **Universal untyped `Map<string, any>` event:** rejected because compatibility becomes runtime guesswork and policy fields can silently drift.
+- **Generic “retry forever” wrapper:** rejected because it violates termination, overloads providers, and makes escalation timing unknowable.
+- **Provider response as the idempotency authority:** rejected because timeouts can hide accepted sends; platform-owned durable keys are required.
+- **Audit as best-effort logging:** rejected because missing decisions cannot be distinguished from suppressed or failed work.
+- **Tenant as optional ambient context:** rejected because background jobs and nested workflows can accidentally cross tenant boundaries.
+- **Unrestricted recursive component references:** rejected because graph cycles alone do not establish progress or termination.
+
+Unresolved build decisions:
+
+- Whether provider acceptance or confirmed downstream delivery defines success.
+- Transactional database/outbox technology and audit retention duration.
+- Policy conflict precedence and preference-consent rules by jurisdiction.
+- Template rendering sandbox and localization fallback.
+- Whether escalation may target a different tenant; the current invariant forbids it.
+- Exact canonical hashing and schema-evolution compatibility rules.
+
+## 9. Build-ready next slice
+
+Implement one vertical slice: `InvoiceOverdue@1` → email decision → bounded fake-provider delivery → audit outbox. Defer SMS, real providers, and escalation execution, but compile and validate their declarations.
+
+Files:
+
+```text
+src/domain/types.ts
+src/declaration/schema.ts
+src/declaration/expand.ts
+src/events/ingress.ts
+src/policy/evaluate.ts
+src/delivery/idempotency.ts
+src/delivery/retry.ts
+src/providers/channel-provider.ts
+src/providers/fake-email.ts
+src/audit/outbox.ts
+declarations/acme.yaml
+tests/declaration.test.ts
+tests/isolation.test.ts
+tests/idempotency.test.ts
+tests/retry.test.ts
+tests/audit-completeness.test.ts
+tests/termination.test.ts
+```
+
+Interfaces: `SchemaRegistry`, `PreferenceRepository`, `PolicyEvaluator`, `DeliveryIntentRepository`, `ChannelProvider`, `AuditOutbox`, and `Clock`.
+
+Acceptance criteria:
+
+- The worked declaration parses and expands identically across repeated runs.
+- Invalid bindings and unbounded recursive cycles fail before execution.
+- Two concurrent identical events create one logical provider operation.
+- No repository query executes without authenticated `tenant_id`.
+- Attempts never exceed three and use injected-clock delays of 10 and 60 seconds.
+- Every modeled transition has exactly one correlated audit record.
+- Failure injection between intent creation and provider execution loses neither intent nor audit obligation.
+
+```json
+{
+  "components": [
+    "EventIngress@1",
+    "PolicyDecision@1",
+    "DeliveryAttempt@1",
+    "RetryWorkflow@1",
+    "EscalationWorkflow@1",
+    "NotificationWorkflow@1",
+    "AuditSink@1"
+  ],
+  "recursive_rules": {
+    "reference_versions": "immutable",
+    "cycle_policy": "acyclic or strictly decreasing natural measure",
+    "retry_measure": "attemptsRemaining",
+    "workflow_measure": "lexicographic(escalationDepthRemaining, attemptsRemaining)"
+  },
+  "invariants": [
+    "tenant isolation",
+    "typed events",
+    "deterministic policy",
+    "idempotent delivery",
+    "bounded retry",
+    "complete audit",
+    "recursive termination",
+    "digest-scoped evidence",
+    "secret separation",
+    "atomic intent"
+  ],
+  "baseline": {
+    "behavior": "explicit primary and escalation attempts",
+    "lines": 21,
+    "tokens": 76
+  },
+  "compact": {
+    "behavior": "bounded retry and escalation components",
+    "lines": 6,
+    "tokens": 17
+  },
+  "compression": {
+    "line_ratio": 3.5,
+    "token_ratio": 4.47,
+    "line_reduction_percent": 71.4,
+    "token_reduction_percent": 77.6
+  },
+  "change_test": {
+    "changes": ["add FcmProvider", "primary attempts 3 to 2", "SMS escalation to on-call"],
+    "affected": ["provider registry", "policy", "RetryWorkflow config", "EscalationWorkflow config", "root digest"],
+    "stale_evidence": ["FCM contract", "retry bounds", "escalation routing", "root integration"]
+  },
+  "rejections": [
+    "untyped universal event",
+    "unbounded retry",
+    "provider-owned idempotency",
+    "best-effort audit",
+    "ambient tenant context",
+    "unrestricted recursion"
+  ],
+  "next_slice": {
+    "scope": "InvoiceOverdue email path with fake provider and audit outbox",
+    "tests": ["declaration", "isolation", "idempotency", "retry", "audit completeness", "termination"],
+    "acceptance": "deterministic expansion, bounded execution, isolated data, deduplicated delivery, complete audit"
+  }
+}
+```
