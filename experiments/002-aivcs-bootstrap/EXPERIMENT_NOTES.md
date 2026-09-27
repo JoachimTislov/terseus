@@ -3,7 +3,7 @@
 ## Selected system
 
 This study uses [`ai-native-vcs`](https://github.com/JoachimTislov/ai-native-vcs)
-as a submodule at `../002-aivcs-bootstrap`. It was selected because its
+as the `project/` submodule. It was selected because its
 existing concepts—specifications, sessions, contracts, review, bisection, and
 drift—already expose the boundary between domain intent and implementation in
 a large-system workflow.

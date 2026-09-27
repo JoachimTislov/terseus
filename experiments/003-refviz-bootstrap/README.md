@@ -10,5 +10,5 @@ path-b-projections/
 path-c-change-proposal/
 ```
 
-The submodule at `../003-refviz-bootstrap` is external and must only be
-changed in its own repository.
+The submodule at `project/` is external and must only be changed in its own
+repository.

@@ -2,8 +2,8 @@
 
 ## Selected system
 
-This study uses [`RefViz`](https://github.com/JoachimTislov/RefViz) as a
-pinned submodule at `../003-refviz-bootstrap`. RefViz is complementary to
+This study uses [`RefViz`](https://github.com/JoachimTislov/RefViz) as the
+pinned `project/` submodule. RefViz is complementary to
 AI-VCS: it exposes code structure and references, making it suitable for
 testing whether domain representations improve understanding and change
 impact in an existing Go system.
