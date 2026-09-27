@@ -1,0 +1,16 @@
+{
+  "expect_error": "unknown field type",
+  "document": {
+    "schema": "scl/1",
+    "name": "broken",
+    "contracts": [
+      {
+        "id": "alert",
+        "extends": null,
+        "fields": {
+          "alert_id": {"type": "integer", "required": true}
+        }
+      }
+    ]
+  }
+}

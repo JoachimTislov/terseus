@@ -1,0 +1,53 @@
+{
+  "schema": "dtl/1",
+  "name": "incident-472-triage-tables",
+  "tables": [
+    {
+      "id": "priority",
+      "hit_policy": "unique",
+      "inputs": [
+        {"name": "severity", "type": "enum", "values": ["sev1", "sev2", "sev3"]},
+        {"name": "customer_impact", "type": "enum", "values": ["none", "some", "many"]}
+      ],
+      "outputs": [
+        {"name": "tier", "type": "enum", "values": ["P1", "P2", "P3"]}
+      ],
+      "rules": [
+        {"in": ["sev1", "many"], "out": ["P1"], "cites": ["triage-runbook-2.1"]},
+        {"in": ["sev1", "some"], "out": ["P1"]},
+        {"in": ["sev1", "none"], "out": ["P2"]},
+        {"in": ["sev2", "many"], "out": ["P1"], "cites": ["triage-runbook-2.3"]},
+        {"in": ["sev2", "some"], "out": ["P2"]},
+        {"in": ["sev2", "none"], "out": ["P3"]},
+        {"in": ["sev3", "many"], "out": ["P2"]},
+        {"in": ["sev3", "some"], "out": ["P3"]},
+        {"in": ["sev3", "none"], "out": ["P3"]}
+      ]
+    },
+    {
+      "id": "response",
+      "hit_policy": "priority",
+      "inputs": [
+        {
+          "name": "tier",
+          "type": "enum",
+          "values": ["P1", "P2", "P3"],
+          "input_from": "priority.tier"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "action",
+          "type": "enum",
+          "values": ["page-oncall", "open-ticket", "monitor", "acknowledge"]
+        }
+      ],
+      "rules": [
+        {"in": ["P1"], "out": ["page-oncall"], "cites": ["triage-runbook-3.1"]},
+        {"in": ["P2"], "out": ["open-ticket"], "cites": ["triage-runbook-3.2"]},
+        {"in": ["P3"], "out": ["monitor"], "cites": ["triage-runbook-3.3"]},
+        {"in": ["-"], "out": ["acknowledge"], "note": "fallback when no tier-specific rule matches"}
+      ]
+    }
+  ]
+}

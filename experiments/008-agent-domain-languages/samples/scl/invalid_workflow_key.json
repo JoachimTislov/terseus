@@ -1,0 +1,17 @@
+{
+  "expect_error": "forbidden workflow key",
+  "document": {
+    "schema": "scl/1",
+    "name": "broken",
+    "contracts": [
+      {
+        "id": "action_item",
+        "extends": null,
+        "next": "postmortem",
+        "fields": {
+          "action": {"type": "string", "required": true}
+        }
+      }
+    ]
+  }
+}

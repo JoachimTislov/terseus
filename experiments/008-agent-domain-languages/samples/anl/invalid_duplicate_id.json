@@ -1,0 +1,15 @@
+{
+  "expect_error": "duplicate id",
+  "document": {
+    "schema": "anl/1",
+    "network": "broken",
+    "agents": [
+      {"id": "dispatcher", "type": "human", "capabilities": ["dispatcher"]}
+    ],
+    "capabilities": [
+      {"id": "dispatcher", "evidenced_by": []}
+    ],
+    "evidence": [],
+    "relations": []
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "expect_error": "duplicate contract id",
+  "document": {
+    "schema": "scl/1",
+    "name": "broken",
+    "contracts": [
+      {
+        "id": "incident",
+        "extends": null,
+        "fields": {"incident_id": {"type": "string", "required": true}}
+      },
+      {
+        "id": "incident",
+        "extends": null,
+        "fields": {"summary": {"type": "string", "required": false}}
+      }
+    ]
+  }
+}

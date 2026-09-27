@@ -1,0 +1,14 @@
+{
+  "expect_error": "unknown op",
+  "document": {
+    "schema": "pdl/1",
+    "name": "broken",
+    "rules": [
+      {
+        "id": "deny-regex",
+        "decision": "deny",
+        "when": [{"field": "action", "op": "matches", "value": "close.*"}]
+      }
+    ]
+  }
+}

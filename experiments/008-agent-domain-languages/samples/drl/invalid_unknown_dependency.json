@@ -1,0 +1,15 @@
+{
+  "expect_error": "depends_on unknown resource",
+  "document": {
+    "schema": "drl/1",
+    "name": "broken",
+    "resources": [
+      {
+        "id": "mitigation-plan",
+        "kind": "ActionItem",
+        "desired": {"state": "executed"},
+        "depends_on": ["nonexistent-service"]
+      }
+    ]
+  }
+}

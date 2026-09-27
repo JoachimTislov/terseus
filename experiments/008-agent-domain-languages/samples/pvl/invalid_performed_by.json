@@ -1,0 +1,15 @@
+{
+  "expect_error": "performed_by unknown agent",
+  "document": {
+    "schema": "pvl/1",
+    "name": "broken",
+    "agents": [
+      {"id": "dispatcher", "role": "coordinator"}
+    ],
+    "activities": [
+      {"id": "intake", "performed_by": "triage-analyst"}
+    ],
+    "entities": [],
+    "records": []
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "expect_error": "unique hit policy violated",
+  "document": {
+    "schema": "dtl/1",
+    "name": "broken",
+    "tables": [
+      {
+        "id": "priority",
+        "hit_policy": "unique",
+        "inputs": [
+          {"name": "severity", "type": "enum", "values": ["sev1", "sev2", "sev3"]}
+        ],
+        "outputs": [
+          {"name": "tier", "type": "enum", "values": ["P1", "P2"]}
+        ],
+        "rules": [
+          {"in": ["sev1"], "out": ["P1"]},
+          {"in": ["-"], "out": ["P2"]}
+        ]
+      }
+    ]
+  }
+}

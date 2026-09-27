@@ -1,0 +1,15 @@
+{
+  "expect_error": "forbidden workflow key",
+  "document": {
+    "schema": "drl/1",
+    "name": "broken",
+    "resources": [
+      {
+        "id": "restart-job",
+        "kind": "ActionItem",
+        "desired": {"state": "restarted"},
+        "next": "verify-restart"
+      }
+    ]
+  }
+}

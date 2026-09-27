@@ -1,0 +1,11 @@
+{
+  "expect_error": "at most one is allowed",
+  "document": {
+    "schema": "pdl/1",
+    "name": "broken",
+    "rules": [
+      {"id": "default-deny", "decision": "deny", "default": true},
+      {"id": "default-escalate", "decision": "escalate", "default": true}
+    ]
+  }
+}

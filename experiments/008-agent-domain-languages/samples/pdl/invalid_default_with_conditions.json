@@ -1,0 +1,15 @@
+{
+  "expect_error": "a default rule must have no conditions",
+  "document": {
+    "schema": "pdl/1",
+    "name": "broken",
+    "rules": [
+      {
+        "id": "default-deny-sev1",
+        "decision": "deny",
+        "default": true,
+        "when": [{"field": "incident.severity", "op": "eq", "value": "sev1"}]
+      }
+    ]
+  }
+}

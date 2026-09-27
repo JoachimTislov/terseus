@@ -1,0 +1,19 @@
+{
+  "expect_error": "duplicate resource id",
+  "document": {
+    "schema": "drl/1",
+    "name": "broken",
+    "resources": [
+      {
+        "id": "svc-checkout",
+        "kind": "Service",
+        "desired": {"availability": "healthy"}
+      },
+      {
+        "id": "svc-checkout",
+        "kind": "Service",
+        "desired": {"availability": "degraded"}
+      }
+    ]
+  }
+}

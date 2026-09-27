@@ -12,6 +12,19 @@
     <section class="controls"><label>Project <select id="project"><option value="all">All projects</option></select></label><label>State <select id="state"><option value="all">All states</option><option>testing</option><option>concluded</option><option>collided</option><option>archived</option><option>blocked</option></select></label></section>
     <section class="stats" id="stats"></section>
     <section class="panel"><h2>Path graph</h2><p class="muted">Large nodes are iterations; small nodes are linked evidence records. Edges show typed relations and evidence attached to a path.</p><svg id="graph" role="img" aria-label="Research path graph"></svg></section>
+    <section class="panel">
+      <h2>Agent network</h2>
+      <p class="muted">A declarative ANL network: agents, capabilities, evidence, and typed relations. Edges describe possible relationships, not execution order.</p>
+      <label>Network <select id="agent-network"></select></label>
+      <div id="agent-network-meta" class="network-meta"></div>
+      <div class="network-legend" aria-label="Agent network legend">
+        <span><i class="legend-dot human"></i>Human</span>
+        <span><i class="legend-dot llm"></i>LLM</span>
+        <span><i class="legend-dot capability"></i>Capability</span>
+        <span><i class="legend-dot evidence"></i>Evidence</span>
+      </div>
+      <svg id="agent-graph" role="img" aria-label="Agent network graph"></svg>
+    </section>
     <section class="panel"><h2>Iterations</h2><div id="iterations"></div></section>
     <section class="panel"><h2>Research evidence</h2><div id="evidence"></div></section>
     <section class="panel"><h2>Approach versions</h2><div id="approaches"></div></section>

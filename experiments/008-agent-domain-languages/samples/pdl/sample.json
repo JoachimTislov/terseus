@@ -1,0 +1,41 @@
+{
+  "schema": "pdl/1",
+  "name": "incident-access-policy",
+  "rules": [
+    {
+      "id": "allow-read-only",
+      "decision": "allow",
+      "when": [{"field": "action", "op": "in", "values": ["list", "view", "comment"]}],
+      "note": "read-only actions are safe for any authenticated role"
+    },
+    {
+      "id": "allow-owner-publish",
+      "decision": "allow",
+      "when": [
+        {"field": "action", "op": "eq", "value": "publish-postmortem"},
+        {"field": "actor.role", "op": "eq", "value": "owner"}
+      ],
+      "cites": ["handbook-7.3"]
+    },
+    {
+      "id": "default-deny",
+      "decision": "deny",
+      "default": true
+    },
+    {
+      "id": "deny-analyst-close",
+      "decision": "deny",
+      "when": [
+        {"field": "action", "op": "eq", "value": "close"},
+        {"field": "actor.role", "op": "eq", "value": "analyst"}
+      ],
+      "cites": ["triage-runbook-4.2"]
+    },
+    {
+      "id": "escalate-sev1",
+      "decision": "escalate",
+      "when": [{"field": "incident.severity", "op": "eq", "value": "sev1"}],
+      "cites": ["triage-runbook-4.1"]
+    }
+  ]
+}

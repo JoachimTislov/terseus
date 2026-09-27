@@ -1,0 +1,36 @@
+{
+  "schema": "anl/1",
+  "network": "incident-472-triage-desk",
+  "agents": [
+    {"id": "dispatcher", "type": "human", "capabilities": ["incident-intake"]},
+    {"id": "oncall-engineer", "type": "human", "capabilities": ["incident-command"]},
+    {"id": "triage-analyst", "type": "llm", "capabilities": ["log-analysis", "timeline-reconstruction"]},
+    {"id": "remediation-planner", "type": "llm", "capabilities": ["remediation-drafting", "cost-estimation"]},
+    {"id": "verifier", "type": "llm", "capabilities": ["claim-verification"]}
+  ],
+  "capabilities": [
+    {"id": "incident-intake", "evidenced_by": ["runbook-intake"]},
+    {"id": "incident-command", "evidenced_by": ["runbook-intake"]},
+    {"id": "log-analysis", "evidenced_by": ["incident-report-472"]},
+    {"id": "timeline-reconstruction", "evidenced_by": ["incident-report-472"]},
+    {"id": "remediation-drafting", "evidenced_by": []},
+    {"id": "cost-estimation", "evidenced_by": []},
+    {"id": "claim-verification", "evidenced_by": ["verifier-transcript"]}
+  ],
+  "evidence": [
+    {"id": "incident-report-472", "kind": "artifact", "note": "raw logs and timeline of incident 472"},
+    {"id": "runbook-intake", "kind": "document", "note": "intake section of the triage runbook"},
+    {"id": "verifier-transcript", "kind": "transcript", "note": "recorded verification of an earlier remediation draft"}
+  ],
+  "relations": [
+    {"type": "collaborates_with", "from": "dispatcher", "to": "triage-analyst"},
+    {"type": "collaborates_with", "from": "oncall-engineer", "to": "dispatcher"},
+    {"type": "collaborates_with", "from": "triage-analyst", "to": "remediation-planner"},
+    {"type": "collaborates_with", "from": "remediation-planner", "to": "verifier"},
+    {"type": "critiques", "from": "verifier", "to": "triage-analyst"},
+    {"type": "critiques", "from": "triage-analyst", "to": "verifier"},
+    {"type": "escalates_to", "from": "verifier", "to": "dispatcher"},
+    {"type": "specializes", "from": "remediation-drafting", "to": "log-analysis"},
+    {"type": "contradicts", "from": "runbook-intake", "to": "incident-report-472"}
+  ]
+}

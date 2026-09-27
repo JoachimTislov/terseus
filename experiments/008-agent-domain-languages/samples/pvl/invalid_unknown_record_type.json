@@ -1,0 +1,15 @@
+{
+  "expect_error": "unknown record type",
+  "document": {
+    "schema": "pvl/1",
+    "name": "broken",
+    "agents": [],
+    "activities": [],
+    "entities": [
+      {"id": "artifact"}
+    ],
+    "records": [
+      {"type": "was_mirrored_by", "entity": "artifact", "activity": "sync"}
+    ]
+  }
+}

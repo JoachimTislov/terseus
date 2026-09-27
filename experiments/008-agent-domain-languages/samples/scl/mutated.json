@@ -1,0 +1,54 @@
+{
+  "schema": "scl/1",
+  "name": "incident-472-contracts",
+  "contracts": [
+    {
+      "id": "incident",
+      "extends": null,
+      "fields": {
+        "incident_id": {"type": "string", "required": true},
+        "severity": {"type": "enum", "values": ["sev1", "sev2", "sev3"], "required": true},
+        "summary": {"type": "string", "required": false},
+        "detected_at": {"type": "string", "required": true}
+      },
+      "x-review": {"owner": "sre-team"}
+    },
+    {
+      "id": "alert",
+      "extends": null,
+      "fields": {
+        "alert_id": {"type": "string", "required": false},
+        "source": {"type": "string", "required": false},
+        "fingerprint": {"type": "string", "required": false}
+      },
+      "x-pager": {"channel": "critical"}
+    },
+    {
+      "id": "assessment",
+      "extends": "incident",
+      "fields": {
+        "assessed_by": {"type": "string", "required": true},
+        "log_evidence": {"type": "ref", "target": "alert", "required": false}
+      },
+      "x-confidence": {"calibration": "pending"}
+    },
+    {
+      "id": "action_item",
+      "extends": "assessment",
+      "fields": {
+        "action": {"type": "string", "required": true},
+        "owner": {"type": "string", "required": true},
+        "blocked_by": {"type": "ref", "target": "action_item", "required": false}
+      }
+    },
+    {
+      "id": "postmortem",
+      "extends": "incident",
+      "fields": {
+        "blameless": {"type": "string", "required": true},
+        "drafted_by": {"type": "string", "required": true}
+      },
+      "x-signoff": {"required": true}
+    }
+  ]
+}

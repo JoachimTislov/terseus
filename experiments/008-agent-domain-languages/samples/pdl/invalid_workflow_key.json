@@ -1,0 +1,15 @@
+{
+  "expect_error": "forbidden workflow key 'priority'",
+  "document": {
+    "schema": "pdl/1",
+    "name": "broken",
+    "rules": [
+      {
+        "id": "deny-all",
+        "decision": "deny",
+        "priority": 1,
+        "when": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "expect_error": "extends cycle",
+  "document": {
+    "schema": "scl/1",
+    "name": "broken",
+    "contracts": [
+      {
+        "id": "incident",
+        "extends": "assessment",
+        "fields": {"incident_id": {"type": "string", "required": true}}
+      },
+      {
+        "id": "assessment",
+        "extends": "incident",
+        "fields": {"assessed_by": {"type": "string", "required": true}}
+      }
+    ]
+  }
+}

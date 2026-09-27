@@ -1,0 +1,16 @@
+{
+  "expect_error": "unknown relation type",
+  "document": {
+    "schema": "anl/1",
+    "network": "broken",
+    "agents": [
+      {"id": "a", "type": "llm", "capabilities": []},
+      {"id": "b", "type": "llm", "capabilities": []}
+    ],
+    "capabilities": [],
+    "evidence": [],
+    "relations": [
+      {"type": "reports_to", "from": "a", "to": "b"}
+    ]
+  }
+}

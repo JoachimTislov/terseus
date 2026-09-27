@@ -1,0 +1,20 @@
+{
+  "expect_error": "duplicate record",
+  "document": {
+    "schema": "pvl/1",
+    "name": "broken",
+    "agents": [
+      {"id": "triage-analyst", "role": "investigator"}
+    ],
+    "activities": [
+      {"id": "log-analysis", "performed_by": "triage-analyst"}
+    ],
+    "entities": [
+      {"id": "incident-report-472"}
+    ],
+    "records": [
+      {"type": "used", "activity": "log-analysis", "entity": "incident-report-472"},
+      {"type": "used", "activity": "log-analysis", "entity": "incident-report-472"}
+    ]
+  }
+}

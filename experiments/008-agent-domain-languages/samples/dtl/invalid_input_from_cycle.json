@@ -1,0 +1,35 @@
+{
+  "expect_error": "input_from cycle",
+  "document": {
+    "schema": "dtl/1",
+    "name": "broken",
+    "tables": [
+      {
+        "id": "t1",
+        "hit_policy": "unique",
+        "inputs": [
+          {"name": "x", "type": "enum", "values": ["a", "b"], "input_from": "t2.out"}
+        ],
+        "outputs": [
+          {"name": "out", "type": "enum", "values": ["a", "b"]}
+        ],
+        "rules": [
+          {"in": ["a"], "out": ["a"]}
+        ]
+      },
+      {
+        "id": "t2",
+        "hit_policy": "unique",
+        "inputs": [
+          {"name": "x", "type": "enum", "values": ["a", "b"], "input_from": "t1.out"}
+        ],
+        "outputs": [
+          {"name": "out", "type": "enum", "values": ["a", "b"]}
+        ],
+        "rules": [
+          {"in": ["a"], "out": ["a"]}
+        ]
+      }
+    ]
+  }
+}

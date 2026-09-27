@@ -1,0 +1,17 @@
+{
+  "expect_error": "ref target",
+  "document": {
+    "schema": "scl/1",
+    "name": "broken",
+    "contracts": [
+      {
+        "id": "assessment",
+        "extends": null,
+        "fields": {
+          "assessed_by": {"type": "string", "required": true},
+          "log_evidence": {"type": "ref", "target": "missing", "required": false}
+        }
+      }
+    ]
+  }
+}

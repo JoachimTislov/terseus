@@ -1,0 +1,17 @@
+{
+  "expect_error": "derivation cycle through entity",
+  "document": {
+    "schema": "pvl/1",
+    "name": "broken",
+    "agents": [],
+    "activities": [],
+    "entities": [
+      {"id": "draft-a"},
+      {"id": "draft-b"}
+    ],
+    "records": [
+      {"type": "was_derived_from", "entity": "draft-a", "used": "draft-b"},
+      {"type": "was_derived_from", "entity": "draft-b", "used": "draft-a"}
+    ]
+  }
+}

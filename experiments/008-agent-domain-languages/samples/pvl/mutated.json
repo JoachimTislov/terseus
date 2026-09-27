@@ -1,0 +1,39 @@
+{
+  "schema": "pvl/1",
+  "name": "incident-472-provenance",
+  "agents": [
+    {"id": "dispatcher", "role": "coordinator"},
+    {"id": "triage-analyst", "role": "investigator"},
+    {"id": "remediation-planner", "role": "planner"},
+    {"id": "verifier", "role": "auditor"}
+  ],
+  "activities": [
+    {"id": "intake", "performed_by": "dispatcher"},
+    {"id": "log-analysis", "performed_by": "triage-analyst"},
+    {"id": "drafting", "performed_by": "remediation-planner"},
+    {"id": "estimation", "performed_by": "remediation-planner"}
+  ],
+  "entities": [
+    {"id": "incident-report-472", "attributes": {"source": "log archive"}},
+    {"id": "assessment"},
+    {"id": "remediation-plan"},
+    {"id": "remediation-draft"},
+    {"id": "verification-transcript"},
+    {"id": "cost-estimate", "attributes": {"currency": "USD"}}
+  ],
+  "records": [
+    {"type": "used", "activity": "log-analysis", "entity": "incident-report-472"},
+    {"type": "used", "activity": "drafting", "entity": "assessment"},
+    {"type": "was_generated_by", "entity": "assessment", "activity": "log-analysis"},
+    {"type": "was_generated_by", "entity": "remediation-plan", "activity": "drafting"},
+    {"type": "was_generated_by", "entity": "remediation-draft", "activity": "drafting"},
+    {"type": "was_generated_by", "entity": "cost-estimate", "activity": "estimation"},
+    {"type": "was_derived_from", "entity": "assessment", "used": "incident-report-472"},
+    {"type": "was_derived_from", "entity": "remediation-plan", "used": "assessment"},
+    {"type": "was_derived_from", "entity": "remediation-draft", "used": "remediation-plan"},
+    {"type": "was_derived_from", "entity": "cost-estimate", "used": "remediation-plan"},
+    {"type": "was_attributed_to", "entity": "assessment", "agent": "triage-analyst"},
+    {"type": "was_attributed_to", "entity": "remediation-plan", "agent": "remediation-planner"},
+    {"type": "acted_on_behalf_of", "agent": "verifier", "responsible": "dispatcher", "activity": "intake"}
+  ]
+}

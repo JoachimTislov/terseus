@@ -1,0 +1,45 @@
+{
+  "schema": "drl/1",
+  "name": "incident-472-desired-state",
+  "resources": [
+    {
+      "id": "incident-472",
+      "kind": "Incident",
+      "desired": {"severity": "sev2", "status": "mitigated"},
+      "observed": {"severity": "sev2", "status": "open"},
+      "depends_on": [],
+      "evidence": "incident-report-472",
+      "labels": {"team": "platform", "domain": "checkout"}
+    },
+    {
+      "id": "mitigation-plan",
+      "kind": "ActionItem",
+      "desired": {"state": "executed"},
+      "observed": {"state": "blocked"},
+      "depends_on": ["svc-checkout"]
+    },
+    {
+      "id": "postmortem-draft",
+      "kind": "Document",
+      "desired": {"state": "published"},
+      "observed": {"state": "draft"},
+      "depends_on": ["incident-472"],
+      "evidence": "handbook-7.3"
+    },
+    {
+      "id": "svc-checkout",
+      "kind": "Service",
+      "desired": {"availability": "healthy", "error_rate": 0.01},
+      "observed": {"availability": "degraded", "error_rate": 0.35},
+      "depends_on": [],
+      "annotations": {"runbook": "runbook-checkout-9"}
+    },
+    {
+      "id": "triage-checklist",
+      "kind": "Runbook",
+      "desired": {"state": "followed"},
+      "observed": {"state": "followed"},
+      "depends_on": []
+    }
+  ]
+}

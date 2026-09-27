@@ -1,0 +1,27 @@
+{
+  "expect_error": "dependency cycle",
+  "document": {
+    "schema": "drl/1",
+    "name": "broken",
+    "resources": [
+      {
+        "id": "a",
+        "kind": "Task",
+        "desired": {"state": "done"},
+        "depends_on": ["b"]
+      },
+      {
+        "id": "b",
+        "kind": "Task",
+        "desired": {"state": "done"},
+        "depends_on": ["c"]
+      },
+      {
+        "id": "c",
+        "kind": "Task",
+        "desired": {"state": "done"},
+        "depends_on": ["a"]
+      }
+    ]
+  }
+}

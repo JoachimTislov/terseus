@@ -1,0 +1,17 @@
+{
+  "expect_error": "cycle in acyclic relation escalates_to",
+  "document": {
+    "schema": "anl/1",
+    "network": "broken",
+    "agents": [
+      {"id": "a", "type": "llm", "capabilities": []},
+      {"id": "b", "type": "llm", "capabilities": []}
+    ],
+    "capabilities": [],
+    "evidence": [],
+    "relations": [
+      {"type": "escalates_to", "from": "a", "to": "b"},
+      {"type": "escalates_to", "from": "b", "to": "a"}
+    ]
+  }
+}

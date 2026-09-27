@@ -1,0 +1,16 @@
+{
+  "expect_error": "is not a known activity",
+  "document": {
+    "schema": "pvl/1",
+    "name": "broken",
+    "agents": [
+      {"id": "verifier", "role": "auditor"},
+      {"id": "dispatcher", "role": "coordinator"}
+    ],
+    "activities": [],
+    "entities": [],
+    "records": [
+      {"type": "acted_on_behalf_of", "agent": "verifier", "responsible": "dispatcher", "activity": "intake"}
+    ]
+  }
+}
