@@ -1,0 +1,52 @@
+{
+  "experiment": "007-4gl-language-comparison",
+  "pinned_projects": {
+    "common-tools": "58246521116c7a2a0fd6213613f0e91d4ed43e5f",
+    "lite-jnc": "e6066394f27fa5bbc53988445997af34e8744345",
+    "foodsavr": "3e3fd20df20560e17844272bf3bd8c63d77f671d"
+  },
+  "runs": [
+    {
+      "runner": "codex",
+      "model": "gpt-5.6-sol",
+      "wall_time_seconds": 126.534,
+      "final_report_words": 2384,
+      "input_tokens": 159237,
+      "output_tokens": 6294,
+      "reasoning_output_tokens": 809,
+      "valid_json_appendix": true
+    },
+    {
+      "runner": "vibe",
+      "model": "mistral-medium-3.5",
+      "wall_time_seconds": 68.999,
+      "final_report_words": 3348,
+      "input_tokens": null,
+      "output_tokens": null,
+      "reasoning_output_tokens": null,
+      "valid_json_appendix": true
+    },
+    {
+      "runner": "astra",
+      "cli_model": "gpt-6-astra",
+      "reasoning_effort": "xhigh",
+      "wall_time_seconds": 366.673,
+      "final_report_words": 2392,
+      "input_tokens": 1061503,
+      "output_tokens": 10613,
+      "reasoning_output_tokens": 1869,
+      "valid_json_appendix": true
+    }
+  ],
+  "decision": "Use a responsibility-specific language stack and test only a constrained typed-component kernel; do not adopt a universal 4GL.",
+  "language_stack": {
+    "data": "SQL",
+    "api": "OpenAPI and/or GraphQL",
+    "messages": "Protocol Buffers",
+    "infrastructure": "Terraform/HCL or Kubernetes CRDs",
+    "decisions": "DMN-style tables",
+    "workflows": "BPMN-style models or typed code",
+    "custom_boundary": "L1 typed components with bounded composition"
+  },
+  "next_experiment": "Implement and compare a FoodSavr GroceryProvider/ProviderSpec L1 seam against the concrete baseline before introducing recursive L2."
+}

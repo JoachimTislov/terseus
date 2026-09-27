@@ -1,0 +1,325 @@
+## 1. Observed system boundaries
+
+Scope: the three pinned systems named by Experiment 006. `006-abstraction-level-comparison` is study metadata, not a fourth system.
+
+| Project | Revision | Observed stable boundary | Important edge case |
+|---|---|---|---|
+| `006-common-tools` | `5824652…e5f` | CLI arguments and `upload_dir`/`delete_remote_directory` interacting with an FTP-like client | Remote paths require trailing `/`; deletion distinguishes files from directories by catching an untyped exception |
+| `006-lite-jnc` | `e606639…4345` | Java-subset lexer/parser producing an internal AST, followed by target selection | Fault-tolerant lexing, inverse chained references (`print <- out <- System`), partial/unclosed syntax, and unfinished backends |
+| `006-foodsavr` | `3e3fd20…671d` | Dart repository interfaces, `Product`, provider clients, import service, and generated `freezed`/JSON bindings | Provider-specific headers, environment-key endpoints, nested receipt traversal, nullable fields, and date-derived product status |
+
+Observed implementation layers:
+
+- Schema/IDL: Dart models and repository interfaces; Go AST structures. There is no authoritative SQL, GraphQL, OpenAPI, or Protobuf schema in the snapshots.
+- Query: HTTP `fetch` and Firebase repository operations. SQL/GraphQL query semantics are absent.
+- Workflow: recursive FTP traversal; lexer/parser state transitions; OAuth/import/provider iteration.
+- Infrastructure: GitHub Actions and Flutter/Firebase configuration exist, but no observed Terraform or Kubernetes definition.
+- Implementation: Python, Go, and Dart contain the behavior that resolves ambiguity and edge cases.
+
+Validation performed:
+
+- `006-lite-jnc`: `go test ./...` passed. Most packages reported no test files; the parser result was cached and said “no tests to run.” This validates compilation/test discovery, not compiler correctness.
+- `006-common-tools`: `python -m unittest -v test_ftp_client.py` did not start tests because `ftpretty` is unavailable.
+- `006-foodsavr`: Flutter and Dart executables exist, but no test was run because the project’s checks can generate or modify repository artifacts.
+
+No files or network resources were changed.
+
+## 2. Language families and semantic centers
+
+All assessments below are estimates unless explicitly marked observed.
+
+| Family | Semantic center | Generated/projection boundary | Extension mechanism | Versioning model | Verification strength | Likely escape hatch |
+|---|---|---|---|---|---|---|
+| SQL | Relations, constraints, transactions, relational queries | DDL/migrations → physical schema; queries → plans/results | New tables, columns, views, functions, dialect extensions | Ordered migrations plus compatibility windows | Strong for stored invariants; weaker for external behavior | Procedures, application code, JSON columns |
+| GraphQL | Typed client-selected API graph | Schema/resolvers → runtime API; operations → response shapes/bindings | New types/fields/directives/resolvers | Additive evolution, deprecation, persisted-operation coordination | Strong shape validation; resolver semantics remain code | Custom scalars/directives and resolver code |
+| OpenAPI | HTTP resource/operation contract | Contract → clients, servers, validators, documentation | Paths, schemas, callbacks, vendor extensions | Versioned documents and additive compatibility discipline | Strong syntax/shape checks; limited business semantics | `x-*`, free-form objects, handwritten adapters |
+| Protobuf/IDL | Versioned messages and service signatures | IDL → language bindings and wire codecs | New fields/services, `oneof`, custom options | Stable field numbers, reserved removals, compatibility checks | Strong wire and type verification | `Any`, bytes, custom options, implementation code |
+| HCL/Kubernetes resources | Desired infrastructure/resource state | Declarations → provider/controller reconciliation | Providers, modules, CRDs/controllers | Provider/API versions, state/schema migrations | Strong structural validation; eventual runtime semantics | Provisioners, scripts, operators |
+| BPMN/DMN | Process orchestration and decision tables | Model → engine-executed workflow/decisions | Tasks, gateways, subprocesses, extension elements | Versioned deployed definitions and instance migration policy | Strong flow/table validation when engine-backed | Script/service task or custom worker |
+| Constrained Terseus kernel | Typed components, contracts, evidence, provenance, bounded composition | Kernel declaration → host bindings and deterministic expansion trace | Registered component/contract kinds under explicit compatibility rules | Kernel/schema version plus component semantic versions | Potentially strong for composition; implementation proof remains delegated | Explicit typed `foreign` component |
+
+SQL and GraphQL contain query languages but answer different questions. OpenAPI and Protobuf describe boundaries but not implementations. BPMN/DMN describes orchestration, while HCL/Kubernetes describes reconciled desired state.
+
+## 3. Capability matrix
+
+Each tuple is an estimated 0–4 score for the five required tasks:
+
+`stable core / new provider or implementation / cross-cutting change / workflow / visible edge case`
+
+| Family | common-tools | lite-jnc | FoodSavr |
+|---|---:|---:|---:|
+| SQL | `0/0/0/1/0` | `0/0/1/0/0` | `4/3/3/1/2` |
+| GraphQL | `0/1/1/1/1` | `1/2/2/1/1` | `3/3/3/2/2` |
+| OpenAPI | `1/2/1/1/2` | `1/2/1/1/1` | `4/4/3/2/3` |
+| Protobuf/IDL | `1/2/2/1/1` | `3/4/3/2/2` | `3/3/3/1/2` |
+| HCL/Kubernetes | `1/2/1/2/1` | `1/2/1/2/1` | `2/2/2/2/1` |
+| BPMN/DMN | `2/2/1/4/3` | `1/2/1/3/2` | `2/3/2/4/3` |
+| Terseus kernel | `2/3/2/3/4` | `3/4/3/3/4` | `3/4/3/4/4` |
+
+The kernel scores assume it delegates leaf behavior instead of attempting to encode it.
+
+Estimated general qualities, ordered as semantic fidelity, extensibility, change-locality, verification, reviewability, compression, escape-hatch quality:
+
+| Family | Scores |
+|---|---|
+| SQL | `4/3/3/4/4/3/3` |
+| GraphQL | `3/4/3/3/4/3/3` |
+| OpenAPI | `3/4/4/3/4/3/4` |
+| Protobuf/IDL | `3/4/4/4/4/3/3` |
+| HCL/Kubernetes | `4/4/3/3/3/4/2` |
+| BPMN/DMN | `3/3/3/3/3/3/4` |
+| Terseus kernel | `3/4/4/3/3/4/4` |
+
+These scores are judgment-based, not measurements.
+
+## 4. Extensibility and versioning stress
+
+`common-tools`:
+
+1. Core boundary: CLI plus transport operations remains clearest in Python.
+2. New implementation: an `UploadTransport` port could isolate FTP/SFTP; OpenAPI and Protobuf add little unless it becomes a service.
+3. Cross-cutting path change: typed path normalization localizes the trailing-slash invariant better than a general DSL.
+4. Workflow: BPMN can show delete-then-upload, but recursive directory behavior is more reviewable in code.
+5. Edge case: preserve the provider’s file-versus-directory error explicitly; a generic “delete tree” node would hide it.
+
+`lite-jnc`:
+
+1. Core boundary: tokens, source positions, AST, diagnostics, and backend result form a useful IDL-shaped seam.
+2. New backend: a typed backend registry localizes target addition.
+3. AST changes: Protobuf provides compatibility discipline, but only after the AST stabilizes; premature field-number commitments would impede parser evolution.
+4. Workflow: bounded stage composition can express lex → parse → validate → emit.
+5. Edge case: recovery, partial syntax, reference direction, and diagnostic position remain Go semantics.
+
+`FoodSavr`:
+
+1. Core boundary: OpenAPI best describes provider HTTP operations; SQL best describes the planned relational persistence model; Dart models remain application semantics.
+2. New provider: provider metadata can be declarative, while response mapping stays in a typed adapter.
+3. Product-shape change: SQL migrations, API schemas, generated Dart models, Firebase projections, and UI require coordinated versions—not one universal schema.
+4. Workflow: OAuth/import/normalize/persist is BPMN-shaped; product classification rules are plausible DMN.
+5. Edge case: Rema subscription headers, environment variables, null receipt rows, and provider-specific traversal must remain exposed adapter logic.
+
+## 5. Best-fit language stack per project
+
+| Project | Best fit | Why |
+|---|---|---|
+| common-tools | Python implementation + a small typed transport port | The implementation is smaller than any useful 4GL model. Add BPMN only if deployment orchestration becomes independently operated. |
+| lite-jnc | Go implementation + typed AST/backend IDL; optional Protobuf at a process boundary; shallow kernel pipeline | Its stable opportunity is component typing, not declarative parsing or code generation. |
+| FoodSavr | OpenAPI for provider HTTP contracts + SQL/migrations for relational storage + BPMN/DMN for import flow/decisions + generated Dart bindings + handwritten adapters | Each language owns a natural semantic center while provider quirks and UI rules remain code. |
+
+GraphQL is appropriate only if FoodSavr actually needs a client-selectable graph API. Kubernetes/HCL is appropriate only for deployable backend infrastructure. Neither should be introduced solely for representational uniformity.
+
+## 6. Hybrid custom kernel design
+
+A minimal kernel:
+
+```text
+component ProviderImport @1.2.0 {
+  port input  auth: AuthContext
+  port output products: List<Product@2>
+
+  contract Authorized {
+    pre  auth.user_id != null
+    post products.all(p => p.user_id == auth.user_id)
+  }
+
+  evidence import_tests {
+    check: "provider-import-contract"
+    source_digest: sha256
+    dependency_digest: sha256
+  }
+
+  implementation foreign dart "RemaClient.getProducts"
+
+  compose ImportFlow(depth=2) {
+    call FetchHeads
+    foreach head decreasing remaining_heads {
+      call FetchRows
+      call NormalizeProduct
+    }
+  }
+}
+```
+
+Required kernel entities:
+
+- `component`: identity, version, implementation/projection, and owned ports.
+- `port`: named input/output with a versioned type.
+- `contract`: typed preconditions, postconditions, compatibility, and declared side effects.
+- `evidence`: check identity, result, tool version, source/dependency digests, and timestamp.
+- `composition`: ordered, parallel, or bounded branching bindings between compatible ports.
+- `version`: kernel version, component semantic version, and referenced contract/type versions.
+- `measure`: a finite recursion witness.
+
+Composition is accepted only when every cycle strictly decreases a lexicographic natural-number measure such as:
+
+```text
+(remaining_depth, remaining_items, remaining_retries)
+```
+
+Unknown decrease, integer underflow, dynamically created unbounded work, and undeclared recursion are rejected. Projection emits an expansion trace linking every generated or invoked artifact to its declaration and evidence. `foreign` is deliberately visible and typed; it is not presented as verified kernel semantics.
+
+## 7. What not to unify
+
+Do not unify:
+
+- relational constraints with API field availability;
+- GraphQL selection semantics with SQL query execution;
+- HTTP status/retry/auth behavior with Protobuf message compatibility;
+- desired-state reconciliation with finite workflow execution;
+- compiler recovery and code generation with data-only declarations;
+- UI localization, clocks, Firebase encoding, or provider quirks into a universal `Product` schema;
+- FTP exception behavior into a generic transport node lacking an error algebra;
+- generated artifacts and their authoritative source;
+- evidence that a component was checked with proof that its external dependency behaves correctly.
+
+One canonical meta-schema would create synchronized projections but would not remove these semantic differences.
+
+## 8. Verification and provenance
+
+Verification should be layered:
+
+1. Parse and type-check each source language with its native tooling.
+2. Run compatibility checks for migrations, OpenAPI, GraphQL, or Protobuf.
+3. Validate kernel port bindings, contracts, versions, and finite measures.
+4. Generate projections deterministically.
+5. Run host-language tests and provider contract tests.
+6. Record declaration digest, generator/tool versions, source revision, dependency lock digest, exact command, exit status, and produced artifact digest.
+
+Evidence expires when any recorded input changes. A passing schema check cannot substitute for adapter tests, migration tests, workflow tests, or compiler output tests.
+
+Observed evidence in this review is limited to the commands reported in section 1. No FoodSavr behavior, FTP test behavior, provider API, generated binding, SQL migration, GraphQL schema, OpenAPI document, or kernel implementation was validated.
+
+## 9. Buildable language experiment
+
+Use FoodSavr’s provider-import seam.
+
+Baseline:
+
+- Current files: `provider_model.dart`, `base_client.dart`, `rema_client.dart`, `coop_client.dart`, `import_service.dart`, `product_model.dart`, and `injection.dart`.
+- Record the files and switch branches touched when adding a fixture-only third provider.
+- Run the existing Flutter suite in a writable experimental worktree; this report did not run it.
+
+Treatment:
+
+- Add `provider_import.openapi.yaml` describing provider-neutral operations and typed normalized products.
+- Add a small kernel file declaring `ProviderAdapter`, ports, contracts, evidence, and bounded import composition.
+- Generate only API DTO/binding stubs into an explicitly generated directory.
+- Keep provider mapping and authentication in handwritten Dart adapters.
+- Add `test/features/third_party_integration/provider_contract_test.dart`, `provider_registry_test.dart`, and `import_workflow_test.dart`.
+- Use fixture HTTP responses; no live provider dependency.
+
+Acceptance criteria:
+
+- A third provider requires one registry entry, one adapter, fixtures, and tests; no edit to `Client` or `ImportService` dispatch.
+- Missing auth, malformed/null rows, custom headers, and endpoint suffixes remain directly testable.
+- Every provider has operation, adapter, and fixture coverage.
+- Regeneration is deterministic and leaves `git diff` empty on a second run.
+- Existing tests still pass.
+- The treatment reduces provider-addition touch points without increasing total handwritten-plus-declarative lines by more than 25% [estimated threshold].
+- Reviewers can trace every generated binding to source declaration and generator version.
+- Failure of any criterion counts against adopting the kernel.
+
+## 10. Decision and falsifiers
+
+Decision: no existing 4GL family consistently represents all three systems without semantic loss. The defensible approach is a complementary stack, with a small custom kernel only for typed composition, contract attachment, evidence, and provenance. Leaf implementation semantics remain in Python, Go, or Dart.
+
+Falsifiers for the custom kernel:
+
+1. Adding the fixture third provider touches as many handwritten dispatch sites as baseline or increases total change size by more than 25% without stronger checks.
+2. A real project edge case requires untyped metadata, hidden code generation, or an unrestricted script node to pass through the kernel.
+3. Native OpenAPI/Protobuf/BPMN tooling expresses the same composition and provenance with equal or better locality, making the kernel redundant.
+4. Developers cannot identify the authoritative source or trace a runtime failure through the expansion record within the baseline debugging time.
+5. Finite-measure restrictions reject required workflows, or accepted compositions can still create unbounded work.
+6. Kernel checks pass while host contract tests repeatedly expose projection drift.
+
+```json
+{
+  "languages": [
+    "SQL",
+    "GraphQL",
+    "OpenAPI",
+    "Protocol Buffers/IDL",
+    "Terraform/HCL or Kubernetes resources",
+    "BPMN/DMN",
+    "constrained Terseus kernel"
+  ],
+  "projects": {
+    "006-common-tools": {
+      "revision": "58246521116c7a2a0fd6213613f0e91d4ed43e5f",
+      "best_fit": "Python implementation plus a small typed transport port"
+    },
+    "006-lite-jnc": {
+      "revision": "e6066394f27fa5bbc53988445997af34e8744345",
+      "best_fit": "Go plus typed AST/backend IDL and shallow pipeline composition"
+    },
+    "006-foodsavr": {
+      "revision": "3e3fd20df20560e17844272bf3bd8c63d77f671d",
+      "best_fit": "OpenAPI plus SQL/migrations plus BPMN/DMN plus Dart adapters"
+    }
+  },
+  "scores": {
+    "dimensions": [
+      "semantic_fidelity",
+      "extensibility",
+      "change_locality",
+      "verification",
+      "reviewability",
+      "compression",
+      "escape_hatch_quality"
+    ],
+    "scale": "0-4; all scores are estimates",
+    "SQL": [4, 3, 3, 4, 4, 3, 3],
+    "GraphQL": [3, 4, 3, 3, 4, 3, 3],
+    "OpenAPI": [3, 4, 4, 3, 4, 3, 4],
+    "Protobuf_IDL": [3, 4, 4, 4, 4, 3, 3],
+    "HCL_Kubernetes": [4, 4, 3, 3, 3, 4, 2],
+    "BPMN_DMN": [3, 3, 3, 3, 3, 3, 4],
+    "Terseus_kernel": [3, 4, 4, 3, 3, 4, 4]
+  },
+  "hybrid_kernel": {
+    "entities": [
+      "typed component",
+      "port",
+      "contract",
+      "evidence",
+      "composition",
+      "version"
+    ],
+    "finite_recursion_measure": [
+      "remaining_depth",
+      "remaining_items",
+      "remaining_retries"
+    ],
+    "escape_hatch": "explicit typed foreign component",
+    "projection": "deterministic expansion trace with source and tool digests"
+  },
+  "falsifiers": [
+    "Provider addition is no more local than baseline or exceeds the 25 percent estimated overhead threshold without stronger verification.",
+    "Required edge cases need an untyped or unrestricted escape hatch.",
+    "Existing native language tooling provides equivalent composition and provenance more simply.",
+    "Expansion provenance does not improve debugging traceability.",
+    "Finite measures reject necessary flows or fail to prevent unbounded work.",
+    "Kernel validation repeatedly misses projection drift found by host tests."
+  ],
+  "next_experiment": {
+    "project": "006-foodsavr",
+    "baseline": "current provider clients and ImportService dispatch",
+    "treatment": "OpenAPI provider contract plus bounded kernel registry and handwritten Dart adapters",
+    "tests": [
+      "provider_contract_test.dart",
+      "provider_registry_test.dart",
+      "import_workflow_test.dart"
+    ],
+    "primary_acceptance": "add a fixture-only third provider without changing Client or ImportService dispatch"
+  },
+  "unsupported_claims": [
+    "FoodSavr tests pass",
+    "common-tools tests pass",
+    "live provider APIs conform to proposed contracts",
+    "generated bindings are behaviorally equivalent",
+    "the estimated scores predict measured developer effort",
+    "the custom kernel is cheaper than native tooling",
+    "a relational migration from Firebase is feasible without implementation evidence"
+  ]
+}
+```

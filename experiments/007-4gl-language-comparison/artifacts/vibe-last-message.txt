@@ -1,0 +1,210 @@
+All evidence gathered. Both `go test` (lite-jnc) and the FTP test suite ran clean of repo modifications. Now I'll compose the report.
+
+---
+
+# 4GL-and-higher language comparison
+
+**Pinned inputs:** `006-common-tools` @ `5824652` (FTP deploy utility, Python), `006-lite-jnc` @ `e606639` (Java-subset parser/transpiler/compiler, Go), `006-foodsavr` (Flutter app; no pinned SHA available in-tree, revision `3e3fd20d` is from `006-abstraction-level-comparison/EXPERIMENT_NOTES.md`, unverified here). All scoring is judgment-based estimate unless a run is cited.
+
+## 1. Observed system boundaries
+
+**006-common-tools/ftp.** 82-line `ftp_client.py` plus 212-line `test_ftp_client.py`. Boundary: `argv` + env (`HOST`, `USERNAME`, `PASSWORD`) in, FTPS server out. Core functions: `upload_dir` (recursive mirror), `delete_remote_directory` (recursive, bare `except`), `parse_flags`. Project-specific edges documented in `ftp/doc.md`: `remote_dist` **must carry a trailing slash**, and `--js-bundle` deletes the remote `assets/` tree first. There is no data schema; the only "contract" is CLI + env.
+
+**006-lite-jnc.** Pipeline `parser.New(path, language)` → `spec.Runner` → either `transpiler.New` or `compiler.New` (`main.go:19-33`). `transpiler/transpiler.go` enumerates six targets (Go, Python, JavaScript, C, CSharp, ELF) behind `Supports()`; `Run()` is unimplemented and `compiler.go` writes an empty file — the pipeline shape exists, projections do not. `parser/types.go` defines the AST (`class`, `method`, `field`, `reference` with inverse chains like `print <- out <- System`). Lexer/parser are hand-rolled state machines (`lexer.go` 488 lines; `parser.go` with `errorLimit: 5`). `Status.md` is a hand-maintained feature-subset matrix. Edge cases: unclosed string literals are unrecoverable until EOF (documented in `README.md` TODOs); `.javaa` fixture extension.
+
+**006-foodsavr.** 116 Dart files, ~11k lines. Interfaces layer (`lib/interfaces/`: `IAuthService`, `IRepository<T, ID>`), DI via `get_it`/`injectable` (`injection.dart`), repositories over Firestore, router-gated auth (`routes/go_router.dart`). The densest change surface is `lib/features/third_party_integration/`: `base_client.dart` (RetryClient, per-provider dotenv keys, token storage), `rema_client.dart`/`coop_client.dart`, freezed models with all-nullable REMA fields and a `name` fallback getter (`transaction_row_model.dart`: `prodtxt1 ?? prodtxt2 ?? 'N/A'`). Tests exist (`test/router_auth_flow_test.dart` with mocktail fakes).
+
+**Read-only checks actually run (2026-09-27):**
+- `go test ./...` in `006-lite-jnc` (Go 1.27.1, network off): all packages compile; `ok parser [no tests to run]` — the only test file (`lexer_internal_test.go`) is entirely commented out. **No executable tests exist in this project.**
+- `006-common-tools/ftp` tests (Python 3.14.7, `ftpretty` stubbed from `/tmp`, `-B` so no bytecode in tree): **9 tests ran, 2 genuine pre-existing failures**:
+  - `test_main_with_js_bundle`: `ftp_client.py` line `args.remote_directory + "assets/"` produces `/remoteassets/` when `remote_directory="/remote"` (no trailing slash); the test expects `/remote/assets`. The trailing-slash invariant in `doc.md` is real and load-bearing, and the current test/implementation disagree about it.
+  - `test_delete_remote_directory_success`: `delete_remote_directory` passes `f.list()` items verbatim to `f.delete()`; the test assumes the implementation joins paths.
+- `006-foodsavr`: no run — `flutter test` requires `pub get` (network, writes `.dart_tool`). **Untested here.**
+
+## 2. Language families and semantic centers
+
+| Language | Semantic center (class) | Generated/projection boundary | Extension mechanism | Versioning model | Verification strength | Likely escape hatch |
+|---|---|---|---|---|---|---|
+| SQL | Relational data semantics; set-at-a-time queries (schema/IDL + query) | DDL is the source of truth; migrations are generated scripts | New tables/columns, views, generated columns | Explicit migration scripts, ordered | Strong locally: constraints, FK/CHECK, plans | Stored procedures — opaque, weak |
+| GraphQL | Typed request/response shape over a graph (query) | Schema → resolvers are handwritten; schema validates client queries | Additive types/fields, `@deprecated` | Continuous, additive-only; deprecations replace versions | Shape-level validation only; behavior unchecked | Custom resolvers (all behavior lives here) |
+| OpenAPI | HTTP contract: paths, methods, status codes, schemas (contract/IDL) | Spec → generated client/server stubs; doc | New paths; `x-` vendor extensions | URL or header versioning; semver of spec | Schema linting, contract tests against implementations | `x-` extensions; hand-written glue |
+| Protocol Buffers | Wire-stable typed message IDL (schema/IDL) | `.proto` → generated bindings per language | New fields with unique tags; `reserved` for removals | Additive, unknown-field tolerant; field tags are the ABI | Strong: compile-time + cross-language compat | `Any`, custom options, surrounding handwritten code |
+| Terraform/HCL, Kubernetes | Desired-state declarative resources with reconciliation/plan (infrastructure) | Manifest → provider/controller reconciles toward state | CRDs (K8s) / providers (TF) | API group versions (`v1beta1`), state files, plan diffs | Plan/dry-run diff; CRD schema validation | Operators/controllers — full 3GL code behind the declaration |
+| BPMN/DMN | Long-running process orchestration; decision tables (workflow/decision) | Diagram → engine executes; service tasks delegate | New lanes/tasks; decision-table rows | Process definition versions, instance pinning | Model checking, simulation — weak on data | Service tasks / delegates: arbitrary code |
+| Terseus kernel | Typed components, ports, contracts, provenance, bounded composition (meta-language) | Declaration → checked projections into the above | New declared components binding to ports | Semver on contracts; compatibility rules kernel-checked | Whatever the target language admits, plus kernel-level checks (ports, evidence, recursion bound) | Explicit `opaque` port: pre-existing handwritten implementation, contract-checked |
+
+Key distinction: schema/IDL languages fix *shape*; query languages fix *data access*; workflow languages fix *ordering and decision points*; infrastructure languages fix *desired state*; none fix *behavior* — behavior always falls to the escape hatch. The kernel's only reason to exist is to make that escape explicit, typed, and evidence-bound.
+
+## 3. Capability matrix
+
+Scores are 0–4 estimates per language, aggregated over the three projects (SF semantic fidelity, Ext extensibility, Chg change-locality, Ver verification, Rev reviewability, Cmp compression, Esc escape-hatch quality). Terseus scores are **design targets, not validated**.
+
+| Language | SF | Ext | Chg | Ver | Rev | Cmp | Esc |
+|---|---|---|---|---|---|---|---|
+| SQL | 2 | 2 | 2 | 3 | 4 | 4 | 2 |
+| GraphQL | 3 | 4 | 3 | 2 | 4 | 3 | 2 |
+| OpenAPI | 3 | 3 | 2 | 3 | 4 | 2 | 3 |
+| Protobuf | 3 | 4 | 3 | 4 | 3 | 4 | 3 |
+| Terraform/K8s | 2 | 4 | 3 | 3 | 3 | 3 | 2 |
+| BPMN/DMN | 2 | 3 | 3 | 2 | 3 | 2 | 3 |
+| Terseus kernel | 3* | 4* | 4* | 3* | 3* | 3* | 4* |
+
+Which of the five tasks each language can express per project (1 core boundary, 2 new provider, 3 cross-cutting change, 4 workflow composition, 5 edge case preserved; "p" = partial, "t" = trivial fit):
+
+| Language | common-tools | lite-jnc | foodsavr |
+|---|---|---|---|
+| SQL | — | — | 1, 3p (persistence schema only; Firestore already chosen) |
+| GraphQL | — | — | 1, 2, 3p (client-facing app API; not for provider ingest) |
+| OpenAPI | — | — | 1, 2, 3 (Rema/Coop REST contracts; env-key headers via extensions) |
+| Protobuf | — | 1, 3, 5p (AST/token IDL; subset grammar versioning) | 1, 3 (REMA transaction rows) |
+| TF/K8s-style | 4, 5 (deploy pipeline as declarative resource; `--js-bundle` as param) | 4t | 4p (emulator/flavor config; not app semantics) |
+| BPMN/DMN | 4 (delete → upload → verify) | 4t | 3p, 4 (import workflow; DMN for match/shelf-life decisions) |
+| Terseus kernel | 1–5 only if kept minimal; likely over-meta | 1, 2, 3, 4, 5p (typed pipeline components) | 1, 2, 3, 4, 5p (bounded to `third_party_integration`) |
+
+## 4. Extensibility and versioning stress
+
+Task-by-task on the leading candidate per project (detailed scores above; all reasoning is static analysis, unverified by execution except where noted):
+
+**common-tools.** (1) Core boundary = the deploy step: a K8s-style resource (or GitHub Actions workflow, which `doc.md` already sketches) expresses it exactly. (2) New provider would mean SFTP/S3 — *not* expressible in the declarative layer; it lands in the Python escape hatch, which is the correct outcome (the 006 study already rejected meta-layers here). (3) Cross-cutting change = the trailing-slash invariant: currently enforced only by prose in `doc.md` and violated by the running test suite (verified failure above). A declarative parameter with a validation schema would have made this a one-line check instead of a documented trap. (4) Workflow: trivial two-step, declarative. (5) The `/remoteassets/` join bug and the `list()`-returns-bare-names assumption are exactly the kind of edge a 4GL would *hide*; they must stay visible in the implementation layer with tests.
+
+**lite-jnc.** (1) The stable boundary is `spec.Runner` plus the AST in `types.go` — a Protobuf-style IDL fits it: `Parser → AST` and `AST → target` become versioned message contracts. (2) New target language = new `Runner` implementation; today that is a map entry plus a struct — already good change-locality; IDL-izing the AST would keep six backends honest about what subset they consume (they currently consume nothing, since `Run()` returns `nil`). (3) Cross-cutting change = a new language feature (say, numeric literals, unchecked in `Status.md`): it ripples tokens → AST → every backend. A versioned grammar/IDL makes the ripple explicit as a schema bump, and `Status.md` becomes derived rather than hand-maintained. (4) Workflow: single-pass; BPMN would be noise. (5) The EOF-only recovery for unclosed strings is algorithmic — it stays in Go, exposed as a documented contract failure mode.
+
+**foodsavr.** (1) Core boundary = `IRepository<T, ID>` and `Client`/`Provider`: OpenAPI for the provider REST contracts, Proto/GraphQL for the app-facing shape. (2) New grocery provider = the extension hot spot: today it means a new client class, freezed models, env keys, DI registration — an OpenAPI spec + a provider declaration table localizes most of this. (3) Cross-cutting change = e.g., making `TransactionRow` fields non-nullable or changing `Product`: Protobuf-style additive versioning plus generated freezed models gives real change-locality. (4) The import workflow (`getReceipts → getTransactionDetails → rows → Product → repository.add`) in `rema_client.dart` is a genuine multi-step composition with per-step failure modes — DMN for row→product matching rules, BPMN or kernel composition for ordering. (5) `name => prodtxt1 ?? prodtxt2 ?? 'N/A'` and per-provider header/env quirks (`Ocp-Apim-Subscription-Key`) must remain explicit overrides, not absorbed into a generic mapping.
+
+## 5. Best-fit language stack per project
+
+| Project | Best-fit stack | Why |
+|---|---|---|
+| common-tools | **K8s/GH-Actions-style declarative deploy resource + Python implementation** | The system *is* an infrastructure step. Schema/query languages have nothing to model. The declarative layer captures steps, params (`--js-bundle`), secrets (`HOST/…`), and — critically — the trailing-slash validation that prose and tests currently disagree on (verified). Everything algorithmic stays Python; a kernel would exceed the 82-line program it describes. |
+| lite-jnc | **Protobuf-style IDL for AST/token contracts + Terseus-kernel-style typed pipeline (lexer→parser→targets) in Go** | The real extension axis is language subset × six targets, which is a versioned-schema problem, not a workflow problem. Backends are unimplemented, so an IDL pin now is cheap and prevents drift when they appear. Hand-rolled state machines stay Go — they are 3GL algorithmic semantics. |
+| foodsavr | **OpenAPI (provider contracts) + Proto/GraphQL (app data shape) + DMN (match/shelf-life rules) + constrained declarative provider registry, with Dart retained for UI and edge cases** | The only project with multiple real providers, a DI seam, and tabular per-provider config — the strongest case for layered 4GLs. The registry slice (`base_client.dart` + two clients + env keys) is the credible kernel-bounded zone, matching the 006 study's L1/L2 seam finding. |
+
+Schema/IDL, query, workflow, infrastructure, and implementation semantics are kept separate: none of these stacks uses one language outside its center.
+
+## 6. Hybrid custom kernel design
+
+Terseus kernel — a constrained declarative layer whose only jobs are binding, versioning, evidence, and bounded composition; it never expresses behavior.
+
+```
+# component declaration (sketch)
+component RemaImport implements IImportService@1 {
+  port in  txs   : schema rema/transaction@1        # typed port w/ schema
+  port out sink  : schema product@2, implements ICollectionRepository@1
+  contract fetch {
+    requires auth.token(provider=Rema)             # precondition
+    ensures  forall row in txs.rows: row.ean != null implies row.ean.isEan13
+  }
+  evidence  test/services/rema_import_test.dart     # must exist and pass
+  version   1.3.0
+}
+
+compose ReceiptPipeline depth<=3 {
+  stage fetch    = RemaImport@1.3
+  stage match    = dmn rules/match_row_to_product@2
+  stage persist  = RepositoryWriter(productRepository)@1
+}
+```
+
+Elements:
+- **Typed component**: name, version, list of typed ports.
+- **Port**: direction + schema reference (schema belongs to an IDL family, not the kernel).
+- **Contract**: requires/ensures predicates over port data; kernel checks syntax and binding, not truth — truth is the evidence's job.
+- **Evidence**: named test/procedure that must exist, pass, and be referenced by the declaration; provenance = declaration hash + pinned source revision (here: git SHA per project, as in the 006 notes).
+- **Composition**: ordered stages, each stage a component bound by contract-compatible ports.
+- **Version**: semver; compatibility rule `consumer.minor <= provider.major`, checked at bind time.
+- **Finite recursion measure**: every `compose` declares `depth<=k`; composition type-checks only if each stage is a leaf component or a compose with strictly smaller measure. Expansion terminates because the measure strictly decreases; the kernel rejects any declaration whose expansion budget exceeds `k` *before* projection. This is a syntactic bound, so termination is decidable.
+
+Projection boundary: the kernel generates bindings/glue (DI registration, client skeletons, stage wiring) and emits a report listing every unbound port and unsatisfied evidence. It generates no behavior. An `opaque` port wraps existing handwritten code (e.g., `upload_dir`) behind the same contract checks. All of this is a design proposal — **nothing here has been implemented or run.**
+
+## 7. What not to unify
+
+- **UI semantics** (foodsavr views/widgets): no listed 4GL expresses widget trees and routing meaningfully; GraphQL covers data fetch shape only.
+- **Lexer/parser state machines** (lite-jnc): algorithmic, fault-tolerance-sensitive; a declarative grammar (ANTLR-style) would be a different, real option, but the kernel must not absorb EOF-only string recovery or the `errorLimit` heuristic.
+- **Business calculations** (foodsavr `utils/shelf_life.dart`): pure functions; DMN can express shelf-life *rules* but not their arithmetic cleanly.
+- **The trailing-slash invariant and `list()` semantics** (common-tools): verified live failures — a unifying layer that silently normalized paths would have masked both bugs. Edge cases must fail loudly in the layer that owns them.
+- **Provider quirks** (foodsavr `Ocp-Apim-Subscription-Key`, nullable REMA fields): absorbed only as explicit, reviewed per-provider overrides — never as generic machinery.
+- **Cross-provider genericity for common-tools**: one FTP script; any kernel use is over-meta (consistent with the 006 L0 verdict).
+
+## 8. Verification and provenance
+
+Actually verified this session (read-only): lite-jnc compiles under `go test ./...` with zero executable tests; common-tools FTP suite: 9 tests, 2 genuine failures on Python 3.14 with `ftpretty` stubbed outside the tree — both failures are pre-existing implementation/test mismatches, not stub artifacts (one is a pure `Mock`-interaction assertion, the other a string-concatenation path bug independent of the stub). Not verified: foodsavr behavior (needs `pub get`/network), any 4GL actually running against any project, and every score in section 3 (estimates).
+
+Kernel provenance requirements if built: every declaration records source revision (git SHA), schema versions, evidence paths, and expansion hash; the projection step refuses to run when evidence is missing or pinned revision differs from the working tree. This mirrors what the 006 experiment did with pinned revisions — provenance is what makes the "custom kernel" claims falsifiable rather than aspirational.
+
+## 9. Buildable language experiment
+
+**Project:** `006-foodsavr`, bounded to `lib/features/third_party_integration/`.
+**Baseline:** current hand-written `base_client.dart` + `rema_client.dart` + `coop_client.dart` + freezed models + DI registration; existing tests `test/router_auth_flow_test.dart`, `test/services/`, `test/models/`.
+**Treatment:** add `providers.terseus.json` (or YAML) declaring per-provider `name`, env keys (`REMA_API_URL`, `REMA_API_SUB_KEY`), base headers, endpoint map, and row schema version; a small expander generates `*_client.dart` skeletons and DI module entries; hand-written overrides live in a `provider_overrides/` directory referenced by the declaration. DMN-style matching rules extracted to a decision table consulted by the import service.
+**Files:** declaration `lib/features/third_party_integration/providers.terseus.json`; expander `tool/gen/expand.dart`; generated output under `lib/features/third_party_integration/generated/`; new tests `test/features/generated_client_test.dart` (contract: headers, env keys, URL assembly) and `test/features/edge_case_test.dart` (asserts `name` fallback stays explicit).
+**Protocol:** run `flutter test` before (baseline) and after (treatment); diff generated vs. hand-written clients; measure (a) lines added to add a fake third provider "Svea" declaration-only, (b) test pass parity, (c) whether the `prodtxt1 ?? prodtxt2` edge survives visibly.
+**Acceptance criteria:** (1) adding provider "Svea" touches only a new declaration + schema file — no edits to base/expander; (2) full existing suite passes unchanged; (3) edge-case test fails if the fallback is moved into the expander; (4) declaration + expander < hand-written code it replaces (meta-size guard). Requires network for `pub get` — not executable in this environment today.
+
+## 10. Decision and falsifiers
+
+Decision: no single 4GL covers any of the three projects. Stacks: declarative-deploy + Python (common-tools), AST IDL + typed pipeline in Go (lite-jnc), layered OpenAPI/Proto/DMN + bounded provider registry in Dart (foodsavr). The Terseus kernel is admissible **only** in the foodsavr registry slice and the lite-jnc pipeline seam, and only as a binding/versioning/evidence layer — never as a behavior language.
+
+Falsifiers — any of these rejects the kernel for the slice in question:
+1. **Meta-size:** declaration + expander code exceeds the hand-written code it replaces for that slice.
+2. **Review distance:** a reviewer shown only the declaration + expansion rules cannot predict projected behavior better than chance (protocol: quiz on three projections).
+3. **Locality:** adding a new provider/target requires editing the expander or kernel core, not just a new declaration.
+4. **Projection equivalence:** generated code fails any existing baseline test, or diverges semantically (headers, env keys, URL assembly) from the hand-written client.
+5. **Recursion bound misfire:** `depth<=k` blocks a legitimate composition (e.g., nested import workflow) or admits any non-terminating expansion.
+
+```json
+{
+  "languages": {
+    "sql": "relational data semantics; migrations generated; escape: stored procedures",
+    "graphql": "typed query/response shape; resolvers handwritten; additive versioning; escape: resolvers",
+    "openapi": "HTTP contract description; stubs generated; escape: x- extensions",
+    "protobuf": "wire-stable typed IDL; bindings generated; additive field-tag versioning; escape: Any/custom options",
+    "terraform_k8s": "declarative desired-state resources; reconcilers/controllers generated-side; escape: operators, local-exec",
+    "bpmn_dmn": "process orchestration and decision tables; engines execute; escape: service tasks",
+    "terseus_kernel": "typed components, ports, contracts, evidence, bounded composition; generates bindings only; escape: opaque ports"
+  },
+  "projects": {
+    "006-common-tools": "python ftp deploy utility @5824652; 82-line client, 9 tests (2 verified failing)",
+    "006-lite-jnc": "go java-subset parser/transpiler/compiler @e606639; pipeline shape present, transpilation unimplemented, zero executable tests",
+    "006-foodsavr": "flutter app, 116 dart files ~11k lines; DI, Firestore, two REST providers, freezed models; untested here"
+  },
+  "scores": {
+    "note": "0-4 aggregate estimates over the three projects; not validated by execution",
+    "sql": {"semantic_fidelity": 2, "extensibility": 2, "change_locality": 2, "verification": 3, "reviewability": 4, "compression": 4, "escape_hatch": 2},
+    "graphql": {"semantic_fidelity": 3, "extensibility": 4, "change_locality": 3, "verification": 2, "reviewability": 4, "compression": 3, "escape_hatch": 2},
+    "openapi": {"semantic_fidelity": 3, "extensibility": 3, "change_locality": 2, "verification": 3, "reviewability": 4, "compression": 2, "escape_hatch": 3},
+    "protobuf": {"semantic_fidelity": 3, "extensibility": 4, "change_locality": 3, "verification": 4, "reviewability": 3, "compression": 4, "escape_hatch": 3},
+    "terraform_k8s": {"semantic_fidelity": 2, "extensibility": 4, "change_locality": 3, "verification": 3, "reviewability": 3, "compression": 3, "escape_hatch": 2},
+    "bpmn_dmn": {"semantic_fidelity": 2, "extensibility": 3, "change_locality": 3, "verification": 2, "reviewability": 3, "compression": 2, "escape_hatch": 3},
+    "terseus_kernel": {"semantic_fidelity": 3, "extensibility": 4, "change_locality": 4, "verification": 3, "reviewability": 3, "compression": 3, "escape_hatch": 4, "status": "design target only"}
+  },
+  "hybrid_kernel": {
+    "elements": ["typed component", "port with schema ref", "contract requires/ensures", "evidence test reference + provenance (git sha, expansion hash)", "ordered composition", "semver with consumer.minor<=provider.major", "finite recursion measure depth<=k strictly decreasing per nesting"],
+    "projection": "bindings/glue only, never behavior; opaque ports wrap existing code",
+    "admissible_slices": ["foodsavr third_party_integration registry", "lite-jnc pipeline seam"],
+    "rejected_slices": ["common-tools (over-meta)", "UI", "lexer/parser algorithms", "shelf-life arithmetic"]
+  },
+  "falsifiers": [
+    "meta-size: declaration plus expander exceeds hand-written code replaced",
+    "review distance: declaration plus rules insufficient to predict projected behavior",
+    "locality: new provider requires kernel-core edits instead of a new declaration",
+    "projection equivalence: generated code fails baseline tests or diverges on headers/env/URL semantics",
+    "recursion bound misfire: depth<=k blocks legitimate nesting or admits non-termination"
+  ],
+  "next_experiment": {
+    "project": "006-foodsavr/third_party_integration",
+    "baseline": "hand-written base_client + rema/coop clients, existing flutter test suite",
+    "treatment": "providers.terseus.json declaration + tool/gen/expand.dart generating client skeletons and DI entries, overrides in provider_overrides/, decision table for row matching",
+    "tests": "test/features/generated_client_test.dart, test/features/edge_case_test.dart, plus existing suite",
+    "acceptance": ["Svea provider added declaration-only", "suite passes unchanged", "prodtxt fallback edge stays visible and test-enforced", "meta-size guard holds"],
+    "blocker": "requires pub get / network; not executable in this environment"
+  },
+  "unsupported_claims": [
+    "all 0-4 scores are estimates, not measured",
+    "foodsavr tests never run here (no network for pub get)",
+    "terseus kernel is unimplemented; no code was written or executed",
+    "foodsavr pinned revision taken from 006 experiment notes, not verified against the tree",
+    "ftp test results obtained with ftpretty stubbed (real package absent); the two failures are judged pre-existing from mock/concatenation semantics, independent of the stub",
+    "lite-jnc 'ok' test result reflects zero executable tests, not passing assertions"
+  ]
+}
+```

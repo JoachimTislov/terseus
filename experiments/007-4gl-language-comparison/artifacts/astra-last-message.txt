@@ -1,0 +1,226 @@
+## 1. Executive decision
+
+**Proceed with a bounded comparative implementation experiment. Do not adopt a universal 4GL or a general-purpose Terseus language.**
+
+Experiments 001–007 support matching languages to specific responsibilities: data, API contracts, messages, workflows, and infrastructure. They do **not** demonstrate that any evaluated family preserves whole-system meaning and extensibility across the three pinned projects.
+
+A hybrid custom kernel is justified **as a hypothesis to test**: a small layer connecting typed components, versions, contracts, and evidence. Its advantage over ordinary interfaces, registries, and existing language tooling remains unverified.
+
+**This is a synthesis report, not proof of implementation correctness.** This review used local repository files and recorded artifacts only, made no file changes, used no network access, and ran no implementation tests.
+
+## 2. Progress against the research objective
+
+The program has moved from a broad abstraction proposition to concrete candidate boundaries and falsifiable implementation work:
+
+- **Consistency:** 001 exposed a concrete failure of cross-target contract consistency. Later studies identified semantic boundaries that a shared representation must preserve.
+- **Expressiveness:** 006–007 mapped useful responsibilities to complementary language families. This is repository-grounded analysis, not executable language validation.
+- **Extensibility:** Provider addition, backend replacement, data-shape changes, and composition were examined conceptually. No controlled implementation demonstrated lower change effort or fewer regressions.
+- **Hybrid justification:** Repeated proposals identify a plausible coordination layer, but none establishes that its benefits exceed its tooling and maintenance costs.
+- **Verification:** Runner observability improved; semantic verification remains limited.
+
+The original research obligations remain substantially open. Controlled maintenance baselines and subsequent-change measurements are missing; semantic fidelity, abstraction-risk controls, and separation of representation benefits from AI assistance are only partially developed.
+
+The [progress registry](/home/joachim/projects/terseus/research/progress.json) still contains the September 15 v0.1.1 snapshot. Its score measures evidence coverage, not scientific completion, and should not be presented as a current assessment after 007.
+
+## 3. Evidence ledger
+
+| Experiment | Evidence class and observed contribution | What it does not establish |
+|---|---|---|
+| [001: domainkit](/home/joachim/projects/terseus/experiments/001-domainkit/BUILD_NOTES.md) | **Documented historical execution plus inspected source.** Small Python/Go synthesis and checking pipeline; Python accepted assigning a boolean to a declared string field, while Go rejected it. | General contract soundness, automatic abstraction discovery, meaningful compression, or multi-consumer evolution. Randomized checking and a narrow contract grammar are load-bearing limitations. |
+| [002: AI-VCS](/home/joachim/projects/terseus/experiments/002-aivcs-bootstrap-study/EXPERIMENT_NOTES.md) | **Repository observations and study protocol.** Useful specification/session/review boundaries; notes record a package-import blocker. | Completed Path A/B/C comparisons, reviewer scores, or measured change value. Path directories contain instructions rather than completed evaluations. |
+| [003: RefViz](/home/joachim/projects/terseus/experiments/003-refviz-bootstrap-study/EXPERIMENT_NOTES.md) | **Benchmark design and registry status.** Eight-dimension rubric; registry records unresolved baseline fixture/tooling failures. | Successful comparative maintenance experiments. The registry’s blocked status is not a substitute for detailed execution evidence. |
+| [004: headless comparison](/home/joachim/projects/terseus/experiments/004-headless-model-comparison/REPORT.md) | **Measured runner telemetry and generated proposals.** Both runners completed structured reports. | That the proposed unsupported-claim audit was conducted or improved human review. |
+| [005: recursive construction](/home/joachim/projects/terseus/experiments/005-recursive-abstraction-construction/REPORT.md) | **Generated designs and model estimates.** Concrete component, evidence, termination, and notification-system sketches. | Executable semantics, delivery guarantees, or compression benefits. The illustrative line ratios—approximately 5.7:1 and 3.5:1—use different baselines and cannot be combined. |
+| [006: abstraction levels](/home/joachim/projects/terseus/experiments/006-abstraction-level-comparison/REPORT.md) | **Pinned-source review and estimated scores.** Main reports favor common-tools L0, lite-jnc L1, and FoodSavr L1 with a bounded L2 candidate. | Successful stress-test implementations. No project tests/builds were run in that round. |
+| [007 Codex](/home/joachim/projects/terseus/experiments/007-4gl-language-comparison/artifacts/codex-last-message.txt) and [007 Vibe](/home/joachim/projects/terseus/experiments/007-4gl-language-comparison/artifacts/vibe-last-message.txt) | **Source review, recorded checks, estimates, and proposals.** Both reject one universal family and retain handwritten implementation boundaries. | Any implemented OpenAPI/IDL/workflow/kernel treatment or measured extensibility improvement. |
+
+**Measured telemetry:** Both report runners exited zero in 004–007. Recorded wall times, Codex/Vibe respectively, were 74.280/34.294, 85.472/45.005, 117.216/272.593, and 126.534/68.999 seconds. These measure report-generation runs. In 007, Codex recorded 159,237 input tokens, including 132,352 cached tokens, and 6,294 output tokens. Vibe’s export lacks token/cost counters. These data support neither a quality leaderboard nor cost equivalence.
+
+**Recorded checks, reconciled:** Codex’s FTP test invocation failed during import because `ftpretty` was absent. Vibe created a temporary external stub and recorded nine tests, seven passing and two failing. These are different execution conditions, not contradictory outcomes. The failures expose path-concatenation and list-entry assumptions; they do not establish real FTP-library/server behavior. Vibe’s “ran clean” opening refers to repository modifications, not passing tests. Shell wrappers also obscured test exit status; recorded assertions take precedence.
+
+Both 007 reports recorded lite-jnc compilation/test discovery with **no active test assertions**. FoodSavr was untested. None of these checks validates a proposed language stack.
+
+**Repository observations:** Local Git heads match all three recorded pins: common-tools `58246521116c…`, lite-jnc `e6066394f27f…`, FoodSavr `3e3fd20df205…`. This resolves Vibe’s uncertainty about FoodSavr’s revision.
+
+Two report claims need correction:
+
+- FoodSavr has two client classes, but [Coop’s methods return empty lists](/home/joachim/projects/terseus/experiments/006-foodsavr/lib/features/third_party_integration/clients/coop_client.dart:10); Trumf is a placeholder. This is weaker evidence than two functioning provider integrations.
+- Vibe describes lite-jnc as writing an empty output file. The inspected [ELF method prints AST/errors](/home/joachim/projects/terseus/experiments/006-lite-jnc/compiler/x86-64-ELF.go:7), while the transpiler returns `nil`.
+
+All language scores remain **model estimates**. Codex’s general-quality scores and Vibe’s cross-project aggregates use different interpretations; averaging them would manufacture precision.
+
+## 4. Language-stack recommendation
+
+Treat “4GL-or-higher” as an organizing label, not a guarantee of equivalent expressive power.
+
+| Family | Appropriate responsibility | Boundary and adoption condition |
+|---|---|---|
+| SQL | Relational schemas, constraints, transactions, queries | Candidate for FoodSavr persistence only if a relational migration is independently justified. Current storage is Firestore. |
+| GraphQL | Client-selected typed API queries | Consider only for an actual graph-API requirement. It does not replace provider ingestion or resolver behavior. |
+| OpenAPI | HTTP operations, payloads, errors, generated bindings | Strongest immediate language candidate for FoodSavr’s provider boundary. Locally authored contracts remain assumptions until checked against fixtures and implementations. |
+| Protobuf/IDL | Versioned messages and cross-language/process interfaces | Potential lite-jnc boundary after an IR stabilizes and a serialization consumer exists. Native Go interfaces suffice initially. |
+| HCL/Kubernetes-style resources | Desired infrastructure state | Use for independently required deployment management. A workflow invoking an FTP script is not evidence that Kubernetes reconciliation belongs in that utility. |
+| BPMN/DMN | Explicit orchestration and decision tables | Candidate when operational workflow/versioning or decision ownership warrants it. Simple sequencing and calculations can remain host-language code. |
+| Custom kernel | Typed binding, provenance, compatibility, bounded composition | Experimental only; must outperform native interfaces and existing tooling. |
+
+**common-tools:** Retain Python and its existing CLI/deployment integration. Address the explicit path/error contract. The 006 main reports prefer L0; the independent report prefers a narrow L1 transport interface; Vibe 007 emphasizes declarative deployment. Reconcile these by keeping concrete behavior and adding a transport interface when a second implementation makes it useful. Deployment configuration is an outer boundary, not a replacement implementation.
+
+**lite-jnc:** Establish typed Go frontend/IR/backend boundaries and meaningful tests first. Vibe argues that pinning an IDL early is cheap; Codex warns against freezing an unstable AST. The unfinished emitters and explicit AST-standardization TODO support postponing wire-schema commitments.
+
+**FoodSavr:** Retain Dart, Firestore, existing model generation, and handwritten adapters. First test an injected provider interface/registry; then evaluate OpenAPI for the HTTP seam. Codex’s SQL/BPMN stack and Vibe’s Proto/GraphQL/DMN stack are future options, not established necessities. The SQL migration and product-model split are plans, not implemented architecture.
+
+The [independent 006 review](/home/joachim/projects/terseus/experiments/006-abstraction-level-comparison/INDEPENDENT_SUBAGENT_REPORT.md) rejects FoodSavr L2 until its boundaries stabilize. That caution should govern sequencing: establish the L1 baseline before testing declarations.
+
+## 5. Hybrid custom kernel boundary
+
+The smallest defensible kernel proposal contains:
+
+- **Component:** immutable identity/version, implementation reference, declared effects.
+- **Port:** named direction and explicit versioned type/schema reference.
+- **Contract:** typed predicates or references to independently executable checks.
+- **Evidence:** claim/check identity, result, scope, command, tools, and input/output digests.
+- **Composition:** explicit bindings and ordered or bounded branching structure.
+- **Expansion:** deterministic output with a trace back to declarations.
+
+Reuse established schemas rather than inventing a universal data language. Begin with a structured manifest; custom syntax has no demonstrated value.
+
+Keep FTP traversal/errors, compiler recovery/emission, authentication, provider response mapping, UI behavior, and migrations in their owning implementations. Foreign components must expose their types, effects, errors, and verification limits.
+
+Finite expansion requires a well-founded decreasing measure plus finite branching and an output budget. A nesting-depth bound alone does not bound pagination, retries, or dynamically created runtime work. Runtime limits require separate contracts and enforcement.
+
+Vibe’s statement that these languages express no behavior is too broad: query, decision, and workflow languages have execution semantics. The useful boundary is **which behavior each language owns**, not whether it owns behavior at all.
+
+## 6. Extensibility and versioning safeguards
+
+These are proposed implementation requirements, not demonstrated safeguards:
+
+1. **Explicit authority:** Name the authoritative source for each contract. Preserve decisions, alternatives, intentional projection differences, and rejected AI proposals.
+2. **Real compatibility rules:** Reject Vibe’s `consumer.minor <= provider.major` rule; comparing unrelated version components cannot establish compatibility. Resolve declared supported ranges to exact versions/digests and check schema and behavioral compatibility separately.
+3. **Controlled evolution:** Prefer additive changes where compatible; reserve removed Protobuf identifiers; test nullability, defaults, errors, and migrations. Semantic-version labels alone are insufficient.
+4. **Typed contracts:** Replace 001’s string-pattern/`eval` approach with parsed, typed expressions or native check references. Compiler acceptance and property tests remain bounded evidence.
+5. **Evidence invalidation:** Changes to declarations, types, implementation, generator, dependencies, fixtures, or checks invalidate affected results. A test filename is not evidence of a passing execution.
+6. **Replaceable projections:** Deterministic generation, separate generated and handwritten artifacts, explicit adapters, and traceable diagnostics. No hidden edits or untyped catch-all escape nodes.
+7. **Independent verification:** Check binding/types, compatibility, and expansion separately from host behavior and external integrations. Preserve raw statuses and failures.
+
+## 7. Falsifiers and unresolved questions
+
+Reject or narrow the kernel if:
+
+- An equivalent native-interface/registry solution achieves equal correctness and lower total maintenance effort.
+- Adding a provider requires changing kernel/expander internals for ordinary variation.
+- Headers, path rules, null handling, or error semantics disappear into untyped metadata or unrestricted scripts.
+- Accepted projections diverge from adjudicated behavior, or stale evidence remains accepted.
+- Expansion can exceed its budget, or legitimate required compositions cannot be expressed without bypassing checks.
+- Reviewers cannot trace failures or understand changes at least as effectively as with the baseline.
+- Declaration, generator, adapter, and evidence overhead outweigh repeated-change benefits.
+
+Unresolved questions include contract expressiveness, domain ownership, cross-target semantic equivalence, intentional divergence, and benefit on genuinely unseen changes. Multi-model agreement is useful for selecting hypotheses, but shared inputs and similar prompts do not provide independent implementation evidence.
+
+Codex’s proposed 25% overhead allowance and Vibe’s strict “kernel smaller than replaced code” rule are competing policy thresholds, not findings. Report complete costs and pre-register the decision rule.
+
+## 8. Next implementation experiment
+
+**Proposed experiment 008: FoodSavr provider extension, with controlled comparisons. No part of this experiment has been run.**
+
+Freeze the existing FoodSavr pin. Scope work to `lib/features/third_party_integration/`, especially `base_client.dart`, `rema_client.dart`, `coop_client.dart`, `import_service.dart`, `provider_model.dart`, and `transaction_row_model.dart`.
+
+First establish a runnable baseline in a separate writable checkout with recorded dependencies. Capture existing failures and adjudicate intended behavior before comparing treatments. Do not silently repair defects in only one condition.
+
+Compare four incremental conditions:
+
+| Condition | Implementation |
+|---|---|
+| A | Current direct construction and provider switch |
+| B | Native Dart provider interface, injected registry, handwritten adapters |
+| C | B plus a minimal OpenAPI contract and deterministic binding generation |
+| D | C plus a small version/evidence/composition manifest |
+
+Hold requirements, fixtures, authoring assistance, and evaluation criteria constant. This separates ordinary interface improvements from standard-language tooling and custom-kernel value.
+
+Use offline HTTP fixtures and fake storage. Add a fixture-only third provider with a deliberately different response shape. Then apply a previously withheld normalized-data change and replace one adapter.
+
+Add contract, registry, and workflow tests under `test/features/third_party_integration/`. Cover authorization absence, provider headers, endpoint/suffix assembly, nullable transaction lists/IDs/rows, the `prodtxt1 ?? prodtxt2 ?? 'N/A'` fallback, and explicit failure behavior. Include mutations for incompatible types, stale evidence, cycles, and excessive expansion.
+
+**Acceptance:**
+
+- Preserve adjudicated behavior and introduce no unexplained regressions.
+- Add the new provider through registration, adapter, fixtures, and tests without editing shared dispatch, base-client behavior, or generator internals.
+- Produce deterministic projections and complete source-to-output traces.
+- Reject incompatible bindings, stale evidence, and prohibited expansion.
+- Measure changed files/dispatch sites, total authored and generated size, implementation/review/debugging time, regressions, and unsupported claims.
+- Retain D only if it adds measurable verification or maintenance value beyond C; similarly retain C only if it improves on B.
+
+Vibe’s declaration-only provider criterion is appropriate only for providers already sharing behavior. A novel response shape should legitimately require a typed adapter.
+
+This experiment extends the repository’s projection/provenance approaches and addresses Q-18 baselines, Q-19 future-change value, and Q-21 research overhead.
+
+## 9. Readiness assessment
+
+**Ready:** A concrete abstraction-boundary decision, inspectable pinned inputs, usable report telemetry, and a scoped implementation comparison.
+
+**Not ready:** Production adoption, a universal language claim, verified hybrid semantics, quantitative productivity claims, or scientific closure of the research objective.
+
+Confidence is strongest in observed implementation boundaries and recorded limitations; weaker in language-fit rankings; currently insufficient for kernel superiority. Before treating 007 as a reproducible research release, preserve its currently untracked artifacts and update the evidence registry through normal review.
+
+```json
+{
+  "decision": {
+    "status": "conditional_go_for_comparative_experiment",
+    "universal_language": "not_justified",
+    "custom_kernel": "unverified_hypothesis"
+  },
+  "evidence": {
+    "measured": [
+      "004-007 report-run telemetry",
+      "007 lite-jnc compilation with no active assertions",
+      "007 stubbed FTP run: 9 tests, 2 failures"
+    ],
+    "observed": [
+      "Three 006 project pins verified locally",
+      "FoodSavr uses Firestore and has incomplete provider implementations",
+      "lite-jnc emitters are unfinished"
+    ],
+    "estimates": ["Language scores", "Compression ratios", "Change locality"],
+    "unverified": ["Kernel correctness", "Semantic equivalence", "Maintenance benefit"]
+  },
+  "language_stack": {
+    "common_tools": "Python; conditional transport interface",
+    "lite_jnc": "Go typed IR/backend boundaries; defer wire IDL",
+    "foodsavr": "Dart and Firestore; test registry and OpenAPI incrementally",
+    "conditional": ["SQL", "GraphQL", "Protobuf", "BPMN/DMN", "HCL/Kubernetes"]
+  },
+  "kernel_boundary": {
+    "includes": ["Typed bindings", "Contracts", "Versions", "Evidence", "Bounded composition"],
+    "excludes": ["Provider algorithms", "Compiler semantics", "UI", "Migration behavior"]
+  },
+  "safeguards": [
+    "Explicit semantic authority",
+    "Checked compatibility and immutable pins",
+    "Typed contracts",
+    "Digest-bound evidence",
+    "Deterministic traceable projections",
+    "Separate expansion and runtime bounds"
+  ],
+  "falsifiers": [
+    "Native tooling performs equally or better",
+    "Routine extensions require kernel edits",
+    "Edge cases become hidden",
+    "Projection drift or stale evidence is accepted",
+    "Bounds fail",
+    "Total maintenance burden increases"
+  ],
+  "next_experiment": {
+    "id": "008",
+    "status": "proposed_not_run",
+    "project": "FoodSavr",
+    "conditions": ["Current code", "Typed registry", "OpenAPI", "Thin kernel"],
+    "tasks": ["Add fixture provider", "Apply withheld data change", "Replace adapter"]
+  },
+  "readiness": {
+    "research_implementation": "ready_after_baseline_setup",
+    "production": "not_ready",
+    "implementation_correctness_proven": false,
+    "report_type": "synthesis"
+  }
+}
+```
