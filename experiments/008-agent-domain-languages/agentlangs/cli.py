@@ -6,7 +6,7 @@ import argparse
 import json
 import sys
 
-from . import harness
+from . import anl, harness
 
 
 def build_report():
@@ -52,7 +52,46 @@ def main(argv=None):
         "--language", default=None, choices=sorted(harness.LANGUAGES),
         help="restrict the matrix to one language",
     )
+    subparsers = parser.add_subparsers(dest="command")
+    agent_parser = subparsers.add_parser("agent", help="perform ANL agent CRUD")
+    agent_parser.add_argument("operation", choices=("create", "read", "update", "delete"))
+    agent_parser.add_argument("--file", required=True, help="ANL JSON document")
+    agent_parser.add_argument("--id", required=True, help="agent identifier")
+    agent_parser.add_argument("--type", dest="agent_type")
+    agent_parser.add_argument("--capability", action="append", dest="capabilities")
+    agent_parser.add_argument("--note")
+    agent_parser.add_argument("--out", required=True, help="output JSON document")
     args = parser.parse_args(argv)
+
+    if args.command == "agent":
+        with open(args.file, encoding="utf-8") as handle:
+            document = json.load(handle)
+        if args.operation == "create":
+            if not args.agent_type:
+                parser.error("agent create requires --type")
+            result = anl.create_agent(
+                document, args.id, args.agent_type, args.capabilities or (), args.note
+            )
+        elif args.operation == "read":
+            network = anl.validate(document)
+            result = next((a for a in network["agents"] if a["id"] == args.id), None)
+            if result is None:
+                raise SystemExit(f"unknown agent: {args.id!r}")
+            with open(args.out, "w", encoding="utf-8") as handle:
+                json.dump(result, handle, indent=2, sort_keys=True)
+                handle.write("\n")
+            return 0
+        elif args.operation == "update":
+            result = anl.update_agent(
+                document, args.id, agent_type=args.agent_type,
+                capabilities=args.capabilities, note=args.note
+            )
+        else:
+            result = anl.delete_agent(document, args.id)
+        with open(args.out, "w", encoding="utf-8") as handle:
+            json.dump(result, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+        return 0
 
     if args.language:
         results = [

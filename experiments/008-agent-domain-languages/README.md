@@ -156,6 +156,26 @@ The former standalone experiment-008 files are intentionally not duplicated:
 ANL's behavior and fixtures live only in this consolidated directory, and the
 site visualization reads the same canonical ANL samples.
 
+## Agent CRUD
+
+The ANL slice also exposes document-level CRUD operations. They are pure
+transformations: each operation validates the input and output, create/update
+reject unknown capabilities, and delete rejects agents still referenced by
+relations. This keeps mutations safe without introducing workflow semantics.
+
+```bash
+python3 -m agentlangs.cli agent create \
+  --file samples/anl/sample.json --id reviewer --type human \
+  --capability claim-verification --out /tmp/anl-created.json
+python3 -m agentlangs.cli agent read \
+  --file /tmp/anl-created.json --id reviewer --out /tmp/reviewer.json
+python3 -m agentlangs.cli agent update \
+  --file /tmp/anl-created.json --id reviewer --type llm \
+  --note "automated reviewer" --out /tmp/anl-updated.json
+python3 -m agentlangs.cli agent delete \
+  --file /tmp/anl-updated.json --id reviewer --out /tmp/anl-deleted.json
+```
+
 ## Commands
 
 Run the full matrix (exit 0 iff 36/36 pass):

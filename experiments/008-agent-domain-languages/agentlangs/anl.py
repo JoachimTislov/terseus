@@ -14,6 +14,8 @@ without evidence are legal (surfaced as coverage gaps, never rejected).
 
 from __future__ import annotations
 
+import copy
+
 from .errors import ValidationError
 
 SCHEMA = "anl/1"
@@ -155,6 +157,66 @@ def validate(doc):
             key=lambda r: (r["type"], r["from"], r["to"]),
         ),
     }
+
+
+def _document_from_validated(network):
+    """Return a mutable ANL document from a validated normalized network."""
+    return {
+        "schema": SCHEMA,
+        "network": network["name"],
+        "agents": copy.deepcopy(network["agents"]),
+        "capabilities": copy.deepcopy(network["capabilities"]),
+        "evidence": copy.deepcopy(network["evidence"]),
+        "relations": copy.deepcopy(network["relations"]),
+    }
+
+
+def create_agent(doc, agent_id, agent_type, capabilities=(), note=None):
+    """Return a validated document with a new agent."""
+    network = validate(doc)
+    result = _document_from_validated(network)
+    if any(agent["id"] == agent_id for agent in result["agents"]):
+        raise ValidationError([f"agent id already exists: {agent_id!r}"])
+    agent = {"id": agent_id, "type": agent_type, "capabilities": list(capabilities)}
+    if note is not None:
+        agent["note"] = note
+    result["agents"].append(agent)
+    return _document_from_validated(validate(result))
+
+
+def update_agent(doc, agent_id, *, agent_type=None, capabilities=None, note=None):
+    """Return a validated document with selected fields changed on an agent."""
+    network = validate(doc)
+    result = _document_from_validated(network)
+    agent = next((item for item in result["agents"] if item["id"] == agent_id), None)
+    if agent is None:
+        raise ValidationError([f"unknown agent: {agent_id!r}"])
+    if agent_type is not None:
+        agent["type"] = agent_type
+    if capabilities is not None:
+        agent["capabilities"] = list(capabilities)
+    if note is not None:
+        agent["note"] = note
+    return _document_from_validated(validate(result))
+
+
+def delete_agent(doc, agent_id):
+    """Return a validated document without an unreferenced agent."""
+    network = validate(doc)
+    result = _document_from_validated(network)
+    if not any(agent["id"] == agent_id for agent in result["agents"]):
+        raise ValidationError([f"unknown agent: {agent_id!r}"])
+    references = [
+        relation for relation in result["relations"]
+        if relation["from"] == agent_id or relation["to"] == agent_id
+    ]
+    if references:
+        raise ValidationError([
+            f"cannot delete agent {agent_id!r}: referenced by "
+            f"{len(references)} relation(s)"
+        ])
+    result["agents"] = [agent for agent in result["agents"] if agent["id"] != agent_id]
+    return _document_from_validated(validate(result))
 
 
 def _find_cycle(edge_list):

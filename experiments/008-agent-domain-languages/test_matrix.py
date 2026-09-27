@@ -13,7 +13,7 @@ from pathlib import Path
 
 import pytest
 
-from agentlangs import harness
+from agentlangs import anl, harness
 from agentlangs.errors import ValidationError
 
 HERE = Path(__file__).resolve().parent
@@ -84,3 +84,31 @@ def test_valid_samples_are_accepted():
         doc = json.loads((SAMPLES / lang / "sample.json").read_text(encoding="utf-8"))
         v = harness.validate(lang, doc)
         assert v is not None
+
+
+def test_agent_crud_create_read_update_delete():
+    base = json.loads((SAMPLES / "anl" / "sample.json").read_text(encoding="utf-8"))
+    created = anl.create_agent(
+        base, "reviewer", "human", ["claim-verification"], "rotating reviewer"
+    )
+    assert any(agent["id"] == "reviewer" for agent in anl.validate(created)["agents"])
+    reviewer = next(agent for agent in anl.validate(created)["agents"] if agent["id"] == "reviewer")
+    assert reviewer["type"] == "human"
+    updated = anl.update_agent(created, "reviewer", agent_type="llm", note="automated reviewer")
+    reviewer = next(agent for agent in anl.validate(updated)["agents"] if agent["id"] == "reviewer")
+    assert reviewer["type"] == "llm"
+    assert reviewer["note"] == "automated reviewer"
+    deleted = anl.delete_agent(updated, "reviewer")
+    assert all(agent["id"] != "reviewer" for agent in anl.validate(deleted)["agents"])
+
+
+def test_agent_delete_rejects_relation_references():
+    base = json.loads((SAMPLES / "anl" / "sample.json").read_text(encoding="utf-8"))
+    with pytest.raises(ValidationError, match="referenced by"):
+        anl.delete_agent(base, "dispatcher")
+
+
+def test_agent_create_rejects_unknown_capability():
+    base = json.loads((SAMPLES / "anl" / "sample.json").read_text(encoding="utf-8"))
+    with pytest.raises(ValidationError, match="unknown capability"):
+        anl.create_agent(base, "reviewer", "human", ["missing"])
