@@ -1,0 +1,17 @@
+{
+  "runner": "general-purpose subagent",
+  "task": "Independent abstraction-level experiment over public pinned submodules",
+  "network_access": false,
+  "files_modified": false,
+  "tests_run": false,
+  "projects": {
+    "006-common-tools": "58246521116c7a2a0fd6213613f0e91d4ed43e5f",
+    "006-lite-jnc": "e6066394f27fa5bbc53988445997af34e8744345",
+    "006-foodsavr": "3e3fd20df20560e17844272bf3bd8c63d77f671d"
+  },
+  "recommendation": {
+    "006-common-tools": "L1 narrow RemoteFileSystem port; reject L2",
+    "006-lite-jnc": "L1 typed phases and IR; defer L2",
+    "006-foodsavr": "L1 domain/provider ports; reject L2 for now"
+  }
+}

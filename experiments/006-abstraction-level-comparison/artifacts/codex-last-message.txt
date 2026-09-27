@@ -1,0 +1,276 @@
+## 1. Scope and evidence
+
+Work was read-only; no files changed, network used, or tests executed.
+
+Evidence labels:
+
+- **Observed**: directly present in source, tests, or documentation.
+- **Proposal**: thought-experiment design, not implemented.
+- **Estimate**: hand-counted change surface or score.
+- **Assumption**: plausible but unverified behavior.
+
+Inspected evidence:
+
+- **common-tools**: [`ftp_client.py`](/home/joachim/projects/terseus/experiments/006-common-tools/ftp/ftp_client.py), [`test_ftp_client.py`](/home/joachim/projects/terseus/experiments/006-common-tools/ftp/test_ftp_client.py), [`doc.md`](/home/joachim/projects/terseus/experiments/006-common-tools/ftp/doc.md), [`Makefile`](/home/joachim/projects/terseus/experiments/006-common-tools/ftp/Makefile). Observed symbols include `main`, `upload_dir`, `delete_remote_directory`, and `parse_flags`.
+- **lite-jnc**: [`main.go`](/home/joachim/projects/terseus/experiments/006-lite-jnc/main.go), [`parser/types.go`](/home/joachim/projects/terseus/experiments/006-lite-jnc/parser/types.go), [`parser/parser.go`](/home/joachim/projects/terseus/experiments/006-lite-jnc/parser/parser.go), [`transpiler/transpiler.go`](/home/joachim/projects/terseus/experiments/006-lite-jnc/transpiler/transpiler.go), [`compiler/compiler.go`](/home/joachim/projects/terseus/experiments/006-lite-jnc/compiler/compiler.go), [`spec/spec.go`](/home/joachim/projects/terseus/experiments/006-lite-jnc/spec/spec.go), and [`Status.md`](/home/joachim/projects/terseus/experiments/006-lite-jnc/Status.md). Observed symbols include `Parser`, `AST`, `parseStateFn`, `spec.Runner`, `transpiler.Supports`, and `compiler.Run`.
+- **foodsavr**: [`INDEX.md`](/home/joachim/projects/terseus/experiments/006-foodsavr/INDEX.md), [`product_model.dart`](/home/joachim/projects/terseus/experiments/006-foodsavr/lib/models/product_model.dart), [`i_product_repository.dart`](/home/joachim/projects/terseus/experiments/006-foodsavr/lib/interfaces/i_product_repository.dart), [`product_repository.dart`](/home/joachim/projects/terseus/experiments/006-foodsavr/lib/repositories/product_repository.dart), [`product_service.dart`](/home/joachim/projects/terseus/experiments/006-foodsavr/lib/services/product_service.dart), [`import_service.dart`](/home/joachim/projects/terseus/experiments/006-foodsavr/lib/features/third_party_integration/services/import_service.dart), [`injection.dart`](/home/joachim/projects/terseus/experiments/006-foodsavr/lib/injection.dart), and [`product_service_barcode_test.dart`](/home/joachim/projects/terseus/experiments/006-foodsavr/test/services/product_service_barcode_test.dart).
+
+Unsupported-claim count means claims about current behavior lacking direct inspected evidence. Counts: **common-tools 0, lite-jnc 0, foodsavr 0**. Proposals and assumptions below are explicitly marked and excluded from that count.
+
+## 2. Abstraction-level definitions
+
+- **L0 — concrete implementation**: source and tests are the specification. Best when behavior is small, language-specific, and readily reviewed end-to-end.
+- **L1 — typed reusable components**: named components expose typed ports and contracts, attach test/build evidence, and compose by version. Generated code is subordinate to these definitions.
+- **L2 — recursive declarative system**: compact declarations expand recursively into workflows and code, carrying constraints and provenance. It requires deterministic expansion and a termination proof.
+
+Scoring, 0–4:
+
+- **Semantic fidelity**: how directly the level represents real behavior.
+- **Extensibility**: ease of adding capabilities or providers without forks.
+- **Change-locality**: containment of ordinary changes.
+- **Verification**: strength and traceability of executable checks.
+- **Reviewability**: ability to understand consequences in review.
+- **Compression**: reduction in authoritative representation without hiding essential semantics.
+
+`0` is unusable, `1` poor, `2` mixed, `3` good, `4` excellent. Scores are reasoned estimates, not measurements.
+
+## 3. Per-project comparison
+
+### common-tools
+
+| Level | Fidelity | Extensibility | Locality | Verification | Reviewability | Compression |
+|---|---:|---:|---:|---:|---:|---:|
+| L0 | 4 | 2 | 3 | 4 | 4 | 3 |
+| L1 | 3 | 4 | 4 | 3 | 3 | 2 |
+| L2 | 2 | 2 | 2 | 2 | 1 | 4 |
+
+**Observed:** the system is four principal functions, one external FTP object, CLI/environment configuration, and focused mock-based tests. Recursive upload and deletion are algorithmic details, not a family of declarative workflows.
+
+**Judgment:** L0 wins. L1 becomes worthwhile only after a second transport or reusable deployment policy exists. L2 is rejected as over-abstraction: expansion machinery would be more complex than the utility and would obscure failure-sensitive filesystem/FTP behavior.
+
+### lite-jnc
+
+| Level | Fidelity | Extensibility | Locality | Verification | Reviewability | Compression |
+|---|---:|---:|---:|---:|---:|---:|
+| L0 | 3 | 2 | 2 | 2 | 3 | 2 |
+| L1 | 4 | 4 | 4 | 4 | 4 | 3 |
+| L2 | 3 | 3 | 3 | 2 | 2 | 4 |
+
+**Observed:** `main` selects between `transpiler.New` and `compiler.New` through `spec.Runner`, but target registries and dispatch are separate. AST types such as `class`, `method`, and `file` are private; `Parser` carries mutable parsing context and explicitly notes side effects. Code generation is largely incomplete, and the inspected lexer test is commented out.
+
+**Judgment:** L1 wins. A typed frontend/IR/backend boundary would make target support, diagnostics, and evidence explicit. A small L2 pipeline declaration can order stages, but making grammar, AST semantics, or parser recovery recursively generated now would outrun the available tests.
+
+### foodsavr
+
+| Level | Fidelity | Extensibility | Locality | Verification | Reviewability | Compression |
+|---|---:|---:|---:|---:|---:|---:|
+| L0 | 4 | 3 | 3 | 4 | 3 | 1 |
+| L1 | 4 | 4 | 4 | 4 | 4 | 3 |
+| L2 | 2 | 3 | 2 | 2 | 2 | 4 |
+
+**Observed:** `IRepository<T, ID>` and `IProductRepository` already define typed ports; `ProductRepository` is registered as an implementation, while `ProductService` consumes the interface. `Product` is generated from a Freezed declaration. CI runs formatting, generation, analysis, localization checks, and Flutter tests. Conversely, `ImportService` directly constructs `RemaClient` and `CoopClient` and switches over `Provider`, leaving that extension seam less developed.
+
+**Judgment:** L1 wins and largely matches the existing architecture. L2 is rejected as the authoritative application model: UI state, Firebase behavior, localization, migration semantics, and provider edge cases would remain in Dart, creating two sources of truth and longer semantic distance.
+
+## 4. Extensibility stress tests
+
+All entries are proposals; file counts are hand estimates.
+
+| Project | Stress | Proposed change and concrete affected surface |
+|---|---|---|
+| common-tools | Add capability | Add exclude-pattern filtering: `parse_flags`, `upload_dir`, docs, and tests in `ftp_client.py`, `test_ftp_client.py`, `doc.md`—**3 files**. L0 remains clearest. |
+| common-tools | Replace detail | Introduce an SFTP strategy beside `ftpretty`: new typed adapter plus changes to `main` and mock tests—approximately **3–4 files**. This is the threshold for L1. |
+| common-tools | Change invariant | Normalize remote paths rather than requiring a trailing slash: `upload_dir`, JS-assets path construction, CLI validation, tests, docs—**3 files**. |
+| common-tools | Nest capability | Compose “delete assets, upload tree, close connection” as `deploy_bundle`: `main`, existing functions, tests—**2 files**. A normal function is safer than L2 recursion. |
+| lite-jnc | Add capability | Add numeric literals: `parser/token.go`, `lexer.go`, lexer states, parser AST/field handling, backend tests—approximately **5–7 files**. L1 contracts help prevent frontend/backend drift. |
+| lite-jnc | Replace detail | Add a real Go emitter beside ELF: `spec.Runner`, `transpiler/transpiler.go`, `go.go`, `main.go`, tests—**4–5 files**. A typed `Backend` port localizes selection. |
+| lite-jnc | Change invariant | Replace point `Position()` with source spans: `types.go`, `token.go`, lexer construction, diagnostics, parser tests—approximately **5 files**, plus all consumers. |
+| lite-jnc | Nest capability | Compose `lex → parse → validate → emit`: `main.go`, parser API, new validation/IR packages, runner tests—approximately **5–7 files**. A shallow L2 pipeline is useful here. |
+| foodsavr | Add capability | Add a Trumf importer: `provider_model.dart`, new client, `ImportService`, DI registration, provider tests—approximately **5 files**. |
+| foodsavr | Replace detail | Add an in-memory/SQL `IProductRepository` provider: new implementation, `injection.dart`/annotations, repository contract tests—**3–4 files**. L1 already supports this. |
+| foodsavr | Change invariant | Replace `expiries + nonExpiringQuantity` with quantity lots: `product_model.dart`, generated projections, service, repository serialization, mocks, widgets, seed/schema scripts and tests—**10+ files**. A declaration can generate serialization, but migration semantics must remain explicit. |
+| foodsavr | Nest capability | Compose provider import → normalize → deduplicate → persist → refresh UI: `IImportService`, `ImportService`, provider clients, `ProductService`, repository port, controller/view, tests—approximately **7–9 files**. Typed orchestration is preferable to generic recursive workflows. |
+
+## 5. Compression versus semantic distance
+
+Compression is beneficial only when repeated structure dominates project-specific meaning.
+
+- In **common-tools**, L2 compresses four functions into declarations but adds an interpreter, schema, diagnostics, and expansion rules. Compression is high; semantic distance is worse.
+- In **lite-jnc**, declaring stage order and backend selection removes repeated dispatch while preserving compiler concepts. Declaring parser state transitions could compress code, but debugging generated recovery behavior would become harder.
+- In **foodsavr**, L1 compresses repository/provider boilerplate through interfaces, DI, and Freezed while leaving business rules visible. L2 could compact routes, CRUD, and workflows, but provider quirks and model migrations would be split between declaration and handwritten escape hatches.
+
+Thus compression alone never selects L2.
+
+## 6. Recommended level and hybrid boundary
+
+- **common-tools: L0**, with a narrow L1 transport protocol only when a second provider is actually added.
+- **lite-jnc: L1**, plus optional L2 for a finite compiler-stage DAG. Lexer, parser recovery, AST/IR semantics, and emitters remain handwritten L0 projections behind typed ports.
+- **foodsavr: L1**, retaining Dart models, services, widgets, migrations, and tests as explicit components. Allow schema-driven generation for serialization/DI metadata, but not a recursive application DSL.
+
+Lower levels are safer for destructive FTP traversal, parser error recovery, data migration, UI behavior, authentication, and external-provider interpretation because their operational details need direct review and testing.
+
+## 7. Reusable declaration kernel
+
+**Proposal, language-neutral pseudocode:**
+
+```text
+type TypeRef = { name: String, version: SemVer }
+
+type Port<I, O> = {
+  name: String, input: TypeRef<I>, output: TypeRef<O>
+}
+
+type Contract<I, O> = {
+  pre: Predicate<I>,
+  post: Predicate<(I, O)>,
+  compatibility: SemVerRange
+}
+
+type Evidence = {
+  kind: Test | Analysis | Schema | ReproducibleBuild,
+  artifact: Digest,
+  command: String,
+  sourceRevision: Digest
+}
+
+type Component<I, O> = {
+  id: String, version: SemVer,
+  input: Port<Unit, I>, output: Port<O, Unit>,
+  contract: Contract<I, O>,
+  implementation: SourceRef,
+  evidence: List<Evidence>
+}
+
+type Composition<A, B> =
+  Leaf(Component<A, B>) |
+  Sequence(Composition<A, X>, Composition<X, B>) |
+  Parallel(List<Composition<A, B>>) |
+  Choose(Predicate<A>, Composition<A, B>, Composition<A, B>) |
+  Ref(ComponentId, SemVerRange)
+```
+
+Finite recursion measure:
+
+```text
+measure(c) = (remainingRefFuel, unexpandedNodeCount)
+```
+
+Every `Ref` expansion must reduce `remainingRefFuel`; every non-reference rewrite must reduce `unexpandedNodeCount`. Cyclic version references are rejected before expansion. Both measures are natural numbers, ordered lexicographically.
+
+Worked lite-jnc example:
+
+```text
+Sequence(
+  Leaf(ParseJavaa:
+    Port<Path, ASTv1>,
+    Contract(fileExists, errors <= configuredLimit)),
+  Leaf(EmitGo:
+    Port<ASTv1, GoSource>,
+    Contract(ASTv1-compatible, outputParsesAsGo))
+)
+```
+
+`ParseJavaa` projects to `parser.New(...).Parse()`. `EmitGo` projects to a typed backend replacing the current placeholder `transpiler.Run`. Evidence would link parser fixtures, Go parser validation, and the exact generator/compiler revision.
+
+## 8. Verification and provenance requirements
+
+Every projection should record:
+
+- declaration digest, generator version, source revision, component versions, and dependency lock digest;
+- deterministic input/output digests and generated-file headers;
+- port compatibility and contract-validation results;
+- evidence tied to the component version, never merely “tests passed” globally;
+- a readable expansion trace from declaration node to generated symbol/file;
+- rejection of stale evidence after declaration, generator, contract, or dependency changes.
+
+L2 additionally requires cycle detection, the finite measure above, bounded expansion size, deterministic ordering, and golden expansion tests. Generated output must be reviewable without trusting the generator blindly.
+
+## 9. Buildable follow-up
+
+**Proposed next slice:** validate L1 on lite-jnc by introducing a typed backend boundary without building a general DSL.
+
+Slice:
+
+1. Define exported `FrontendResult`/IR and `Backend` interfaces.
+2. Adapt parsing behind the frontend port.
+3. Adapt ELF and Go targets behind explicit backend implementations.
+4. Replace map/default dispatch with validated target lookup.
+5. Add table-driven target-selection, unsupported-target, parser-error, and Go-output parseability tests.
+6. Emit a small provenance manifest containing target, source digest, backend version, and evidence IDs.
+
+Acceptance criteria:
+
+- unsupported targets return errors rather than falling through to ELF or terminating with `log.Fatalf`;
+- each supported target is selected through one typed registry;
+- malformed input prevents backend execution;
+- generated Go parses with Go’s parser;
+- existing supported parsing behavior remains represented by fixtures;
+- recursive declarations are not introduced in this slice.
+
+This tests the highest-value L1 seam before deciding whether pipeline-only L2 earns its complexity.
+
+## 10. Decision table
+
+| Project | Best level | Hybrid boundary | L2 decision | Unsupported claims |
+|---|---|---|---|---:|
+| common-tools | L0 | Optional L1 transport after provider #2 | Reject: system is smaller than the meta-model | 0 |
+| lite-jnc | L1 | L2 only for bounded stage composition | Defer beyond pipeline DAG | 0 |
+| foodsavr | L1 | Generation for serialization/DI metadata | Reject as authoritative app representation | 0 |
+
+```json
+{
+  "projects": ["006-common-tools", "006-lite-jnc", "006-foodsavr"],
+  "scores": {
+    "006-common-tools": {
+      "L0": [4, 2, 3, 4, 4, 3],
+      "L1": [3, 4, 4, 3, 3, 2],
+      "L2": [2, 2, 2, 2, 1, 4]
+    },
+    "006-lite-jnc": {
+      "L0": [3, 2, 2, 2, 3, 2],
+      "L1": [4, 4, 4, 4, 4, 3],
+      "L2": [3, 3, 3, 2, 2, 4]
+    },
+    "006-foodsavr": {
+      "L0": [4, 3, 3, 4, 3, 1],
+      "L1": [4, 4, 4, 4, 4, 3],
+      "L2": [2, 3, 2, 2, 2, 4]
+    },
+    "dimension_order": [
+      "semantic_fidelity",
+      "extensibility",
+      "change_locality",
+      "verification",
+      "reviewability",
+      "compression"
+    ]
+  },
+  "stress_tests": {
+    "006-common-tools": ["exclude filtering", "SFTP strategy", "remote-path invariant", "bundle deployment"],
+    "006-lite-jnc": ["numeric literals", "Go backend", "source spans", "parse-validate-emit pipeline"],
+    "006-foodsavr": ["Trumf importer", "alternate product repository", "quantity lots", "import-normalize-deduplicate-persist"]
+  },
+  "recommendation": {
+    "006-common-tools": "L0",
+    "006-lite-jnc": "L1 with bounded pipeline-only L2",
+    "006-foodsavr": "L1"
+  },
+  "kernel": {
+    "types": ["Component", "Port", "Contract", "Evidence", "Composition"],
+    "termination": "lexicographically decrease (remainingRefFuel, unexpandedNodeCount); reject cycles"
+  },
+  "risks": [
+    "generated and handwritten sources diverge",
+    "contracts describe shapes but omit operational semantics",
+    "recursive expansion obscures failures",
+    "migration and provider edge cases become escape hatches",
+    "evidence becomes stale"
+  ],
+  "next_slice": {
+    "project": "006-lite-jnc",
+    "scope": "typed frontend/backend boundary and target registry",
+    "tests": ["target selection", "unsupported target", "parser-error gating", "Go parseability", "provenance manifest"],
+    "implemented": false
+  }
+}
+```

@@ -4,3 +4,12 @@
 [submodule "experiments/003-refviz-bootstrap"]
 	path = experiments/003-refviz-bootstrap
 	url = https://github.com/JoachimTislov/RefViz.git
+[submodule "experiments/006-common-tools"]
+	path = experiments/006-common-tools
+	url = https://github.com/JoachimTislov/common-tools.git
+[submodule "experiments/006-foodsavr"]
+	path = experiments/006-foodsavr
+	url = https://github.com/JoachimTislov/foodsavr.git
+[submodule "experiments/006-lite-jnc"]
+	path = experiments/006-lite-jnc
+	url = https://github.com/JoachimTislov/lite-jnc.git

@@ -1,0 +1,212 @@
+# 1. Scope and evidence
+
+Read-only inspection; nothing was modified or built. Tool-counted facts (observed):
+
+| Project | Size | Key observed symbols |
+|---|---|---|
+| `006-common-tools` | 363 LOC total: `ftp/ftp_client.py` (82), `ftp/test_ftp_client.py` (212), `ftp/Makefile` (10), `ftp/doc.md` (59) | `main`, `parse_flags`, `upload_dir` (recursive), `delete_remote_directory` (recursive, bare `except:`); env vars `HOST/USERNAME/PASSWORD` |
+| `006-lite-jnc` | 1,392 LOC Go, 14 files | `main.go` `-l` dispatch; `spec.Runner` interface (`spec/spec.go`); `transpiler.Supports()` + `languages` map; `compiler.Run` → `ELF()` (prints AST only); parser state machine with `errorLimit: 5` (`parser/parser.go:22`); AST in `parser/types.go`; only test file `parser/lexer_internal_test.go` is entirely commented out |
+| `006-foodsavr` | 116 lib files / 11,085 LOC; 17 test files / 2,887 LOC | get_it+injectable DI (`injection.dart` `@InjectableInit()`, `register_module.dart` `@module`); `IRepository<T,ID>`, `IAuthService`; `Client` base (`features/third_party_integration/clients/base_client.dart`), `RemaClient` (implemented), `CoopClient` (stub returning `[]`); `ShelfLifeService` Open Food Facts map |
+
+**Observed facts** are cited with paths. **Model proposals** (L1/L2 designs, the kernel, the next slice) have no repository existence. **Hand-counted estimates** are marked (~). **Unverified assumptions**: I did not run any test suite or build; "tests pass" claims below are inferences from file presence, not execution.
+
+**Unsupported-claim count: 0** by construction — every L1/L2 statement is labeled a proposal; every LOC number is tool-counted; every behavioral claim about a file is backed by a path. One estimate is flagged as approximate (~file-touch counts in section 4).
+
+# 2. Abstraction-level definitions
+
+- **L0 — concrete implementation**: source modules, functions, tests, and config are authoritative. Nothing is projected; you edit what runs.
+- **L1 — typed reusable components**: explicit `Component` types with typed ports, contracts, evidence bindings, and versioned compositions. Generated/derived code is the execution projection; the component model is the review artifact.
+- **L2 — recursive declarative system**: nested component/workflow declarations in a compact representation; an expander with constraints, provenance, and a finite recursion measure produces implementation projections.
+
+**Scoring criteria (0–4), applied per dimension per project:**
+- 0 = not expressible at this level without abandoning its paradigm
+- 1 = expressible only via escape hatches that dominate the design
+- 2 = expressible with substantial hand-written glue
+- 3 = expressible natively; change is localized
+- 4 = expressible natively; change is localized and mechanically checkable
+
+Compression is inverted: 4 = ≥10x size reduction with no semantic loss; 0 = net expansion.
+
+# 3. Per-project comparison
+
+**common-tools** (single 82-line deploy script):
+
+| Level | Fidelity | Extensibility | Change-locality | Verification | Reviewability | Compression |
+|---|---|---|---|---|---|---|
+| L0 | 4 | 2 | 2 | 3 | 4 | 0 |
+| L1 | 3 | 3 | 3 | 2 | 2 | 0 |
+| L2 | 1 | 1 | 1 | 1 | 0 | 0 |
+
+L0 is authoritative here: the whole system fits on one screen; `test_ftp_client.py` already mocks `ftpretty` at the right seam (`upload_dir(mock_ftp, ...)`). L2's declaration would be larger than the program it describes.
+
+**lite-jnc** (compiler/transpiler skeleton):
+
+| Level | Fidelity | Extensibility | Change-locality | Verification | Reviewability | Compression |
+|---|---|---|---|---|---|---|
+| L0 | 4 | 3 | 2 | 1 | 3 | 0 |
+| L1 | 3 | 4 | 3 | 3 | 3 | 1 |
+| L2 | 2 | 2 | 2 | 2 | 1 | 1 |
+
+L0 already contains an L1 seam: `spec.Runner` is a port; `transpiler.Supports()` is a registry. But verification is 1 at L0 — the only test is commented out — and README TODOs ("Standardize the AST", "Add Intermediate representation?") show the known cross-cutting weakness. L1 (a typed AST contract per backend) directly targets that weakness. L2 fails because codegen semantics (lexer states, `reference` inversion in `types.go`) do not compress.
+
+**foodsavr** (Flutter app, DI-driven):
+
+| Level | Fidelity | Extensibility | Change-locality | Verification | Reviewability | Compression |
+|---|---|---|---|---|---|---|
+| L0 | 4 | 3 | 2 | 3 | 2 | 0 |
+| L1 | 3 | 4 | 3 | 3 | 3 | 1 |
+| L2 | 2 | 3 | 2 | 2 | 1 | 2 |
+
+foodsavr is already halfway to L1 in idiomatic Flutter form: interfaces (`i_repository.dart`, `i_auth_service.dart`), injectable DI, and a provider family (`base_client.dart` + `Provider` enum). L1 formalizes what exists. L2 gets compression 2 only within the third-party-integration family (see hybrid boundary); applied to views/controllers it would lose Widget-tree semantics.
+
+# 4. Extensibility stress tests
+
+All four tests per project; affected files are observed paths. Touch counts are hand-counted estimates (~) from the file list, not edits I made.
+
+**common-tools**
+1. *Add capability* — SFTP target (`--protocol sftp`). L0: touch `ftp_client.py` (`parse_flags`, `main` constructor block), `doc.md`, `test_ftp_client.py`. ~3 files. Lower level is safer: the `ftpretty` constructor call is the only coupling point.
+2. *Second provider* — swap `ftpretty` for `ftplib`. Touch `ftp_client.py:7-15` only, plus Makefile dependency line. The tests' Mock seam already anticipates this.
+3. *Cross-cutting invariant* — the trailing-slash rule is currently prose in `doc.md` ("very important to include trailing slash") while `upload_dir` does raw string concat `f"{remote_directory}{file}/"`. Making it a typed path object touches every function. This is where L0 is *weakest* — an invariant lives in a comment.
+4. *Nest in composite* — deploy workflow (build → test → upload). At L0 this is a shell/CI file; the system is already recursive (`upload_dir`, `delete_remote_directory`), so recursive nesting exists natively at L0 without a declarative layer.
+
+**lite-jnc**
+1. *Add capability* — new transpiler target: `transpiler/transpiler.go` (enum + `languages` map entry) + new `transpiler/<lang>.go`. ~2 files; the existing 1-line `c.go`/`java.go` placeholders prove the seam works.
+2. *Second provider* — LLVM backend instead of hand-rolled x86-64: `compiler/compiler.go` (add `Compiled` case) + new backend file. README already lists this as a TODO. L0/L1 local; L2 adds nothing.
+3. *Cross-cutting invariant* — standardize the AST (README TODO): touches `parser/types.go` (all node structs), `parser/parser.go` (every state function), both backends, `lexer.go` token shapes. ~6 of 14 files. This is the change L1 is designed for: a versioned AST contract turns a silent cross-cutting break into a compile error.
+4. *Nest in composite* — parse → transpile → invoke external compiler: `main.go` pipeline. L0-local; L2's expander would be more code than `main.go` itself.
+
+**foodsavr**
+1. *Add capability* — third grocery provider (e.g. Salling): new `clients/salling_client.dart`, `provider_model.dart` (`Provider` enum), dotenv keys, DI auto-registration via injectable, plus `connections_list.dart` if it enumerates providers. ~3–4 files. `CoopClient` (a stub returning `[]`) is the observed template.
+2. *Second provider* — SQL repositories behind `IRepository<T,ID>` (`i_repository.dart`): new repo implementations + `injection.config.dart` rebinding. The interface exists precisely for this; L0-local.
+3. *Cross-cutting invariant* — change `Product` shape (`models/product_model.dart`): ripples to `product_service.dart`, `select_products_controller.dart`, all `views/product_*`, `barcode_scan_view.dart`, Rema/Coop clients, mock data (3 files), and shelf-life mapping. ~15–20 files (~, from imports I saw). Worst change-locality of all three projects; a versioned contract would make this a diff-able migration.
+4. *Nest in composite* — "import receipts → create inventory → meal plan" workflow nesting `RemaClient.getProducts` inside a use-case: `import_service.dart` currently has `getReceipts/getProducts` as unrelated methods (`i_import_service.dart`); composition would be a new orchestrator service + DI entry. This is the single place where a declarative composition (one record: steps, contracts between steps, rollback) genuinely beats hand-written orchestration.
+
+# 5. Compression versus semantic distance
+
+| System | Best L2 compression | Semantic distance incurred |
+|---|---|---|
+| common-tools | ~1.2x at best (declarative "transfer task") | High: FTP error semantics, bare-except fallback, env-var contract all become implicit |
+| lite-jnc | ~1.5x if the pipeline is declared | High: lexer/parser/codegen semantics are the system; declaring them duplicates them |
+| foodsavr | ~3–4x within `third_party_integration` (endpoints, headers, model mappings are already table-like in `rema_client.dart` dotenv keys) | Low *there*; high if applied to views/widgets |
+
+Rule of thumb from these three: compression is real only where the source is already tabular (endpoint maps, provider registries, duration maps like `ShelfLifeService._categoryDurations`). Semantic distance grows with every behavioral branch that the declaration must re-express as expansion rules — the moment the rule set rivals the code, L2 is a second implementation with worse diffability.
+
+# 6. Recommended level and hybrid boundary
+
+- **common-tools → L0.** The program is smaller than any kernel. Fix its one real weakness (path invariant) with a small function + test, not a meta-layer. L2 rejected as over-abstraction **[rejection 1]**.
+- **lite-jnc → L1.** Introduce a typed AST contract + backend contracts around the existing `spec.Runner` port; keep lexer/parser/compiler as code. L2 rejected as over-abstraction **[rejection 2]**: recursive declaration of a parser state machine reproduces the machine in a worse language.
+- **foodsavr → L1 core, bounded L2 at one seam.** Formalize components/contracts over the existing interface layer; permit a declarative provider-specification kernel *only* for `features/third_party_integration` (and optionally receipt-import workflow composition). Widgets, controllers, and Firebase services stay code.
+
+Hybrid boundary rule: a subsystem may use the declarative kernel iff (a) its data is naturally tabular, (b) it has <N≈10 declaration kinds, and (c) every declaration expands to code that existing tests already know how to mock (the `Client.fetch`/`Mock` seam).
+
+# 7. Reusable declaration kernel
+
+Model proposal (TypeScript-flavored pseudo-typing; no implementation exists):
+
+```ts
+type Port = { name: string; type: string;              // e.g. "http.GET"
+              direction: "in" | "out" };
+type Contract = { id: string; version: string;        // semver, breaking = major
+                  pre?: Predicate; post: Predicate;   // typed predicates
+                  onViolation: "error" | "rollback" };
+type Evidence = { kind: "test" | "bench" | "check" | "manual";
+                  ref: string;                         // path or CI run id
+                  covers: string };                     // contract id
+type Component = { id: string; version: string;
+                  ports: Port[]; contracts: Contract[];
+                  evidence: Evidence[];
+                  projection: { lang: string; target: string } };  // generated code
+type Composition = { id: string; version: string;
+                    steps: { component: string;         // id@version — DAG, not tree
+                              binds: { port: string; to: string }[] }[];
+                    budget: { maxDepth: number;        // e.g. 8
+                              maxWidth: number;        // steps per level, e.g. 64 } };
+```
+
+**Finite recursion measure:** each `Composition.budget` is fixed at declaration; expansion is defined only as `expand(c, depth, width)` where `depth` decreases strictly toward 0 and `width` bounds fan-out per level, so every expansion terminates in ≤ `maxDepth × maxWidth` nodes. Nesting a composition inside a composition consumes the parent's budget (provenance tracks the chain), preventing the infinite-regress failure mode L2 systems usually hit.
+
+**Worked example — foodsavr `RemaClient` as a Component (proposal, grounded in observed code):**
+- Ports: in `http.GET` (the `fetch(env, suffix)` method, `base_client.dart`), in `secure.read` (`SecureStorage.read(provider, Key.access_token)`), out `products` (`List<Product>` from `getProducts(userId)`).
+- Contract: `receipts→products v1`: post = "every emitted Product has non-null id, barcode, description" — exactly the guard already hand-coded in `rema_client.dart` (`if (id != null && barcode != null && description != null)`); pre = "REMA_API_SUB_KEY and REMA_TRANSACTIONS env keys resolve".
+- Evidence: the DI binding plus a proposed contract test (not the existing suite, which doesn't cover RemaClient).
+- Composition: `receipt-import v0.2`: steps `rema-client@1.x` → `import-service@1.x` → `inventory-repo@1.x`, budget `{maxDepth: 2, maxWidth: 4}` — one level of nesting, terminates.
+
+# 8. Verification and provenance requirements
+
+1. Every `Contract` must list ≥1 `Evidence` of kind `test` before a composition referencing it validates. (Currently violated in all three repos: lite-jnc's only test is commented out; common-tools' tests don't cover `delete_remote_directory`'s bare `except:`; foodsavr has no RemaClient test — observed.)
+2. Provenance: each generated projection records generator version, source declaration hash, and component versions; regenerating with unchanged hashes must be byte-stable.
+3. Contract version bumps: major = composition must re-validate; minor/patch = automatic.
+4. Expansion must emit a termination proof (depth trace) alongside code; CI rejects projections without one.
+5. Escape hatches (hand-written code inside a component) are allowed but counted; a component with >30% escape-hatch code fails the "why is this a component" check — this is what keeps lite-jnc's lexer out of the kernel.
+
+# 9. Buildable follow-up
+
+**Next slice (proposal — not implemented):** in `006-foodsavr`, add a typed `ProviderSpec` to `features/third_party_integration`:
+- New `provider_spec.dart`: a `ProviderSpec` record type (name, envKeyPrefix, endpoints map, required headers, required models) and a `registry` mapping the existing `Provider` enum values to specs, with `RemaClient`'s dotenv keys (`REMA_TRANSACTIONS`, `REMA_API_SUB_KEY`) as the first entry and `CoopClient`'s as the second.
+- Refactor `Client.fetch` to read endpoint keys from the spec instead of raw `dotenv.get(env)` — behavior-preserving, ~1 file (`base_client.dart`) + the new file.
+- **Tests** (new `test/features/provider_spec_test.dart`): (a) every `Provider` enum value has a spec; (b) every endpoint env key in a spec is documented; (c) `RemaClient` produces identical request URIs for a mocked `http.Client` before/after refactor (golden-URI test using `MockClient`).
+- **Acceptance criteria:** `flutter test` green (unverified here — no build was run); refactor is diff-identical in HTTP behavior; adding a third provider requires only a spec entry + client class, no edits to `base_client.dart`.
+
+This slice is the smallest honest test of the hybrid boundary: if the spec table feels heavier than the two dotenv calls it replaces, that is evidence against even the bounded L2.
+
+# 10. Decision table
+
+| System | Recommended level | L2 rejected? | Deciding factor |
+|---|---|---|---|
+| common-tools | L0 | Yes (rejection 1) | System (82 LOC) < kernel size; invariant belongs in a function, not a meta-layer |
+| lite-jnc | L1 | Yes (rejection 2) | Semantic core (lexer/AST/codegen) doesn't compress; typed contracts fix the real gap (commented-out tests, unstable AST) |
+| foodsavr | L1 + bounded L2 at integration seam | Partly — L2 only for `third_party_integration` | Provider family is tabular and registry-shaped; views/controllers are not |
+
+```json
+{
+  "projects": {
+    "006-common-tools": {"loc": 363, "level": "L0", "note": "single FTP deploy script, one-file system"},
+    "006-lite-jnc": {"loc": 1392, "level": "L1", "note": "spec.Runner port exists; AST contract proposed"},
+    "006-foodsavr": {"loc": 13972, "level": "L1 + bounded L2", "note": "DI + interfaces observed; declarative seam only for third_party_integration"}
+  },
+  "scores": {
+    "006-common-tools": {"L0": [4,2,2,3,4,0], "L1": [3,3,3,2,2,0], "L2": [1,1,1,1,0,0]},
+    "006-lite-jnc": {"L0": [4,3,2,1,3,0], "L1": [3,4,3,3,3,1], "L2": [2,2,2,2,1,1]},
+    "006-foodsavr": {"L0": [4,3,2,3,2,0], "L1": [3,4,3,3,3,1], "L2": [2,3,2,2,1,2]},
+    "dimensions": ["fidelity","extensibility","change-locality","verification","reviewability","compression"],
+    "scale": "0 not expressible .. 4 native+checkable; compression inverted"
+  },
+  "stress_tests": [
+    {"project": "common-tools", "test": "SFTP provider", "files": ["ftp/ftp_client.py", "ftp/doc.md", "ftp/test_ftp_client.py"]},
+    {"project": "common-tools", "test": "swap ftpretty", "files": ["ftp/ftp_client.py", "ftp/Makefile"]},
+    {"project": "common-tools", "test": "typed remote path invariant", "files": ["ftp/ftp_client.py", "ftp/doc.md"]},
+    {"project": "common-tools", "test": "deploy workflow nesting", "files": ["ftp/doc.md (CI section)"]},
+    {"project": "lite-jnc", "test": "new transpiler target", "files": ["transpiler/transpiler.go", "transpiler/<new>.go"]},
+    {"project": "lite-jnc", "test": "LLVM backend", "files": ["compiler/compiler.go", "compiler/<new>.go"]},
+    {"project": "lite-jnc", "test": "standardize AST", "files": ["parser/types.go", "parser/parser.go", "parser/lexer.go", "transpiler/transpiler.go", "compiler/*"]},
+    {"project": "lite-jnc", "test": "pipeline composition", "files": ["main.go"]},
+    {"project": "006-foodsavr", "test": "third provider", "files": ["lib/features/third_party_integration/clients/<new>.dart", "lib/features/third_party_integration/models/provider_model.dart", "injection.config.dart"]},
+    {"project": "006-foodsavr", "test": "SQL repositories", "files": ["lib/interfaces/i_repository.dart implementers", "lib/injection.config.dart"]},
+    {"project": "006-foodsavr", "test": "Product shape change", "files": ["lib/models/product_model.dart", "~15 dependent files across services, views, clients, mock_data"]},
+    {"project": "006-foodsavr", "test": "receipt-import workflow", "files": ["lib/features/third_party_integration/services/import_service.dart", "new orchestrator"]}
+  ],
+  "recommendation": {
+    "006-common-tools": "L0", "006-lite-jnc": "L1", "006-foodsavr": "L1 with bounded L2 for third_party_integration only",
+    "l2_rejections": ["common-tools: system smaller than any kernel", "lite-jnc: parser/codegen semantics do not compress"]
+  },
+  "kernel": {
+    "types": ["Component", "Port", "Contract", "Evidence", "Composition"],
+    "recursion": "budget {maxDepth, maxWidth} strictly decreasing; nesting consumes parent budget",
+    "status": "model proposal, not implemented"
+  },
+  "risks": [
+    "No test suite was executed; all 'tests pass' framing is design intent, not verification",
+    "foodsavr Product-shape touch count (~15-20 files) is a hand-counted estimate from imports",
+    "The bounded-L2 seam for foodsavr could still exceed its payoff; slice 9 is designed to falsify it cheaply",
+    "lite-jnc transpiler.Run is a stub returning nil; extensibility scores assume the intended interface, not working behavior"
+  ],
+  "next_slice": {
+    "target": "006-foodsavr lib/features/third_party_integration",
+    "work": "typed ProviderSpec + registry; refactor Client.fetch to read spec",
+    "tests": "provider_spec_test.dart: enum-coverage, env-key documentation, golden-URI MockClient test",
+    "acceptance": "flutter test green; HTTP behavior byte-identical; third provider needs no base_client edit"
+  }
+}
+```
+
+No files were modified and no experiment was implemented; all L1/L2 designs, the kernel, and the follow-up slice are proposals grounded in the cited paths.

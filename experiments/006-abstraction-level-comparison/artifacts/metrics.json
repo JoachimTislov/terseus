@@ -1,0 +1,80 @@
+{
+  "experiment": "006-abstraction-level-comparison",
+  "projects": {
+    "006-common-tools": {
+      "repository": "https://github.com/JoachimTislov/common-tools",
+      "revision": "58246521116c7a2a0fd6213613f0e91d4ed43e5f",
+      "recommended_level": "L0",
+      "bounded_l2_boundary": "optional L1 transport seam after a second provider"
+    },
+    "006-lite-jnc": {
+      "repository": "https://github.com/JoachimTislov/lite-jnc",
+      "revision": "e6066394f27fa5bbc53988445997af34e8744345",
+      "recommended_level": "L1",
+      "bounded_l2_boundary": "optional shallow compiler-stage pipeline"
+    },
+    "006-foodsavr": {
+      "repository": "https://github.com/JoachimTislov/foodsavr",
+      "revision": "3e3fd20df20560e17844272bf3bd8c63d77f671d",
+      "recommended_level": "L1 + bounded L2",
+      "bounded_l2_boundary": "third-party integration/provider specifications"
+    }
+  },
+  "dimensions": [
+    "semantic_fidelity",
+    "extensibility",
+    "change_locality",
+    "verification",
+    "reviewability",
+    "compression"
+  ],
+  "scores": {
+    "006-common-tools": {
+      "L0": [4, 2, 2, 3, 4, 0],
+      "L1": [3, 3, 3, 2, 2, 0],
+      "L2": [1, 1, 1, 1, 0, 0]
+    },
+    "006-lite-jnc": {
+      "L0": [4, 3, 2, 1, 3, 0],
+      "L1": [3, 4, 3, 3, 3, 1],
+      "L2": [2, 2, 2, 2, 1, 1]
+    },
+    "006-foodsavr": {
+      "L0": [4, 3, 2, 3, 2, 0],
+      "L1": [3, 4, 3, 3, 3, 1],
+      "L2": [2, 3, 2, 2, 1, 2]
+    }
+  },
+  "runs": [
+    {
+      "runner": "codex",
+      "cli_version": "codex-cli 0.156.1",
+      "model": "gpt-5.6-sol",
+      "exit_status": 0,
+      "wall_time_seconds": 117.216,
+      "final_report_words": 2026,
+      "input_tokens": 125816,
+      "cached_input_tokens": 100224,
+      "output_tokens": 5800,
+      "reasoning_output_tokens": 470,
+      "valid_final_json_appendix": true,
+      "final_report_sha256": "5238f1fa13c11d0bcdfbc77329b6e7f46add4c84d9924b2c783fecb8adf3693f"
+    },
+    {
+      "runner": "vibe",
+      "cli_version": "vibe 2.25.4",
+      "model": "mistral-medium-3.5",
+      "provider": "mistral",
+      "exit_status": 0,
+      "wall_time_seconds": 272.593,
+      "final_report_words": 2601,
+      "input_tokens": null,
+      "cached_input_tokens": null,
+      "output_tokens": null,
+      "reasoning_output_tokens": null,
+      "valid_final_json_appendix": true,
+      "final_report_sha256": "f291993b91c3e3b34a3e56f9bf4b68abf4d4018eb1e540dabbb5bf651d440277"
+    }
+  ],
+  "decision": "Use L0 for small operational utilities, L1 for stable typed seams in compilers and applications, and bounded L2 only for small tabular/versioned workflows with deterministic expansion and existing test seams."
+}
