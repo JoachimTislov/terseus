@@ -153,6 +153,75 @@ human review effort, provider portability, and long-term drift.
 **Source:** [DSPy: Compiling Declarative Language Model Calls into
 Self-Improving Pipelines](https://arxiv.org/abs/2310.03714).
 
+## 9. Confidence-gated semantic language development
+
+**Core idea:** keep the domain language's grammar, type system, execution
+semantics, and side effects deterministic, while using Jev as a bounded
+semantic decision primitive for the parts that depend on intent, context, or
+domain judgment. A parsed AST and its supporting evidence become Jev's
+structured state; independent `Choice`, `Score`, and `Noul` questions produce
+typed interpretations that ordinary code combines into a validated
+intermediate representation.
+
+This is not a proposal to have a model generate the language or executable
+code. It is a hybrid language workbench: parsing and exact constraints reject
+invalid programs, while Jev supplies explicit, inspectable judgments such as
+intent classification, ambiguity resolution, eligibility, severity, or
+mapping a phrase to a closed domain vocabulary. Jev's probabilities and
+confidence are preserved as part of the semantic result rather than reduced
+to an unexplained yes/no.
+
+**Useful question:** Does placing calibrated, atomic semantic judgments behind
+a stable DSL boundary make natural-language domain expressions easier to
+author and evolve without weakening traceability or execution safety?
+
+**Proposed workflow:**
+
+1. Define a small, versioned domain vocabulary and grammar. Do not delegate
+   lexical analysis, parsing, type checking, authorization, or arithmetic to
+   Jev.
+2. Parse source into a typed AST and collect the relevant facts, source spans,
+   provenance, and unresolved alternatives into structured state.
+3. Fan out narrow Jev questions in one request. Each question should address
+   one dimension and use a closed `Choice`, ordered `Score`, or binary `Noul`
+   contract.
+4. Combine answers with ordinary, version-controlled code into a semantic IR.
+   Keep coefficients, thresholds, precedence, and side effects in the DSL
+   implementation, not in model instructions.
+5. Gate behavior by risk: high-confidence interpretations may proceed,
+   medium-confidence ones request confirmation or more evidence, and
+   low-confidence ones are rejected or sent to human review.
+6. Record the model version, question schema, state, probabilities,
+   confidence, selected interpretation, and human overrides so a decision can
+   be replayed and audited.
+
+**Example scope:** a policy DSL may parse `approve refund when failure is
+severe` deterministically, then ask Jev separately to score incident severity,
+classify refund eligibility, and detect fraud indicators. The runtime combines
+those results with explicit policy thresholds. A low-confidence severity score
+must not silently become an approval.
+
+**Risks:** calibrated confidence may still be unsuitable for an unmeasured
+domain; a closed vocabulary can encode the wrong ontology; question and
+rubric changes can alter language meaning; model drift can change behavior;
+and semantic judgments may be mistaken for proof. Network availability,
+privacy, latency, and provider dependence also become language-runtime
+concerns.
+
+**Evaluation emphasis:** semantic fidelity against expert-reviewed cases,
+confidence calibration and selective accuracy, ambiguity and abstention
+quality, regression behavior across question/model versions, trace
+completeness, authoring and review effort, latency/cost, and the safety of
+generated side effects. Compare deterministic rules alone, a general LLM
+workflow, and Jev-backed atomic decisions on the same domain tasks. At least
+one held-out change should test whether the language remains understandable
+and adaptable after its vocabulary or rubric evolves.
+
+**Sources:** [TypeSafe introduction](https://docs.typesafe.ai/introduction),
+[TypeSafe confidence](https://docs.typesafe.ai/confidence), [TypeSafe
+patterns](https://docs.typesafe.ai/patterns), and [Introducing System One
+Models & Jev](https://typesafe.ai/blog/introducing-system-one-models-and-jev).
+
 ## Selection rule
 
 Do not rank approaches by literature popularity or token reduction. Select a

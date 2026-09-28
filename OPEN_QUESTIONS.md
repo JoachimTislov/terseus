@@ -123,3 +123,8 @@ resolve it. The approach labels refer to `research/approaches.json`.
   remain precise enough to guide implementation and evaluation without
   becoming a new programming language? _Approaches:
   `high-level-system-definition`, `model-driven-views`, `change-impact`._
+- [ ] **Q-28 — Calibrated semantic boundary.** Which domain-language judgments
+  can be delegated to Jev without making model output authoritative, and what
+  evidence is sufficient to set confidence gates for automatic execution?
+  _Approaches: `confidence-gated-semantic-language`,
+  `formal-synthesis`, `provenance-first`._

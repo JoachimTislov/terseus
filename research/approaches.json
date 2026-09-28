@@ -10,5 +10,6 @@
     {"id":"change-impact","name":"Repository-scale change impact","version":"1.0.0","status":"active","definition":"Requirements, architecture, code, tests, and documentation are linked for semantic impact analysis.","source":"APPROACHES.md"},
     {"id":"workflow-compilation","name":"Structured AI workflow compilation","version":"1.0.0","status":"active","definition":"AI work is represented as typed declarative modules and repeatable workflows.","source":"APPROACHES.md"}
     ,{"id":"high-level-system-definition","name":"High-level system definition","version":"1.0.0","status":"active","definition":"A system is described as a set of domain concepts, responsibilities, boundaries, relationships, constraints, and observable outcomes before implementation details are chosen.","source":"FOUNDATION.md"}
+    ,{"id":"confidence-gated-semantic-language","name":"Confidence-gated semantic language development","version":"1.0.0","status":"active","definition":"A deterministic domain-language pipeline uses Jev for bounded, atomic semantic judgments and combines typed probabilistic answers into a validated intermediate representation with risk-based confidence gates.","source":"APPROACHES.md"}
   ]
 }
