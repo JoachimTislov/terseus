@@ -14,6 +14,9 @@ venv/
 **/generated/
 **/.cache.json
 
+# Local site preview (assembled by the commands in site/README.md, not source)
+/_site/
+
 # Editors / OS
 .vscode/
 .idea/

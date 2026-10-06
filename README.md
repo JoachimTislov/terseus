@@ -69,6 +69,24 @@ it's extending, borrowing from, or deliberately diverging from, and which
 open question it's taking a position on. That's the only structural rule
 this scaffold imposes.
 
+## Previewing the site
+
+`site/` is static HTML/CSS/JS with no build step, but `app.js` loads the
+registry through relative fetches, so the page must be served from an
+assembled directory rather than from `site/` itself (`site/README.md`
+explains why). From the repo root:
+
+```
+mkdir -p _site
+cp site/* _site/
+cp -r research _site/research
+mkdir -p _site/experiments/008-agent-domain-languages/samples
+cp -r experiments/008-agent-domain-languages/samples/anl _site/experiments/008-agent-domain-languages/samples/
+python3 -m http.server --directory _site 8000
+```
+
+Then open http://localhost:8000.
+
 ## Status
 
 Current release: **v0.1.1** — see `CHANGELOG.md` for what's in it.
